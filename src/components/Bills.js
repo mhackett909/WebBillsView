@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
-import { SERVER_URL } from '../constants.js';
 function Bills() {
 	const [selected, setSelected] = useState(0);
 	const [entries, setEntries] = useState([]);
 	const [selectionModel, setSelectionModel] = useState([]);
+	const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 	useEffect(() => {
 		fetch(`${SERVER_URL}/api/v1/entries`, 
       			{  
