@@ -2,6 +2,7 @@
   "name": "bills_react",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8080/api",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -21,9 +22,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:local": "cp .env-local .env && npm run build",
-    "build:dev": "cp .env-dev .env && npm run build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
