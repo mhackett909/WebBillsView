@@ -6,9 +6,9 @@ function Bills() {
 	const [selected, setSelected] = useState(0);
 	const [entries, setEntries] = useState([]);
 	const [selectionModel, setSelectionModel] = useState([]);
-	const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+	const SERVER_API = process.env.REACT_APP_SERVER_URL;
 	useEffect(() => {
-		fetch(`${SERVER_URL}/api/v1/entries`, 
+		fetch(`${SERVER_API}/v1/entries`, 
       			{  
         			method: 'GET', 
       			})
