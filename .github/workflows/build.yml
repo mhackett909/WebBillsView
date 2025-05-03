@@ -1,0 +1,41 @@
+### 🛠 Workflow B: Manual Build and Tag Docker Image (React Frontend Only)
+
+name: Manual Tagged React Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version tag (e.g. 1.0.0)'
+        required: true
+      dev_version:
+        description: 'Dev version to restore after build (e.g. 1.0.0-dev)'
+        required: true
+
+jobs:
+  build-tagged:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Build Version in package.json
+        run: |
+          jq '.version="${{ github.event.inputs.version_tag }}"' package.json > tmp && mv tmp package.json
+
+      - name: Build React App
+        run: |
+          npm ci
+          npm run build
+
+      - name: Docker Login and Push
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+            docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+          docker build -t ${{ secrets.ECR_REPO_FRONTEND }}:${{ github.event.inputs.version_tag }} .
+          docker push ${{ secrets.ECR_REPO_FRONTEND }}:${{ github.event.inputs.version_tag }}
+
+      - name: Reset to Dev Version in package.json
+        run: |
+          jq '.version="${{ github.event.inputs.dev_version }}"' package.json > tmp && mv tmp package.json
