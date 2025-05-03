@@ -1,0 +1,36 @@
+### 🚀 Workflow C: Manual Deploy of Tagged Image to ECS (React Frontend Only)
+
+name: Manual React ECS Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_tag:
+        description: 'Version tag to deploy (e.g. 1.0.0)'
+        required: true
+      service_name:
+        description: 'ECS Service Name (e.g. frontend-prod)'
+        required: true
+      task_def_file:
+        description: 'Path to ECS Task Definition Template (JSON file)'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Replace Tag in Task Definition
+        run: |
+          sed "s/IMAGE_TAG/${{ github.event.inputs.version_tag }}/g" ${{ github.event.inputs.task_def_file }} > task-def-updated.json
+
+      - name: Register and Deploy to ECS
+        run: |
+          aws ecs register-task-definition --cli-input-json file://task-def-updated.json
+
+          aws ecs update-service \
+            --cluster webbills-cluster \
+            --service ${{ github.event.inputs.service_name }} \
+            --force-new-deployment
