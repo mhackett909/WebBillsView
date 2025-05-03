@@ -1,0 +1,43 @@
+### 🚀 Workflow A: Auto-deploy :latest to Dev on Push to Main (React Frontend Only)
+
+name: Auto Deploy React to Dev
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Build React App
+        run: |
+          npm ci
+          npm run build
+
+      - name: Docker Login to ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+            docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.ECR_REPO_FRONTEND }}:latest .
+          docker push ${{ secrets.ECR_REPO_FRONTEND }}:latest
+
+      - name: Register New Task Definition and Deploy to ECS
+        run: |
+          aws ecs register-task-definition --cli-input-json file://ecs-task-def-dev-frontend.json
+
+          aws ecs update-service \
+            --cluster webbills-cluster \
+            --service frontend-dev \
+            --force-new-deployment
