@@ -42,8 +42,9 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.ECR_REPO_FRONTEND }}:latest .
-          docker push ${{ secrets.ECR_REPO_FRONTEND }}:latest
+          IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_FRONTEND }}:latest
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
 
       - name: Render ECS task definition
         run: |
