@@ -76,7 +76,7 @@ function Bills() {
 	    		variant="outlined" 
 	    		color="primary" 
 	    		style={{margin: 10, float: 'right'}}>
-	  		Statistics
+	  		Stats
 	  	</Button>
 	  </div>
 	)
