@@ -52,9 +52,13 @@ jobs:
      
       - name: Register New Task Definition and Deploy to ECS
         run: |
-          aws ecs register-task-definition --cli-input-json file://task-def-frontend.json
-
+          NEW_REVISION=$(aws ecs register-task-definition \
+            --cli-input-json file://task-def-frontend.json \
+            --query 'taskDefinition.revision' --output text)
+      
           aws ecs update-service \
             --cluster bills-dev-cluster \
             --service bills-ui-dev \
+            --task-definition webbills-ui:$NEW_REVISION \
             --force-new-deployment
+
