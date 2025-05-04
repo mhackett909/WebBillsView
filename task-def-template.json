@@ -1,6 +1,6 @@
 {
   "family": "webbills-ui",
-  "networkMode": "bridge",
+  "networkMode": "awsvpc",
   "containerDefinitions": [
     {
       "name": "webbills-ui",
@@ -8,7 +8,7 @@
       "portMappings": [
         {
           "containerPort": 80,
-          "hostPort": 0,
+          "hostPort": 80,
           "protocol": "tcp"
         }
       ],
