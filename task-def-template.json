@@ -1,6 +1,6 @@
 {
   "family": "webbills-ui",
-  "networkMode": "awsvpc",
+  "networkMode": "bridge",
   "containerDefinitions": [
     {
       "name": "webbills-ui",
