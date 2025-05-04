@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 function Bills() {
-	const [selected, setSelected] = useState(0);
+	const [selected] = useState(0);
 	const [entries, setEntries] = useState([]);
 	const [selectionModel, setSelectionModel] = useState([]);
 	const SERVER_API = process.env.REACT_APP_SERVER_URL;
@@ -20,7 +20,7 @@ function Bills() {
       			else { console.log("Fetch empty.") }        
     		})
     		.catch(err => console.error(err)); 
-	}, []);
+	}, [SERVER_API]);
 	const columns = [
 		{ field: 'id', headerName: 'Invoice #', width: 100 },			
    		{ field: 'name', headerName: 'Biller', width: 300 },
@@ -68,7 +68,7 @@ function Bills() {
 	    		to={{pathname:'/Details',   entry: entrySelected }} 
 			variant="outlined" 
 			color="primary" 
-			disabled={selectionModel.length == 0}  
+			disabled={selectionModel.length === 0}  
 			style={{margin: 10}}>
 	      		Details
 	    	</Button>
