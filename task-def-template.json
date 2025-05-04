@@ -27,6 +27,5 @@
   ],
   "requiresCompatibilities": ["EC2"],
   "cpu": "256",
-  "memory": "256",
-  "executionRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/ecsTaskExecutionRole"
+  "memory": "256"
 }
