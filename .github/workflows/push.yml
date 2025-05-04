@@ -9,6 +9,11 @@ on:
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -23,6 +28,13 @@ jobs:
           npm ci
           npm run build
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
       - name: Docker Login to ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
@@ -33,11 +45,15 @@ jobs:
           docker build -t ${{ secrets.ECR_REPO_FRONTEND }}:latest .
           docker push ${{ secrets.ECR_REPO_FRONTEND }}:latest
 
+      - name: Render ECS task definition
+        run: |
+          envsubst < task-def-template.json > task-def-frontend.json
+     
       - name: Register New Task Definition and Deploy to ECS
         run: |
-          aws ecs register-task-definition --cli-input-json file://ecs-task-def-dev-frontend.json
+          aws ecs register-task-definition --cli-input-json file://task-def-frontend.json
 
           aws ecs update-service \
-            --cluster webbills-cluster \
-            --service frontend-dev \
+            --cluster bills-dev-cluster \
+            --service bills-ui-dev \
             --force-new-deployment
