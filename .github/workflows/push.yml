@@ -9,6 +9,11 @@ on:
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -40,6 +45,10 @@ jobs:
           docker build -t ${{ secrets.ECR_REPO_FRONTEND }}:latest .
           docker push ${{ secrets.ECR_REPO_FRONTEND }}:latest
 
+      - name: Render ECS task definition
+        run: |
+          envsubst < task-def-template.json > task-def-frontend.json
+     
       - name: Register New Task Definition and Deploy to ECS
         run: |
           aws ecs register-task-definition --cli-input-json file://task-def-frontend.json
