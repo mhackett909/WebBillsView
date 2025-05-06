@@ -72,11 +72,11 @@ function Bills() {
 			style={{margin: 10}}>
 	      		Details
 	    	</Button>
-	    	<Button id="Statistics" 
+	    	<Button id="Stats" 
 	    		variant="outlined" 
 	    		color="primary" 
 	    		style={{margin: 10, float: 'right'}}>
-	  		Stats
+	  		Statistics
 	  	</Button>
 	  </div>
 	)
