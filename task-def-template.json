@@ -18,7 +18,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/webbills-ui",
-          "awslogs-region": "us-west-1",
+          "awslogs-region": "${AWS_REGION}",
           "awslogs-stream-prefix": "ecs"
         }
       }
@@ -26,5 +26,11 @@
   ],
   "requiresCompatibilities": ["EC2"],
   "cpu": "256",
-  "memory": "256"
+  "memory": "256",
+  "placementConstraints": [
+    {
+      "type": "memberOf",
+      "expression": "attribute:role == frontend"
+    }
+  ]
 }
