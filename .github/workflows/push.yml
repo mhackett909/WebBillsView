@@ -1,5 +1,3 @@
-### 🚀 Workflow A: Auto-deploy :latest to Dev on Push to Main (React Frontend Only)
-
 name: Auto Deploy React to Dev
 
 on:
@@ -35,30 +33,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Docker Login to ECR
+      - name: Sync React App to S3
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
-            docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          aws s3 sync build/ s3://web-bills-bucket --delete
 
-      - name: Build and Push Docker Image
+      - name: Invalidate CloudFront Cache
         run: |
-          IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_FRONTEND }}:latest
-          docker build -t $IMAGE_URI .
-          docker push $IMAGE_URI
-
-      - name: Render ECS task definition
-        run: |
-          envsubst < task-def-template.json > task-def-frontend.json
-     
-      - name: Register New Task Definition and Deploy to ECS
-        run: |
-          NEW_REVISION=$(aws ecs register-task-definition \
-            --cli-input-json file://task-def-frontend.json \
-            --query 'taskDefinition.revision' --output text)
-      
-          aws ecs update-service \
-            --cluster bills-dev-cluster \
-            --service bills-ui-dev \
-            --task-definition webbills-ui:$NEW_REVISION \
-            --force-new-deployment
-
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
