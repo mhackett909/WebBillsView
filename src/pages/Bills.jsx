@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, TextField, Box, Menu, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 import { fetchEntries } from '../utils/BillsApiUtil';
+
 
 const Bills = () => {
     const [entries, setEntries] = useState([]);
@@ -13,12 +14,11 @@ const Bills = () => {
         date: '',
         amount: '',
     });
-    const [includeArchived, setIncludeArchived] = useState(false); // Track the "Include archived?" checkbox state
-    const [selectedRow, setSelectedRow] = useState(null); // Track the selected row
-    const [menuAnchorEl, setMenuAnchorEl] = useState(null); // Anchor for the menu
-    const [selectionModel, setSelectionModel] = useState([]); // Track selected rows
-    const navigate = useNavigate(); // Initialize useNavigate
-
+    const [includeArchived, setIncludeArchived] = useState(false);
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [selectionModel, setSelectionModel] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadEntries = async () => {
@@ -34,7 +34,7 @@ const Bills = () => {
         setFilters((prev) => ({ ...prev, [field]: value }));
     };
 
-    const applyFilters = () => {
+    const applyFilters = useCallback(() => {
         let filtered = entries;
 
         if (filters.invoice) {
@@ -59,11 +59,11 @@ const Bills = () => {
         }
 
         if (!includeArchived) {
-            filtered = filtered.filter((entry) => !entry.archived); // Exclude archived entries if the checkbox is unchecked
+            filtered = filtered.filter((entry) => !entry.archived);
         }
 
         setFilteredEntries(filtered);
-    };
+    }, [entries, filters, includeArchived]); // Add dependencies here
 
     const resetFilters = () => {
         setFilters({
@@ -72,13 +72,13 @@ const Bills = () => {
             date: '',
             amount: '',
         });
-        setIncludeArchived(false); // Reset the "Include archived?" checkbox
+        setIncludeArchived(false);
         setFilteredEntries(entries);
     };
 
     useEffect(() => {
         applyFilters();
-    }, [filters, includeArchived, applyFilters]);
+    }, [applyFilters]); // Use applyFilters as a dependency
 
     const handleMenuClose = () => {
         setMenuAnchorEl(null); // Close the menu
