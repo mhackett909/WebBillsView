@@ -78,7 +78,7 @@ const Bills = () => {
 
     useEffect(() => {
         applyFilters();
-    }, [filters, includeArchived]);
+    }, [filters, includeArchived, applyFilters]);
 
     const handleMenuClose = () => {
         setMenuAnchorEl(null); // Close the menu
