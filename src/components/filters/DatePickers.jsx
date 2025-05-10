@@ -51,23 +51,16 @@ const DatePickers = ({ dateRange, setDateRange }) => {
                                 {...params}
                                 fullWidth
                                 error={
-                                    (dateMode === 'Date Range' &&
-                                        !dateRange[0] &&
-                                        dateRange[1]) || // Start date is blank while end date is selected
-                                    (dateMode === 'Date Range' &&
-                                        dateRange[0] &&
-                                        dateRange[1] &&
-                                        dayjs(dateRange[0]).isAfter(dayjs(dateRange[1]))) // Start date exceeds end date
+                                    dateMode === 'Date Range' &&
+                                    dateRange[0] &&
+                                    dateRange[1] &&
+                                    dayjs(dateRange[0]).isAfter(dayjs(dateRange[1])) // Start date exceeds end date
                                 }
                                 helperText={
                                     dateMode === 'Date Range' &&
-                                    !dateRange[0] &&
-                                    dateRange[1]
-                                        ? 'Start date cannot be blank if end date is selected'
-                                        : dateMode === 'Date Range' &&
-                                          dateRange[0] &&
-                                          dateRange[1] &&
-                                          dayjs(dateRange[0]).isAfter(dayjs(dateRange[1]))
+                                    dateRange[0] &&
+                                    dateRange[1] &&
+                                    dayjs(dateRange[0]).isAfter(dayjs(dateRange[1]))
                                         ? 'Start date must not exceed end date'
                                         : ''
                                 }
