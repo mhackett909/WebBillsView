@@ -6,7 +6,6 @@ import {
     Button,
     Checkbox,
     FormControlLabel,
-    InputLabel,
     Menu,
     MenuItem,
     Select,
