@@ -18,8 +18,10 @@ const AmountRange = ({ filters, handleFilterChange }) => {
                 }}
                 error={
                     filters.amountMin !== '' &&
-                    (Number(filters.amountMin) > Number(filters.amountMax) && Number(filters.amountMax) !== 0) ||
-                    Number(filters.amountMin) > MAX_VALUE
+                    (
+                        (Number(filters.amountMin) > Number(filters.amountMax) && Number(filters.amountMax) !== 0) ||
+                        Number(filters.amountMin) > MAX_VALUE
+                    )
                 }
                 helperText={
                     filters.amountMin !== '' &&
