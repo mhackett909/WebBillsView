@@ -52,37 +52,6 @@ const Bills = () => {
         setFilters((prev) => ({ ...prev, [field]: value }));
     };
 
-    const applyFilters = useCallback(() => {
-        let filtered = entries;
-
-        if (filters.invoice) {
-            filtered = filtered.filter((entry) =>
-                entry.id.toString().includes(filters.invoice)
-            );
-        }
-        if (filters.biller) {
-            filtered = filtered.filter((entry) =>
-                entry.name.toLowerCase().includes(filters.biller.toLowerCase())
-            );
-        }
-        if (filters.date) {
-            filtered = filtered.filter((entry) =>
-                entry.date.includes(filters.date)
-            );
-        }
-        if (filters.amount) {
-            filtered = filtered.filter((entry) =>
-                entry.amount.toString().includes(filters.amount)
-            );
-        }
-
-        if (!includeArchived) {
-            filtered = filtered.filter((entry) => !entry.archived);
-        }
-
-        setFilteredEntries(filtered);
-    }, [entries, filters, includeArchived]);
-
     const filterBills = () => {
         let filtered = entries;
 
