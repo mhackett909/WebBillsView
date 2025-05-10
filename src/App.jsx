@@ -53,6 +53,7 @@ const App = () => {
               >
                 <MenuItem onClick={handleMenuClose}>Statistics</MenuItem>
                 <MenuItem onClick={handleMenuClose}>Export to CSV</MenuItem>
+                <MenuItem onClick={handleMenuClose}>Archives</MenuItem>
               </Menu>
             </Box>
             {/* Right Side: Account and Logout */}

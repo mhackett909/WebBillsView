@@ -16,16 +16,17 @@ import { fetchEntries } from '../utils/BillsApiUtil';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { InputAdornment } from '@mui/material';
+import { InputAdornment, Chip } from '@mui/material';
 
 const Bills = () => {
     const [entries, setEntries] = useState([]);
     const [filteredEntries, setFilteredEntries] = useState([]);
     const [filters, setFilters] = useState({
         invoice: '',
-        biller: '',
+        biller: [], // Initialize as an empty array for multiselect
         date: '',
-        amount: '',
+        amountMin: '',
+        amountMax: '',
     });
     const [includeArchived, setIncludeArchived] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
@@ -60,9 +61,11 @@ const Bills = () => {
                 entry.id.toString().includes(filters.invoice)
             );
         }
-        if (filters.biller) {
+        if (filters.biller.length > 0) {
             filtered = filtered.filter((entry) =>
-                entry.name.toLowerCase().includes(filters.biller.toLowerCase())
+                filters.biller.some((biller) =>
+                    entry.name.toLowerCase().includes(biller.toLowerCase())
+                )
             );
         }
         if (dateRange[0] && dateRange[1]) {
@@ -89,7 +92,7 @@ const Bills = () => {
     const clearFilters = () => {
         setFilters({
             invoice: '',
-            biller: '',
+            biller: [], // Reset biller to an empty array for multiselect
             date: '',
             amountMin: '',
             amountMax: '',
@@ -126,8 +129,9 @@ const Bills = () => {
         { field: 'name', headerName: 'Biller', width: 300 },
         { field: 'date', headerName: 'Date', width: 200 },
         { field: 'amount', headerName: 'Amount', width: 200 },
-        { field: 'status', headerName: 'Status', width: 200 },
+        { field: 'status', headerName: 'Paid', width: 200 },
         { field: 'services', headerName: 'Notes', width: 400 },
+        { field: 'archived', headerName: 'Archived', width: 400 },
     ];
 
     return (
@@ -189,17 +193,31 @@ const Bills = () => {
                         fullWidth
                     />
                     <Box>
-                        <InputLabel id="biller-label">Biller</InputLabel>
                         <Select
                             labelId="biller-label"
-                            value={filters.biller}
+                            multiple
+                            value={filters.biller || []}
                             onChange={(e) => handleFilterChange('biller', e.target.value)}
+                            displayEmpty
                             fullWidth
+                            renderValue={(selected) =>
+                                selected.length === 0 ? (
+                                    <span style={{ color: 'rgba(0, 0, 0, 0.54)' }}>Select Billers</span>
+                                ) : (
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((value) => (
+                                            <Chip key={value} label={value} />
+                                        ))}
+                                    </Box>
+                                )
+                            }
                         >
-                            <MenuItem value="">None</MenuItem>
-                            <MenuItem value="Biller A">Biller A</MenuItem>
-                            <MenuItem value="Biller B">Biller B</MenuItem>
-                            <MenuItem value="Biller C">Biller C</MenuItem>
+                            {['Biller A', 'Biller B', 'Biller C', 'Biller D'].map((biller) => (
+                                <MenuItem key={biller} value={biller}>
+                                    <Checkbox checked={filters.biller.includes(biller)} />
+                                    {biller}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </Box>
                     <Box>
