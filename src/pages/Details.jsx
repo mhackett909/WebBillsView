@@ -1,11 +1,14 @@
-import React from 'react';
+import { useParams } from "react-router-dom";
 
 const Details = () => {
-  return (
-    <div>
-      <h1>Details page</h1>
-    </div>
-  );
+    const { id } = useParams();
+
+    return (
+        <div>
+            <h1>Details Page</h1>
+            <p>Selected Row ID: {id}</p>
+        </div>
+    );
 };
 
 export default Details;
