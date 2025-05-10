@@ -1,9 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, TextField, Box, Menu, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
+import {
+    Box,
+    Button,
+    Checkbox,
+    FormControlLabel,
+    InputLabel,
+    Menu,
+    MenuItem,
+    Select,
+    TextField,
+} from '@mui/material';
 import { fetchEntries } from '../utils/BillsApiUtil';
-
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { InputAdornment } from '@mui/material';
 
 const Bills = () => {
     const [entries, setEntries] = useState([]);
@@ -18,6 +31,11 @@ const Bills = () => {
     const [selectedRow, setSelectedRow] = useState(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [selectionModel, setSelectionModel] = useState([]);
+    const [dateRange, setDateRange] = useState([
+        dayjs().subtract(30, 'day').toDate(),
+        dayjs().toDate(),
+    ]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -63,22 +81,54 @@ const Bills = () => {
         }
 
         setFilteredEntries(filtered);
-    }, [entries, filters, includeArchived]); // Add dependencies here
+    }, [entries, filters, includeArchived]);
 
-    const resetFilters = () => {
+    const filterBills = () => {
+        let filtered = entries;
+
+        if (filters.invoice) {
+            filtered = filtered.filter((entry) =>
+                entry.id.toString().includes(filters.invoice)
+            );
+        }
+        if (filters.biller) {
+            filtered = filtered.filter((entry) =>
+                entry.name.toLowerCase().includes(filters.biller.toLowerCase())
+            );
+        }
+        if (dateRange[0] && dateRange[1]) {
+            filtered = filtered.filter((entry) => {
+                const entryDate = new Date(entry.date);
+                return entryDate >= dateRange[0] && entryDate <= dateRange[1];
+            });
+        }
+        if (filters.amountMin !== '') {
+            filtered = filtered.filter((entry) => entry.amount >= filters.amountMin);
+        }
+        if (filters.amountMax !== '') {
+            filtered = filtered.filter((entry) => entry.amount <= filters.amountMax);
+        }
+
+        if (!includeArchived) {
+            filtered = filtered.filter((entry) => !entry.archived);
+        }
+
+        setFilteredEntries(filtered);
+        console.log('Filtering bills with filters:', filters);
+    };
+
+    const clearFilters = () => {
         setFilters({
             invoice: '',
             biller: '',
             date: '',
-            amount: '',
+            amountMin: '',
+            amountMax: '',
         });
-        setIncludeArchived(false);
-        setFilteredEntries(entries);
+        setDateRange([null, null]); // Reset date range
+        setIncludeArchived(false); // Reset archived filter
+        setFilteredEntries(entries); // Reset filtered entries to the original list
     };
-
-    useEffect(() => {
-        applyFilters();
-    }, [applyFilters]); // Use applyFilters as a dependency
 
     const handleMenuClose = () => {
         setMenuAnchorEl(null); // Close the menu
@@ -87,7 +137,7 @@ const Bills = () => {
     const handleViewDetails = () => {
         if (selectedRow) {
             console.log('Navigating to details for:', selectedRow);
-            navigate(`/details/${selectedRow.id}`); // Navigate to the details page with the selected row ID
+            navigate(`/details/${selectedRow.id}`);
         }
         handleMenuClose();
     };
@@ -113,29 +163,28 @@ const Bills = () => {
 
     return (
         <Box sx={{ padding: '20px' }}>
-        {/* New Invoice Button */}
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'center', // Center the button horizontally
-                marginBottom: '10px', // Add spacing below the button
-            }}
-        >
-            <Button
-                id="New"
-                variant="outlined"
-                color="primary"
+            {/* New Invoice Button */}
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center', // Center the button horizontally
+                    marginBottom: '10px', // Add spacing below the button
+                }}
             >
-                New Invoice
-            </Button>
-        </Box>
-
+                <Button
+                    id="New"
+                    variant="outlined"
+                    color="primary"
+                >
+                    New Invoice
+                </Button>
+            </Box>
             {/* Main Content Area */}
             <Box display="flex" gap="20px">
                 {/* Filter Panel */}
                 <Box
                     sx={{
-                        width: '300px',
+                        width: '250px',
                         padding: '20px',
                         border: '1px solid #ccc',
                         borderRadius: '8px',
@@ -144,33 +193,138 @@ const Bills = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '15px',
-                        height: '100%', 
+                        height: '100%',
                     }}
                 >
                     <TextField
                         label="Invoice #"
+                        type="number"
                         variant="outlined"
                         value={filters.invoice}
-                        onChange={(e) => handleFilterChange('invoice', e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value === '' ? '' : Math.max(1, parseInt(e.target.value, 10) || 1); // Allow clearing
+                            handleFilterChange('invoice', value);
+                        }}
+                        onKeyDown={(e) => {
+                            // Prevent non-numeric input
+                            if (
+                                e.key !== 'Backspace' &&
+                                e.key !== 'Delete' &&
+                                e.key !== 'ArrowLeft' &&
+                                e.key !== 'ArrowRight' &&
+                                !/^[0-9]$/.test(e.key)
+                            ) {
+                                e.preventDefault();
+                            }
+                        }}
+                        fullWidth
                     />
-                    <TextField
-                        label="Biller"
-                        variant="outlined"
-                        value={filters.biller}
-                        onChange={(e) => handleFilterChange('biller', e.target.value)}
-                    />
-                    <TextField
-                        label="Date"
-                        variant="outlined"
-                        value={filters.date}
-                        onChange={(e) => handleFilterChange('date', e.target.value)}
-                    />
-                    <TextField
-                        label="Amount"
-                        variant="outlined"
-                        value={filters.amount}
-                        onChange={(e) => handleFilterChange('amount', e.target.value)}
-                    />
+                    <Box>
+                        <InputLabel id="biller-label">Biller</InputLabel>
+                        <Select
+                            labelId="biller-label"
+                            value={filters.biller}
+                            onChange={(e) => handleFilterChange('biller', e.target.value)}
+                            fullWidth
+                        >
+                            <MenuItem value="">None</MenuItem>
+                            <MenuItem value="Biller A">Biller A</MenuItem>
+                            <MenuItem value="Biller B">Biller B</MenuItem>
+                            <MenuItem value="Biller C">Biller C</MenuItem>
+                        </Select>
+                    </Box>
+                    <Box>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Box display="flex" flexDirection="column" gap={2}>
+                                <DatePicker
+                                    label="Start Date"
+                                    value={dateRange[0]}
+                                    onChange={(newValue) => {
+                                        const updatedRange = [newValue, dateRange[1]];
+                                        setDateRange(updatedRange);
+                                        handleFilterChange('date', updatedRange); // Update the filter state
+                                    }}
+                                    renderInput={(params) => <TextField {...params} fullWidth />}
+                                />
+                                <DatePicker
+                                    label="End Date"
+                                    value={dateRange[1]}
+                                    onChange={(newValue) => {
+                                        const updatedRange = [dateRange[0], newValue];
+                                        setDateRange(updatedRange);
+                                        handleFilterChange('date', updatedRange); // Update the filter state
+                                    }}
+                                    renderInput={(params) => <TextField {...params} fullWidth />}
+                                />
+                            </Box>
+                        </LocalizationProvider>
+                    </Box>
+                    <Box>
+                        <Box display="flex" alignItems="center" gap={2}>
+                            <TextField
+                                label="Min"
+                                type="number"
+                                variant="outlined"
+                                value={filters.amountMin}
+                                onChange={(e) => {
+                                    const value = e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value, 10));
+                                    handleFilterChange('amountMin', value);
+
+                                    // Ensure Max is always >= Min
+                                    if (filters.amountMax !== '' && value !== '' && parseInt(value, 10) > parseInt(filters.amountMax, 10)) {
+                                        handleFilterChange('amountMax', value);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    // Prevent non-numeric input
+                                    if (
+                                        e.key !== 'Backspace' &&
+                                        e.key !== 'Delete' &&
+                                        e.key !== 'ArrowLeft' &&
+                                        e.key !== 'ArrowRight' &&
+                                        !/^[0-9]$/.test(e.key)
+                                    ) {
+                                        e.preventDefault();
+                                    }
+                                }}
+                                fullWidth
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                }}
+                            />
+                            <TextField
+                                label="Max"
+                                type="number"
+                                variant="outlined"
+                                value={filters.amountMax}
+                                onChange={(e) => {
+                                    const value = e.target.value === '' ? '' : Math.max(0, Math.min(99999, parseInt(e.target.value, 10) || 0));
+                                    handleFilterChange('amountMax', value);
+
+                                    // Ensure Min is updated if Max drops below Min
+                                    if (filters.amountMin !== '' && value !== '' && parseInt(value, 10) < parseInt(filters.amountMin, 10)) {
+                                        handleFilterChange('amountMin', value);
+                                    }
+                                }}
+                                onKeyDown={(e) => {
+                                    // Prevent non-numeric input
+                                    if (
+                                        e.key !== 'Backspace' &&
+                                        e.key !== 'Delete' &&
+                                        e.key !== 'ArrowLeft' &&
+                                        e.key !== 'ArrowRight' &&
+                                        !/^[0-9]$/.test(e.key)
+                                    ) {
+                                        e.preventDefault();
+                                    }
+                                }}
+                                fullWidth
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                }}
+                            />
+                        </Box>
+                    </Box>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -178,21 +332,21 @@ const Bills = () => {
                                 onChange={(e) => setIncludeArchived(e.target.checked)}
                             />
                         }
-                        label="Include archived?"
+                        label="Include Archives"
                     />
-                                        <Button
+                    <Button
                         variant="outlined"
                         color="primary"
-                        onClick={resetFilters}
+                        onClick={filterBills}
                     >
                         Search
                     </Button>
                     <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={resetFilters}
+                        onClick={clearFilters}
                     >
-                        Reset Filters
+                        Clear Filters
                     </Button>
                 </Box>
                 {/* Data Table */}
@@ -232,8 +386,6 @@ const Bills = () => {
                         />
                     </Box>
                 </Box>
-
-
             </Box>
 
             {/* Row Actions Menu */}
@@ -247,7 +399,6 @@ const Bills = () => {
             </Menu>
         </Box>
     );
-
 };
 
 export default Bills;
