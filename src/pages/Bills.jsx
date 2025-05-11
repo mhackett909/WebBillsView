@@ -47,7 +47,7 @@ const Bills = () => {
 
     const handleAdd = () => {
         console.log('Add New Invoice button clicked');
-        navigate('/newinvoice');
+        navigate('/invoice');
     };
 
     const filterBills = () => {

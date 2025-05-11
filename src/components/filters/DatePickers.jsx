@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, TextField, MenuItem, Select, FormControl } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import '../../styles/filters.css'; // Import the CSS file
 import dayjs from 'dayjs';
 
 const DatePickers = ({ dateRange, setDateRange }) => {
@@ -15,13 +16,7 @@ const DatePickers = ({ dateRange, setDateRange }) => {
     };
 
     return (
-        <Box
-            sx={{
-                border: '2px solid rgb(134, 131, 131)', // Add a light gray border
-                borderRadius: '8px', // Optional: Add rounded corners
-                padding: '16px', // Add padding inside the border
-                marginBottom: '16px', // Add space below the component
-            }}>
+        <Box className="date-pickers">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 {/* Dropdown to select Single Date or Date Range */}
                 <FormControl fullWidth sx={{ marginBottom: 2 }}>
@@ -80,18 +75,6 @@ const DatePickers = ({ dateRange, setDateRange }) => {
                                 <TextField
                                     {...params}
                                     fullWidth
-                                    error={
-                                        dateRange[0] &&
-                                        dateRange[1] &&
-                                        dayjs(dateRange[0]).isAfter(dayjs(dateRange[1])) // Start date exceeds end date
-                                    }
-                                    helperText={
-                                        dateRange[0] &&
-                                        dateRange[1] &&
-                                        dayjs(dateRange[0]).isAfter(dayjs(dateRange[1]))
-                                            ? 'End date must not be earlier than start date'
-                                            : ''
-                                    }
                                 />
                             )}
                         />

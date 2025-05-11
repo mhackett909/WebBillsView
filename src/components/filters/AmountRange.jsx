@@ -1,9 +1,10 @@
 import { Box, TextField, InputAdornment } from '@mui/material';
+import '../../styles/filters.css'; // Import the CSS file
 
 const AmountRange = ({ filters, handleFilterChange }) => {
     const MAX_VALUE = 99999;
     return (
-        <Box display="flex" alignItems="center" gap={2}>
+        <Box className="range-picker">
             <TextField
                 label="Min"
                 type="number"
@@ -11,9 +12,10 @@ const AmountRange = ({ filters, handleFilterChange }) => {
                 value={filters.amountMin}
                 onChange={(e) => {
                     const value = Number(e.target.value);
-                    // Ensure Min is not negative
-                    if (value >= 0) {
+                    if (value >= 1) {
                         handleFilterChange('amountMin', value);
+                    } else {
+                        handleFilterChange('amountMin', '');
                     }
                 }}
                 error={
@@ -44,22 +46,19 @@ const AmountRange = ({ filters, handleFilterChange }) => {
                 value={filters.amountMax}
                 onChange={(e) => {
                     const value = Number(e.target.value);
-                    // Ensure Max is not negative
-                    if (value >= 0) {
+                    if (value >= 1) {
                         handleFilterChange('amountMax', value);
+                    } else {
+                        handleFilterChange('amountMax', '');
                     }
                 }}
                 error={
                     filters.amountMax !== '' &&
-                    Number(filters.amountMax) !== 0 &&
-                    (Number(filters.amountMax) < Number(filters.amountMin) || Number(filters.amountMax) > MAX_VALUE)
+                    Number(filters.amountMax) > MAX_VALUE
                 }
                 helperText={
                     filters.amountMax !== '' &&
-                    Number(filters.amountMax) !== 0 &&
-                    Number(filters.amountMax) < Number(filters.amountMin)
-                        ? 'Max must be greater than or equal to Min'
-                        : Number(filters.amountMax) > MAX_VALUE
+                    Number(filters.amountMax) > MAX_VALUE
                         ? `Max must not exceed ${MAX_VALUE}`
                         : ''
                 }

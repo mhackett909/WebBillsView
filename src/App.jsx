@@ -19,12 +19,12 @@ const App = () => {
         <Routes>
           <Route path="/home" element={<Bills />} />
           <Route path="/details/:id" element={<Details />} />
-          <Route path="/newuser" element={<NewUser />} />
-          <Route path="/newinvoice" element={<NewInvoice />} />
+          <Route path="/user" element={<NewUser />} />
+          <Route path="/invoice" element={<NewInvoice />} />
           <Route path="/account" element={<Account />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/archives" element={<Archives />} />
-          <Route path="/recyclebin" element={<RecycleBin />} />
+          <Route path="/recycle" element={<RecycleBin />} />
           {/* Redirect to Login if no other route matches */}
           <Route path="/" element={<Login />} />
         </Routes>

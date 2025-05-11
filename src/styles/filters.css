@@ -10,3 +10,18 @@
     gap: 15px;
     height: 100%;
 }
+
+.date-pickers {
+    border: 2px solid rgb(134, 131, 131); /* Add a dark gray border */
+    border-radius: 8px; /* Add rounded corners */
+    padding: 16px; /* Add padding inside the border */
+    margin-bottom: 2px; /* Add space below the component */
+}
+
+.range-picker {
+    display: flex; /* Use flexbox for layout */
+    gap: 16px; /* Add spacing between child elements */
+    padding: 16px; /* Add padding inside the border */
+    border: 2px solid rgb(134, 131, 131); /* Add a dark gray border */
+    border-radius: 8px; /* Add rounded corners */
+}

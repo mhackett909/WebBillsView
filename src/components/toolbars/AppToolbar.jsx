@@ -27,7 +27,7 @@ const AppToolbar = () => {
     };
 
     const handleNavigateToRecycleBin = () => {
-        navigate('/recyclebin');
+        navigate('/recycle');
         handleMenuClose();
     };
 
@@ -48,7 +48,7 @@ const AppToolbar = () => {
                         variant="h6"
                         color="inherit"
                         component={Link}
-                        to="/home"
+                        to="/"
                         style={{ textDecoration: 'none', color: 'inherit', marginRight: '20px' }}
                     >
                         Bill Manager
