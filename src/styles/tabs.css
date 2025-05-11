@@ -1,0 +1,17 @@
+.tabs-container {
+    height: 80vh;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 0px 8px 8px 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.main-tabs .MuiTab-root {
+    border-radius: 4px 4px 0px 0px;
+    transition: all 0.3s; /* Smooth transition for hover and selection */
+}
+
+.main-tabs .Mui-selected {
+    background-color: #ccc; /* Set background color to #ccc for selected tab */
+}
