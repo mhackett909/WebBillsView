@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import '../styles/login.css'; // Import the CSS file
+import '../styles/global.css'; // Import the global CSS file
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -13,54 +15,43 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // For now, just navigate to the Bills page
-    navigate('/bills');
+    navigate('/home');
   };
 
   const handleCreateUser = () => {
     // Navigate to the Create User page
-    navigate('/newuser');
+    navigate('/user');
   };
 
   return (
-    <Box
-      sx={{
-        textAlign: 'center',
-        marginTop: '100px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
+    <Box className="login-container">
       <Typography variant="h4" component="h1" gutterBottom>
         Login or Create User
       </Typography>
       <Box
         component="form"
         onSubmit={handleSubmit}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          width: '300px',
-        }}
+        className="login-form"
       >
-        <TextField
-          label="Username"
-          variant="outlined"
-          fullWidth
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          sx={{ marginBottom: '15px' }}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          sx={{ marginBottom: '15px' }}
-        />
+        <div className="input-border">
+          <TextField
+            label="Username"
+            variant="outlined"
+            fullWidth
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            sx={{ marginBottom: '15px' }}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            sx={{ marginBottom: '15px' }}
+          />
+        </div>
         <Button
           type="submit"
           variant="contained"
@@ -70,6 +61,7 @@ const Login = () => {
           Submit
         </Button>
       </Box>
+
       <Button
         onClick={handleCreateUser}
         variant="contained"
