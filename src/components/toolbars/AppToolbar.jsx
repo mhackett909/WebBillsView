@@ -48,7 +48,7 @@ const AppToolbar = () => {
                         variant="h6"
                         color="inherit"
                         component={Link}
-                        to="/bills"
+                        to="/home"
                         style={{ textDecoration: 'none', color: 'inherit', marginRight: '20px' }}
                     >
                         Bill Manager
