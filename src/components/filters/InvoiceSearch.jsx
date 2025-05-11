@@ -1,9 +1,9 @@
 import { TextField } from '@mui/material';
-import '../../styles/filters.css'; // Import the CSS file
+import '../../styles/global.css'; // Import the global CSS file
 
 const InvoiceSearch = ({ invoice, handleFilterChange }) => {
     return (
-        <div className="filters-border">
+        <div className="input-border">
             <TextField
                 label="Invoice #"
                 type="number"
