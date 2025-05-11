@@ -17,7 +17,18 @@ const BillerSelect = ({ billers, selectedBillers, handleFilterChange }) => {
                     ) : (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                             {selected.map((value) => (
-                                <Chip key={value} label={value} />
+                                <Chip
+                                    key={value}
+                                    label={value}
+                                    sx={{
+                                        backgroundColor: 'rgb(25, 118, 210)',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: '#ccc',
+                                            color: 'black',
+                                        },
+                                    }}
+                                />
                             ))}
                         </Box>
                     )
