@@ -25,3 +25,14 @@
     border: 2px solid rgb(134, 131, 131); /* Add a dark gray border */
     border-radius: 8px; /* Add rounded corners */
 }
+
+.chip-style.MuiChip-root {
+    background-color: rgb(25, 118, 210);
+    color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.chip-style.MuiChip-root:hover {
+    background-color: #ccc;
+    color: black;
+}
