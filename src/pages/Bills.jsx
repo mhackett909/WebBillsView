@@ -135,7 +135,11 @@ const Bills = () => {
                 />
                  <Box sx={{ flex: 1 }}>
                         {/* Tabs for switching between Data Table and Statistics */}
-                        <Tabs value={activeTab} onChange={handleTabChange} sx={{ marginBottom: '20px' }}>
+                        <Tabs
+                            value={activeTab}
+                            onChange={handleTabChange}
+                            className="main-tabs"
+                        >
                             <Tab label="Entries" />
                             <Tab label="Stats" />
                         </Tabs>

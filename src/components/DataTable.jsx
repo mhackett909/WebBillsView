@@ -16,7 +16,7 @@ const DataTable = ({
 }) => {
     const [selectedRow, setSelectedRow] = useState(null);
     return (
-        <Box className="main-tabs">
+        <Box className="tabs-container">
             <DataGrid
                 rows={rows}
                 columns={columns}
