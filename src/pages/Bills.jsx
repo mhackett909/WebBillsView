@@ -105,7 +105,7 @@ const Bills = () => {
         { field: 'date', headerName: 'Date', width: 200 },
         { field: 'amount', headerName: 'Amount', width: 200 },
         { field: 'status', headerName: 'Paid', width: 200 },
-        { field: 'services', headerName: 'Notes', width: 400 },
+        { field: 'services', headerName: 'Services', width: 400 },
         { field: 'archived', headerName: 'Archived', width: 400 },
     ];
 
