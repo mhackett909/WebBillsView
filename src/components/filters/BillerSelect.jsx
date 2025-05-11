@@ -1,5 +1,6 @@
 import { Box, Select, MenuItem, Checkbox, Chip } from '@mui/material';
 import '../../styles/global.css'; // Import the global CSS file
+import '../../styles/filters.css'; // Import the CSS file
 
 const BillerSelect = ({ billers, selectedBillers, handleFilterChange }) => {
     return (
@@ -20,14 +21,7 @@ const BillerSelect = ({ billers, selectedBillers, handleFilterChange }) => {
                                 <Chip
                                     key={value}
                                     label={value}
-                                    sx={{
-                                        backgroundColor: 'rgb(25, 118, 210)',
-                                        color: 'white',
-                                        '&:hover': {
-                                            backgroundColor: '#ccc',
-                                            color: 'black',
-                                        },
-                                    }}
+                                    className="chip-style"
                                 />
                             ))}
                         </Box>
