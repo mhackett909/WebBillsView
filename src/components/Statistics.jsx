@@ -3,7 +3,7 @@ import '../styles/tabs.css';
 
 const Statistics = () => {
     return (
-        <Box className="main-tabs">
+        <Box className="tabs-container">
             <div style={{ padding: '20px', textAlign: 'center', fontSize: '18px', color: '#555' }}>
                 Statistics Tab...
             </div>
