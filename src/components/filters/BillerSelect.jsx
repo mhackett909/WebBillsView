@@ -1,8 +1,9 @@
 import { Box, Select, MenuItem, Checkbox, Chip } from '@mui/material';
+import '../../styles/filters.css'; // Import the CSS file
 
 const BillerSelect = ({ billers, selectedBillers, handleFilterChange }) => {
     return (
-        <Box>
+        <Box className="filters-border">
             <Select
                 labelId="biller-label"
                 multiple
