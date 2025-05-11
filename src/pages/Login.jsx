@@ -13,7 +13,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // For now, just navigate to the Bills page
-    navigate('/bills');
+    navigate('/home');
   };
 
   const handleCreateUser = () => {

@@ -17,7 +17,7 @@ const App = () => {
       <div className="App">
         <AppToolbar />
         <Routes>
-          <Route path="/bills" element={<Bills />} />
+          <Route path="/home" element={<Bills />} />
           <Route path="/details/:id" element={<Details />} />
           <Route path="/newuser" element={<NewUser />} />
           <Route path="/newinvoice" element={<NewInvoice />} />
