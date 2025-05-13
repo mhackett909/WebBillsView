@@ -36,3 +36,19 @@
     background-color: #ccc;
     color: black;
 }
+
+.checkbox-container {
+    border: 2px solid rgb(134, 131, 131);
+    border-radius: 8px;
+    background-color: #fafafa;
+    width: 100%;
+    flex: 1;
+    padding-left: 5px;
+}
+
+.checkbox-label {
+    .MuiFormControlLabel-label {
+        font-size: 14px;
+        color: #333;
+    }
+}

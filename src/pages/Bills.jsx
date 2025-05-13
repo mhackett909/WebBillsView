@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 import { fetchEntries } from '../utils/BillsApiUtil';
 import dayjs from 'dayjs';
-import FilterPanel from '../components/filters/FilterPanel';
+import FilterPanel from '../components/FilterPanel';
 import DataTable from '../components/DataTable';
 import Statistics from '../components/Statistics';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const Bills = () => {
     const [entries, setEntries] = useState([]);
@@ -78,6 +80,18 @@ const Bills = () => {
             filtered = filtered.filter((entry) => entry.amount <= filters.amountMax);
         }
 
+        // New: Flow filter (single value or none)
+        if (filters.flow && filters.flow !== '') {
+            filtered = filtered.filter((entry) => entry.flow === filters.flow);
+        }
+
+        if (filters.status && filters.status !== '') {
+            const statusBool = filters.status === 'unpaid' ? true : false;
+            filtered = filtered.filter(
+                (entry) => entry.status === statusBool
+            );
+        }
+
         if (!includeArchived) {
             filtered = filtered.filter((entry) => !entry.archived);
         }
@@ -101,18 +115,30 @@ const Bills = () => {
 
     const columns = [
         { field: 'id', headerName: 'Invoice #', width: 100 },
-        { field: 'name', headerName: 'Biller', width: 300 },
-        { field: 'date', headerName: 'Date', width: 200 },
-        { field: 'amount', headerName: 'Amount', width: 200 },
-        { field: 'status', headerName: 'Paid', width: 200 },
-        { field: 'services', headerName: 'Services', width: 400 },
-        { field: 'archived', headerName: 'Archived', width: 400 },
+        { field: 'name', headerName: 'Party', width: 250 },
+        { field: 'date', headerName: 'Date', width: 150 },
+        { field: 'flow', headerName: 'Flow', width: 150 },
+        { field: 'amount', headerName: 'Amount', width: 130 },
+        {
+            field: 'status',
+            headerName: 'Paid',
+            width: 100,
+            renderCell: (params) =>
+                params.row.status === false ? (
+                    <CheckCircleIcon color="success" titleAccess="Paid" />
+                ) : (
+                    <CancelIcon color="error" titleAccess="Unpaid" />
+                ),
+        },
+        { field: 'services', headerName: 'Description', width: 420 },
+        { field: 'archived', headerName: 'Archived', width: 100 },
     ];
 
     const [columnVisibilityModel, setColumnVisibilityModel] = useState({
         id: true,
         name: true,
         date: true,
+        flow: true,
         amount: true,
         status: true,
         services: true,
