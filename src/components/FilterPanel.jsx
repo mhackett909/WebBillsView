@@ -1,12 +1,12 @@
 import {
     Box,
-    Button,
 } from '@mui/material';
 import DatePickers from './filters/DatePickers';
 import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
 import PartySelect from './filters/PartySelect';
 import CheckBoxControls from './filters/CheckBoxControls';
+import FilterButtons from './filters/FilterButtons';
 import '../styles/filters.css';
 
 const FilterPanel = ({
@@ -41,12 +41,10 @@ const FilterPanel = ({
                 includeArchived={includeArchived}
                 setIncludeArchived={setIncludeArchived}
             />
-            <Button variant="outlined" color="primary" onClick={filterBills}>
-                Search
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={clearFilters}>
-                Clear Filters
-            </Button>
+            <FilterButtons
+                filterBills={filterBills}
+                clearFilters={clearFilters}
+            />
         </Box>
     );
 };
