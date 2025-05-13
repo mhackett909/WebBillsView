@@ -1,14 +1,13 @@
 import {
     Box,
     Button,
-    Checkbox,
-    FormControlLabel,
 } from '@mui/material';
-import DatePickers from './DatePickers';
-import AmountRange from './AmountRange';
-import InvoiceSearch from './InvoiceSearch';
-import BillerSelect from './BillerSelect';
-import '../../styles/filters.css';
+import DatePickers from './filters/DatePickers';
+import AmountRange from './filters/AmountRange';
+import InvoiceSearch from './filters/InvoiceSearch';
+import PartySelect from './filters/PartySelect';
+import CheckBoxControls from './filters/CheckBoxControls';
+import '../styles/filters.css';
 
 const FilterPanel = ({
     filters,
@@ -29,21 +28,18 @@ const FilterPanel = ({
                 invoice={filters.invoice}
                 handleFilterChange={handleFilterChange}
             />
-            <BillerSelect
+            <PartySelect
                 billers={availableBillers}
                 selectedBillers={filters.biller}
                 handleFilterChange={handleFilterChange}
             />
             <DatePickers dateRange={dateRange} setDateRange={setDateRange} />
             <AmountRange filters={filters} handleFilterChange={handleFilterChange} />
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={includeArchived}
-                        onChange={(e) => setIncludeArchived(e.target.checked)}
-                    />
-                }
-                label="Include Archives"
+            <CheckBoxControls
+                filters={filters}
+                handleFilterChange={handleFilterChange}
+                includeArchived={includeArchived}
+                setIncludeArchived={setIncludeArchived}
             />
             <Button variant="outlined" color="primary" onClick={filterBills}>
                 Search
