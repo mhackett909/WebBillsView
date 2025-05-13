@@ -12,8 +12,8 @@ const CheckBoxControls = ({
             <CheckboxGroup
                 legend="Flow"
                 options={[
-                    { value: 'inbound', label: 'Inbound' },
-                    { value: 'outbound', label: 'Outbound' },
+                    { value: 'OUTGOING', label: 'Outgoing' },
+                    { value: 'INCOMING', label: 'Incoming' },
                 ]}
                 selectedValue={filters.flow || ''}
                 onChange={(value) => handleFilterChange('flow', value)}
