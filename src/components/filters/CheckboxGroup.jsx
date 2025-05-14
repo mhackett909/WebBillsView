@@ -4,7 +4,6 @@ import '../../styles/filters.css';
 const CheckboxGroup = ({ legend, options, selectedValue, onChange, row = false }) => {
     const handleChange = (value) => {
         if (selectedValue === value) {
-            // Unselect if already selected
             onChange('');
         } else {
             onChange(value);
@@ -13,11 +12,14 @@ const CheckboxGroup = ({ legend, options, selectedValue, onChange, row = false }
 
     return (
         <Box className="checkbox-container">
-            <FormControl component="fieldset">
-                <FormLabel component="legend" sx={{ textAlign: 'center', width: '100%' }}>
+            <FormControl component="fieldset" sx={{ width: '100%', alignItems: 'center' }}>
+                <FormLabel 
+                    component="legend"
+                    className="checkbox-label"
+                >
                     {legend}
                 </FormLabel>
-                <FormGroup>
+                <FormGroup row={row} sx={{ justifyContent: 'center' }}>
                     {options.map((option) => (
                         <FormControlLabel
                             key={option.value}
@@ -28,7 +30,6 @@ const CheckboxGroup = ({ legend, options, selectedValue, onChange, row = false }
                                 />
                             }
                             label={option.label}
-                            className="checkbox-label"
                         />
                     ))}
                 </FormGroup>
