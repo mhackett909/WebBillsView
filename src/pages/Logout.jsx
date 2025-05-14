@@ -5,7 +5,6 @@ import { AuthContext } from '../App';
 const Logout = () => {
   const navigate = useNavigate();
   const { setLoggedIn } = useContext(AuthContext);
-  const location = useLocation();
 
   useEffect(() => {
     setLoggedIn(false);
