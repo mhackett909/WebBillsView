@@ -33,11 +33,11 @@ const Bills = () => {
         const loadEntries = async () => {
             const fetchedEntries = await fetchEntries();
             setEntries(fetchedEntries);
-            setFilteredEntries(fetchedEntries);
+            // Only show non-archived by default
+            setFilteredEntries(fetchedEntries.filter((entry) => !entry.archived));
         };
         setActiveTab(0);
         loadEntries();
-        filterBills(); // temporary
     }, []);
 
     const handleTabChange = (event, newValue) => {
@@ -117,7 +117,8 @@ const Bills = () => {
         });
         setDateRange([null, null]);
         setIncludeArchived(false); // Reset to show only non-archived
-        setFilteredEntries(entries);
+        // Apply the archived filter immediately after clearing
+        setFilteredEntries(entries.filter((entry) => !entry.archived));
     };
 
     const columns = [
