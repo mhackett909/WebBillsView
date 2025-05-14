@@ -34,10 +34,10 @@ const Bills = () => {
             const fetchedEntries = await fetchEntries();
             setEntries(fetchedEntries);
             setFilteredEntries(fetchedEntries);
-            filterBills();
         };
         setActiveTab(0);
         loadEntries();
+        filterBills(); // temporary
     }, []);
 
     const handleTabChange = (event, newValue) => {
