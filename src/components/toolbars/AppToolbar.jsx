@@ -6,11 +6,15 @@ import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from '../../App';
 
 const AppToolbar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
     const navigate = useNavigate(); // Initialize navigate
+    const { loggedIn } = useContext(AuthContext);
+    const username = 'JOHNDOE'; // Replace with real user context if available
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -33,10 +37,24 @@ const AppToolbar = () => {
 
     const handleNavigateToAccount = () => {
         navigate('/account');
+        handleUserMenuClose();
+    };
+
+    const handleNavigateToContact = () => {
+        navigate('/contact');
+        handleUserMenuClose();
     };
 
     const handleNavigateToLogout = () => {
         navigate('/logout');
+        handleUserMenuClose();
+    };
+
+    const handleUserMenuOpen = (event) => {
+        setUserMenuAnchorEl(event.currentTarget);
+    };
+    const handleUserMenuClose = () => {
+        setUserMenuAnchorEl(null);
     };
 
     return (
@@ -48,14 +66,15 @@ const AppToolbar = () => {
                         variant="h6"
                         color="inherit"
                         component={Link}
-                        to="/"
+                        to="/home"
                         style={{ textDecoration: 'none', color: 'inherit', marginRight: '20px' }}
                     >
                         Bill Manager
                     </Typography>
                 </Box>
-                {/* Right Side: History, Account, and Logout */}
-                <Box style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                {/* Right Side: History, Account, and User Dropdown */}
+                {loggedIn && (
+                  <Box style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <Button
                         color="inherit"
                         onClick={handleMenuOpen}
@@ -73,19 +92,22 @@ const AppToolbar = () => {
                     </Menu>
                     <Button
                         color="inherit"
-                        onClick={handleNavigateToAccount}
-                        style={{ color: 'yellow' }}
+                        onClick={handleUserMenuOpen}
+                        style={{ color: 'yellow', textTransform: 'none', fontWeight: 600 }}
                     >
-                        Account
+                        {username.toUpperCase()}
                     </Button>
-                    <Button
-                        color="inherit"
-                        onClick={handleNavigateToLogout}
-                        style={{ color: 'yellow' }}
+                    <Menu
+                        anchorEl={userMenuAnchorEl}
+                        open={Boolean(userMenuAnchorEl)}
+                        onClose={handleUserMenuClose}
                     >
-                        Logout
-                    </Button>
-                </Box>
+                        <MenuItem onClick={handleNavigateToAccount}>Account</MenuItem>
+                        <MenuItem onClick={handleNavigateToContact}>Support</MenuItem>
+                        <MenuItem onClick={handleNavigateToLogout}>Logout</MenuItem>
+                    </Menu>
+                  </Box>
+                )}
             </Toolbar>
         </AppBar>
     );

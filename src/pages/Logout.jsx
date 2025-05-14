@@ -1,9 +1,18 @@
+import { useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../App';
+
 const Logout = () => {
-  return (
-    <div>
-      <h1>Logout Page</h1>
-    </div>
-  );
+  const navigate = useNavigate();
+  const { setLoggedIn } = useContext(AuthContext);
+
+  useEffect(() => {
+    setLoggedIn(false);
+    navigate('/', { state: { showLogoutSnackbar: true }, replace: true });
+  }, [navigate, setLoggedIn]);
+
+  // This component will unmount immediately, so nothing is rendered
+  return null;
 };
 
 export default Logout;
