@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControlLabel } from '@mui/material';
+import { Box } from '@mui/material';
 import CheckboxGroup from './CheckboxGroup';
 
 const CheckBoxControls = ({
@@ -6,6 +6,7 @@ const CheckBoxControls = ({
     handleFilterChange,
     includeArchived,
     setIncludeArchived,
+    setIncludeArchivedOnly,
 }) => (
     <Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
@@ -17,7 +18,6 @@ const CheckBoxControls = ({
                 ]}
                 selectedValue={filters.flow || ''}
                 onChange={(value) => handleFilterChange('flow', value)}
-                row={true}
             />
             <CheckboxGroup
                 legend="Status"
@@ -27,18 +27,29 @@ const CheckBoxControls = ({
                 ]}
                 selectedValue={filters.status || ''}
                 onChange={(value) => handleFilterChange('status', value)}
-                row={true}
             />
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={includeArchived}
-                        onChange={(e) => setIncludeArchived(e.target.checked)}
-                    />
-                }
-                label="Archived"
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', mt: 2, mb: 1 }}>
+            <CheckboxGroup
+                legend="Archives"
+                options={[
+                    { value: 'include', label: 'Include' },
+                    { value: 'only', label: 'Only' },
+                ]}
+                selectedValue={includeArchived === true ? 'include' : includeArchived === 'only' ? 'only' : ''}
+                onChange={(value) => {
+                    if (value === 'include') {
+                        setIncludeArchived(true);
+                        if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(false);
+                    } else if (value === 'only') {
+                        setIncludeArchived('only');
+                        if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(true);
+                    } else {
+                        setIncludeArchived(false);
+                        if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(false);
+                    }
+                }}
+                row
             />
         </Box>
     </Box>

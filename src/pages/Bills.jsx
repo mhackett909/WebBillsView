@@ -80,7 +80,7 @@ const Bills = () => {
             filtered = filtered.filter((entry) => entry.amount <= filters.amountMax);
         }
 
-        // New: Flow filter (single value or none)
+        // Flow filter (single value or none)
         if (filters.flow && filters.flow !== '') {
             filtered = filtered.filter((entry) => entry.flow === filters.flow);
         }
@@ -92,12 +92,18 @@ const Bills = () => {
             );
         }
 
-        if (!includeArchived) {
+        // ARCHIVED FILTER LOGIC
+        // includeArchived: true => show all (archived and not)
+        // includeArchived: 'only' => show only archived
+        // includeArchived: false => show only non-archived
+        if (includeArchived === 'only') {
+            filtered = filtered.filter((entry) => entry.archived === true);
+        } else if (includeArchived !== true) {
             filtered = filtered.filter((entry) => !entry.archived);
         }
 
         setFilteredEntries(filtered);
-        console.log('Filtering bills with filters:', filters);
+        console.log('Filtering bills with filters:', filters, 'includeArchived:', includeArchived);
     };
 
     const clearFilters = () => {
@@ -109,7 +115,7 @@ const Bills = () => {
             amountMax: '',
         });
         setDateRange([null, null]);
-        setIncludeArchived(false);
+        setIncludeArchived(false); // Reset to show only non-archived
         setFilteredEntries(entries);
     };
 
@@ -130,8 +136,16 @@ const Bills = () => {
                     <CancelIcon color="error" titleAccess="Unpaid" />
                 ),
         },
-        { field: 'services', headerName: 'Description', width: 420 },
-        { field: 'archived', headerName: 'Archived', width: 100 },
+        { field: 'services', headerName: 'Description', width: 500 },
+        {
+            field: 'archived',
+            headerName: 'Archived',
+            width: 100,
+            renderCell: (params) =>
+                params.row.archived === true ? (
+                    <CheckCircleIcon color="success" titleAccess="Archived" />
+                ) : '',
+        },
     ];
 
     const [columnVisibilityModel, setColumnVisibilityModel] = useState({
