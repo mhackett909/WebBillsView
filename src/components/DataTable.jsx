@@ -35,7 +35,7 @@ const DataTable = ({
                         }
                     }
                     if (selectedId !== null) {
-                        const selectedRowObj = rows.find(row => row.entryId == selectedId);
+                        const selectedRowObj = rows.find(row => row.entryId === selectedId);
                         setSelectedRow(selectedRowObj ? selectedRowObj.entryId : null);
                     } else {
                         setSelectedRow(null);
