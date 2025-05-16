@@ -45,7 +45,7 @@ const NewUser = () => {
         password: form.password
       });
       setSubmitting(false);
-      if (response && response.success !== false) {
+      if (response && response.username) {
         navigate('/', { state: { showAccountCreated: true } });
       } else {
         setError(response?.message || 'Account creation failed.');
