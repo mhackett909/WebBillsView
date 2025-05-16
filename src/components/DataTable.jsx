@@ -20,19 +20,23 @@ const DataTable = ({
             <DataGrid
                 rows={rows}
                 columns={columns}
+                getRowId={(row) => row.entryId}
                 checkboxSelection
                 selectionModel={selectionModel}
                 onSelectionModelChange={(newSelection) => {
+                    let selectedId = null;
                     if (newSelection.length > 1) {
                         setSelectionModel([newSelection[newSelection.length - 1]]);
+                        selectedId = newSelection[newSelection.length - 1];
                     } else {
                         setSelectionModel(newSelection);
+                        if (newSelection.length > 0) {
+                            selectedId = newSelection[0];
+                        }
                     }
-
-                    if (newSelection.length > 0) {
-                        const selectedId = newSelection[0];
-                        const selected = rows.find((entry) => entry.id === selectedId);
-                        setSelectedRow(selected);
+                    if (selectedId !== null) {
+                        const selectedRowObj = rows.find(row => row.entryId === selectedId);
+                        setSelectedRow(selectedRowObj ? selectedRowObj.entryId : null);
                     } else {
                         setSelectedRow(null);
                     }

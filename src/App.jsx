@@ -17,19 +17,20 @@ export const AuthContext = createContext();
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children }) => {
-  const { loggedIn } = useContext(AuthContext);
+  const { jwt } = useContext(AuthContext);
   const location = useLocation();
-  if (!loggedIn) {
+  if (!jwt) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
   return children;
 };
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [jwt, setJwt] = useState(sessionStorage.getItem('jwt') || null);
+  const [username, setUsername] = useState(sessionStorage.getItem('username') || '');
 
   return (
-    <AuthContext.Provider value={{ loggedIn, setLoggedIn }}>
+    <AuthContext.Provider value={{ jwt, setJwt, username, setUsername }}>
       <BrowserRouter>
         <div className="App">
           <AppToolbar />

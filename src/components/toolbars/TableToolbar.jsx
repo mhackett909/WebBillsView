@@ -26,7 +26,7 @@ const CustomToolbar = ({ handleAdd, selectedRow }) => {
     const handleViewDetails = () => {
         if (selectedRow) {
             console.log('Navigating to details for:', selectedRow);
-            navigate(`/details/${selectedRow.id}`);
+            navigate(`/details/${selectedRow}`);
         }
         handleMenuClose();
     };

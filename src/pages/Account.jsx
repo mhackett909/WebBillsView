@@ -1,26 +1,51 @@
-import { useState } from 'react';
-import { Box, Card, CardContent, Typography, Button, Grid, TextField, Switch, FormControlLabel, Dialog, DialogTitle, DialogContent, DialogActions, InputAdornment, Alert, Chip, Snackbar } from '@mui/material';
+import { useState, useEffect, useContext } from 'react';
+import { Box, Card, CardContent, Typography, Button, Grid, TextField, Switch, FormControlLabel, Dialog, DialogTitle, DialogContent, DialogActions, InputAdornment, Alert, Chip, Snackbar, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-// Dummy user data (replace with real API calls in production)
-const dummyUser = {
-  username: 'johndoe',
-  email: 'john@example.com',
-  emailVerified: true,
-  role: 'User',
-  createdAt: '2023-01-15',
-  lastLogin: '2025-05-12 14:23',
-  mfaEnabled: false,
-};
+import { getUser } from '../utils/BillsApiUtil';
+import { AuthContext } from '../App';
 
 const Account = () => {
-  const [user, setUser] = useState(dummyUser);
+  const { username, jwt } = useContext(AuthContext);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [editField, setEditField] = useState(null); // 'email', 'password', 'deactivate', 'mfa'
-  const [form, setForm] = useState({ email: user.email, password: '', mfa: '', newPassword: '', confirmPassword: '' });
-  const [mfaEnabled, setMfaEnabled] = useState(user.mfaEnabled);
+  const [form, setForm] = useState({ email: '', password: '', mfa: '', newPassword: '', confirmPassword: '' });
+  const [mfaEnabled, setMfaEnabled] = useState(false);
   const [alert, setAlert] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    setError(null);
+    if (username && jwt) {
+      getUser(username, jwt)
+        .then(data => {
+          if (isMounted) {
+            if (data && data.username) {
+              setUser(data);
+              setForm(f => ({ ...f, email: data.email || '' }));
+              setMfaEnabled(data.mfaEnabled); // Keep for legacy, but always use user.mfaEnabled below
+            } else {
+              setError('Failed to load user data.');
+            }
+            setLoading(false);
+          }
+        })
+        .catch(() => {
+          if (isMounted) {
+            setError('Failed to load user data.');
+            setLoading(false);
+          }
+        });
+    } else {
+      setError('Not authenticated.');
+      setLoading(false);
+    }
+    return () => { isMounted = false; };
+  }, [username, jwt]);
 
   // Handlers for dialog open/close
   const openDialog = (field) => { setEditField(field); setAlert(null); };
@@ -28,6 +53,7 @@ const Account = () => {
 
   // Simulate API call
   const handleSave = () => {
+    if (!user) return;
     if (editField === 'email') {
       if (!form.email.includes('@')) {
         setAlert('Please enter a valid email.');
@@ -60,9 +86,10 @@ const Account = () => {
         setAlert('Password required.');
         return;
       }
-      setMfaEnabled(!mfaEnabled);
-      setUser({ ...user, mfaEnabled: !mfaEnabled });
-      setSnackbar({ open: true, message: `MFA ${!mfaEnabled ? 'enabled' : 'disabled'}.` });
+      const newMfa = !user.mfaEnabled;
+      setUser({ ...user, mfaEnabled: newMfa });
+      setMfaEnabled(newMfa); // Keep in sync, but UI always uses user.mfaEnabled
+      setSnackbar({ open: true, message: `MFA ${newMfa ? 'enabled' : 'disabled'}.` });
       closeDialog();
       return;
     }
@@ -80,6 +107,22 @@ const Account = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+  if (error) {
+    return (
+      <Box sx={{ maxWidth: 600, margin: '40px auto', padding: 2 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
+  if (!user) return null;
+
   return (
     <Box sx={{ maxWidth: 600, margin: '40px auto', padding: 2 }}>
       <Card>
@@ -95,7 +138,7 @@ const Account = () => {
               <Button size="small" sx={{ ml: 2 }} onClick={() => openDialog('email')}>Change</Button>
             </Grid>
             <Grid item xs={6}><Typography variant="subtitle2">User Role</Typography></Grid>
-            <Grid item xs={6}><Typography>{user.role}</Typography></Grid>
+            <Grid item xs={6}><Typography>{user.roles}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Account Created</Typography></Grid>
             <Grid item xs={6}><Typography>{user.createdAt}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Last Login</Typography></Grid>
@@ -103,8 +146,8 @@ const Account = () => {
             <Grid item xs={6}><Typography variant="subtitle2">Multi-Factor Auth</Typography></Grid>
             <Grid item xs={6}>
               <FormControlLabel
-                control={<Switch checked={mfaEnabled} onChange={() => openDialog('mfa')} />}
-                label={mfaEnabled ? 'Enabled' : 'Disabled'}
+                control={<Switch checked={user.mfaEnabled} onChange={() => openDialog('mfa')} />}
+                label={user.mfaEnabled ? 'Enabled' : 'Disabled'}
               />
             </Grid>
           </Grid>

@@ -1,22 +1,30 @@
 import { useEffect, useState } from 'react';
 import { Box, Grid, Card, CardContent, Typography, Divider, CircularProgress } from '@mui/material';
-import { fetchEntries } from '../utils/BillsApiUtil';
 import '../styles/tabs.css';
 
 const currency = (amount) => amount?.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) ?? '$0.00';
+
+const dummyEntries = [
+    { entryId: 1, id: 1001, name: 'Acme Corp', date: '2024-05-01', flow: 'outbound', amount: 1200, status: false, services: 'Consulting', archived: false, paymentType: 'ACH' },
+    { entryId: 2, id: 1002, name: 'Beta LLC', date: '2024-05-03', flow: 'inbound', amount: 2500, status: false, services: 'Web Dev', archived: false, paymentType: 'Wire' },
+    { entryId: 3, id: 1003, name: 'Acme Corp', date: '2024-05-05', flow: 'outbound', amount: 800, status: true, services: 'Supplies', archived: false, paymentType: 'Check' },
+    { entryId: 4, id: 1004, name: 'Delta Inc', date: '2024-05-07', flow: 'inbound', amount: 1800, status: true, services: 'Design', archived: false, paymentType: 'ACH' },
+    { entryId: 5, id: 1005, name: 'Gamma Ltd', date: '2024-05-09', flow: 'outbound', amount: 500, status: false, services: 'Maintenance', archived: false, paymentType: 'ACH' },
+    { entryId: 6, id: 1006, name: 'Beta LLC', date: '2024-05-10', flow: 'inbound', amount: 3200, status: false, services: 'Consulting', archived: false, paymentType: 'Wire' },
+    { entryId: 7, id: 1007, name: 'Acme Corp', date: '2024-05-12', flow: 'outbound', amount: 950, status: true, services: 'Hardware', archived: false, paymentType: 'Card' },
+    { entryId: 8, id: 1008, name: 'Delta Inc', date: '2024-05-13', flow: 'inbound', amount: 2100, status: false, services: 'Support', archived: false, paymentType: 'ACH' },
+];
 
 const Statistics = () => {
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const load = async () => {
-            setLoading(true);
-            const data = await fetchEntries();
-            setEntries(data);
+        setLoading(true);
+        setTimeout(() => {
+            setEntries(dummyEntries);
             setLoading(false);
-        };
-        load();
+        }, 400); // Simulate loading
     }, []);
 
     // Helper filters

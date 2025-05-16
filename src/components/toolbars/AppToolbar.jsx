@@ -13,8 +13,7 @@ const AppToolbar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
     const navigate = useNavigate(); // Initialize navigate
-    const { loggedIn } = useContext(AuthContext);
-    const username = 'JOHNDOE'; // Replace with real user context if available
+    const { jwt, username } = useContext(AuthContext);
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -73,7 +72,7 @@ const AppToolbar = () => {
                     </Typography>
                 </Box>
                 {/* Right Side: History, Account, and User Dropdown */}
-                {loggedIn && (
+                {jwt && (
                   <Box style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <Button
                         color="inherit"
@@ -95,7 +94,7 @@ const AppToolbar = () => {
                         onClick={handleUserMenuOpen}
                         style={{ color: 'yellow', textTransform: 'none', fontWeight: 600 }}
                     >
-                        {username.toUpperCase()}
+                        {username ? username.toUpperCase() : ''}
                     </Button>
                     <Menu
                         anchorEl={userMenuAnchorEl}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 import { fetchEntries } from '../utils/BillsApiUtil';
@@ -8,6 +8,7 @@ import DataTable from '../components/DataTable';
 import Statistics from '../components/Statistics';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { AuthContext } from '../App';
 
 const Bills = () => {
     const [entries, setEntries] = useState([]);
@@ -28,17 +29,18 @@ const Bills = () => {
     ]);
 
     const navigate = useNavigate();
+    const { jwt } = useContext(AuthContext);
 
     useEffect(() => {
         const loadEntries = async () => {
-            const fetchedEntries = await fetchEntries();
+            const fetchedEntries = await fetchEntries(jwt);
             setEntries(fetchedEntries);
             // Only show non-archived by default
             setFilteredEntries(fetchedEntries.filter((entry) => !entry.archived));
         };
         setActiveTab(0);
         loadEntries();
-    }, []);
+    }, [jwt]);
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
@@ -122,7 +124,7 @@ const Bills = () => {
     };
 
     const columns = [
-        { field: 'id', headerName: 'Invoice #', width: 100 },
+        { field: 'entryId', headerName: 'Invoice #', width: 100 },
         { field: 'name', headerName: 'Party', width: 250 },
         { field: 'date', headerName: 'Date', width: 150 },
         { field: 'flow', headerName: 'Flow', width: 150 },
