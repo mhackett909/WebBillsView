@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Box, Card, CardContent, Typography, TextField, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { createUser } from '../utils/BillsApiUtil';
 
 const NewUser = () => {
   const [form, setForm] = useState({
@@ -21,7 +22,7 @@ const NewUser = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!form.username || !form.email || !form.password || !form.confirmPassword) {
@@ -37,11 +38,22 @@ const NewUser = () => {
       return;
     }
     setSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await createUser({
+        username: form.username,
+        email: form.email,
+        password: form.password
+      });
       setSubmitting(false);
-      navigate('/', { state: { showAccountCreated: true } });
-    }, 800);
+      if (response && response.success !== false) {
+        navigate('/', { state: { showAccountCreated: true } });
+      } else {
+        setError(response?.message || 'Account creation failed.');
+      }
+    } catch (err) {
+      setSubmitting(false);
+      setError('Account creation failed.');
+    }
   };
 
   return (

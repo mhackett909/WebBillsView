@@ -20,6 +20,7 @@ const DataTable = ({
             <DataGrid
                 rows={rows}
                 columns={columns}
+                getRowId={(row) => row.entryId}
                 checkboxSelection
                 selectionModel={selectionModel}
                 onSelectionModelChange={(newSelection) => {
@@ -31,8 +32,8 @@ const DataTable = ({
 
                     if (newSelection.length > 0) {
                         const selectedId = newSelection[0];
-                        const selected = rows.find((entry) => entry.id === selectedId);
-                        setSelectedRow(selected);
+
+                        setSelectedRow(selectedId);
                     } else {
                         setSelectedRow(null);
                     }

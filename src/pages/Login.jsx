@@ -6,15 +6,17 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Snackbar } from '@mui/material';
 import { AuthContext } from '../App';
+import { login } from '../utils/BillsApiUtil';
 import '../styles/login.css'; // Import the CSS file
 import '../styles/global.css'; // Import the global CSS file
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [inputtedUserName, setInputtedUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showLogoutSnackbar, setShowLogoutSnackbar] = useState(false);
   const [showAccountCreated, setShowAccountCreated] = useState(false);
-  const { setLoggedIn } = useContext(AuthContext);
+  const [loginError, setLoginError] = useState('');
+  const { setJwt, setUsername } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,16 +35,20 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoggedIn(false); // Reset before login attempt
-    if (!username || !password) return;
+    if (!inputtedUserName || !password) return;
     try {
-      // Simulate API call
-      // Replace this with your real API call, e.g. await api.login({ username, password })
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setLoggedIn(true);
-      navigate('/home');
+      const response = await login({ username: inputtedUserName, password });
+      if (response && response.jwt) {
+        sessionStorage.setItem('jwt', response.jwt);
+        sessionStorage.setItem('username', response.username || inputtedUserName);
+        setJwt(response.jwt);
+        setUsername(response.username || inputtedUserName);
+        navigate('/home');
+      } else {
+        setLoginError('Login failed. Please check your username and password.');
+      }
     } catch (err) {
-      // Handle error (show error message, etc.)
+      setLoginError('Login failed. Please try again.');
     }
   };
 
@@ -66,8 +72,8 @@ const Login = () => {
             label="Username"
             variant="outlined"
             fullWidth
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={inputtedUserName}
+            onChange={(e) => setInputtedUsername(e.target.value)}
             sx={{ marginBottom: '15px' }}
             required
           />
@@ -112,6 +118,13 @@ const Login = () => {
         message="Account created! Please log in."
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         onClose={() => setShowAccountCreated(false)}
+      />
+      <Snackbar
+        open={!!loginError}
+        message={loginError}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={() => setLoginError('')}
+        autoHideDuration={3000}
       />
     </Box>
   );
