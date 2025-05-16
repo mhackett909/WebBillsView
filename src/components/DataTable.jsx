@@ -24,16 +24,19 @@ const DataTable = ({
                 checkboxSelection
                 selectionModel={selectionModel}
                 onSelectionModelChange={(newSelection) => {
+                    let selectedId = null;
                     if (newSelection.length > 1) {
                         setSelectionModel([newSelection[newSelection.length - 1]]);
+                        selectedId = newSelection[newSelection.length - 1];
                     } else {
                         setSelectionModel(newSelection);
+                        if (newSelection.length > 0) {
+                            selectedId = newSelection[0];
+                        }
                     }
-
-                    if (newSelection.length > 0) {
-                        const selectedId = newSelection[0];
-
-                        setSelectedRow(selectedId);
+                    if (selectedId !== null) {
+                        const selectedRowObj = rows.find(row => row.entryId == selectedId);
+                        setSelectedRow(selectedRowObj ? selectedRowObj.entryId : null);
                     } else {
                         setSelectedRow(null);
                     }

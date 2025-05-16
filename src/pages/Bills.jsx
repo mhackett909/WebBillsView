@@ -124,7 +124,7 @@ const Bills = () => {
     };
 
     const columns = [
-        { field: 'id', headerName: 'Invoice #', width: 100 },
+        { field: 'entryId', headerName: 'Invoice #', width: 100 },
         { field: 'name', headerName: 'Party', width: 250 },
         { field: 'date', headerName: 'Date', width: 150 },
         { field: 'flow', headerName: 'Flow', width: 150 },
