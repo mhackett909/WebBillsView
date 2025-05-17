@@ -29,9 +29,11 @@ async function fetchWithAutoRefresh({
             if (refreshResponse.ok) {
                 const refreshData = await refreshResponse.json();
                 if (refreshData.accessToken) {
-                    sessionStorage.setItem('jwt', accessToken = refreshData.accessToken);
-                    sessionStorage.setItem('refreshToken', refreshData.refreshToken);
-                    onTokenRefresh(refreshData.accessToken, refreshData.refreshToken);  
+                    accessToken = refreshData.accessToken;
+                    refreshToken = refreshData.refreshToken;
+                    sessionStorage.setItem('jwt', accessToken);
+                    sessionStorage.setItem('refreshToken', refreshToken);
+                    onTokenRefresh(accessToken, refreshToken);
                     continue;
                 }
             }
