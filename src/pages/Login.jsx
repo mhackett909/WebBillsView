@@ -16,7 +16,7 @@ const Login = () => {
   const [showLogoutSnackbar, setShowLogoutSnackbar] = useState(false);
   const [showAccountCreated, setShowAccountCreated] = useState(false);
   const [loginError, setLoginError] = useState('');
-  const { setJwt, setUsername } = useContext(AuthContext);
+  const { setJwt, setUsername, setRefresh } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,15 +33,33 @@ const Login = () => {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    const jwt = sessionStorage.getItem('jwt');
+    if (jwt) {
+      // Optionally check for expiry
+      try {
+        const payload = JSON.parse(atob(jwt.split('.')[1]));
+        const expiry = payload.exp * 1000;
+        if (Date.now() < expiry) {
+          navigate('/home');
+        }
+      } catch (e) {
+        // If JWT is invalid, do nothing
+      }
+    }
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputtedUserName || !password) return;
     try {
       const response = await login({ username: inputtedUserName, password });
-      if (response && response.jwt) {
-        sessionStorage.setItem('jwt', response.jwt);
+      if (response && response.accessToken) {
+        sessionStorage.setItem('jwt', response.accessToken);
+        sessionStorage.setItem('refreshToken', response.refreshToken);
         sessionStorage.setItem('username', response.username || inputtedUserName);
-        setJwt(response.jwt);
+        setJwt(response.accessToken);
+        setRefresh(response.refreshToken)
         setUsername(response.username || inputtedUserName);
         navigate('/home');
       } else {

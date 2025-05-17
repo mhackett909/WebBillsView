@@ -29,18 +29,22 @@ const Bills = () => {
     ]);
 
     const navigate = useNavigate();
-    const { jwt } = useContext(AuthContext);
+    const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
 
     useEffect(() => {
+        const handleTokenRefresh = (newAccessToken, newRefreshToken) => {
+            setJwt(newAccessToken);
+            setRefresh(newRefreshToken);
+        };
         const loadEntries = async () => {
-            const fetchedEntries = await fetchEntries(jwt);
+            const fetchedEntries = await fetchEntries(jwt, refresh, handleTokenRefresh);
             setEntries(fetchedEntries);
             // Only show non-archived by default
             setFilteredEntries(fetchedEntries.filter((entry) => !entry.archived));
         };
         setActiveTab(0);
         loadEntries();
-    }, [jwt]);
+    }, [jwt, refresh, setJwt, setRefresh]);
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);

@@ -19,18 +19,21 @@ export const AuthContext = createContext();
 const ProtectedRoute = ({ children }) => {
   const { jwt } = useContext(AuthContext);
   const location = useLocation();
+
   if (!jwt) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
+
   return children;
 };
 
 const App = () => {
   const [jwt, setJwt] = useState(sessionStorage.getItem('jwt') || null);
   const [username, setUsername] = useState(sessionStorage.getItem('username') || '');
+  const [refresh, setRefresh] = useState(sessionStorage.getItem('refreshToken') || null);
 
   return (
-    <AuthContext.Provider value={{ jwt, setJwt, username, setUsername }}>
+    <AuthContext.Provider value={{ jwt, setJwt, username, setUsername, refresh, setRefresh }}>
       <BrowserRouter>
         <div className="App">
           <AppToolbar />
