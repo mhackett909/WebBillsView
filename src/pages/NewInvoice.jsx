@@ -20,20 +20,20 @@ const NewInvoice = () => {
   const [error, setError] = useState('');
   const [parties, setParties] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const { jwt } = useContext(AuthContext);
+  const { jwt, refresh } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchParties = async () => {
       try {
-        const bills = await getBills(jwt);
+        const bills = await getBills(jwt, refresh);
         setParties(bills);
       } catch (err) {
         setParties([]);
       }
     };
     fetchParties();
-  }, [jwt]);
+  }, [jwt, refresh]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

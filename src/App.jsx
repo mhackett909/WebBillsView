@@ -17,27 +17,10 @@ export const AuthContext = createContext();
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children }) => {
-  const { jwt, setJwt } = useContext(AuthContext);
+  const { jwt } = useContext(AuthContext);
   const location = useLocation();
 
   if (!jwt) {
-    return <Navigate to="/" state={{ from: location }} replace />;
-  }
-
-  // Check if JWT is expired (client-side)
-  const isJwtExpired = () => {
-    try {
-      const payload = JSON.parse(atob(jwt.split('.')[1]));
-      const expiry = payload.exp * 1000;
-      return Date.now() > expiry;
-    } catch (e) {
-      return true; // Invalid JWT
-    }
-  };
-
-  if (isJwtExpired()) {
-    setJwt(null);
-    sessionStorage.removeItem('jwt');
     return <Navigate to="/" state={{ from: location }} replace />;
   }
 

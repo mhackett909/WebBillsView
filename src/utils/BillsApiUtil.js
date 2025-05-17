@@ -1,79 +1,89 @@
-// export const fetchEntries = async (token) => {
-//     try {
-//         const response = await fetch(`/api/v1/entries`, {
-//             method: 'GET',
-//             headers: {
-//                 ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-//             },
-//         });
-//         const responseData = await response.json();
-//         return Array.isArray(responseData) ? responseData : [];
-//     } catch (error) {
-//         console.error("Error fetching entries:", error);
-//         return [];
-//     }
-// };
-
-export const fetchEntries = async (token, refreshToken) => {
+// Helper for authenticated fetch with refresh logic
+async function fetchWithAutoRefresh({
+    url,
+    options = {},
+    token,
+    refreshToken,
+    onTokenRefresh
+}) {
     let accessToken = token;
     let triedRefresh = false;
     while (true) {
-        try {
-            const response = await fetch(`/api/v1/entries`, {
-                method: 'GET',
-                headers: {
-                    ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}),
-                },
-            });
-            if (response.status === 401 && refreshToken && !triedRefresh) {
-                // Try to refresh the token
-                triedRefresh = true;
-                const refreshResponse = await fetch('/api/v1/auth/refresh', {
+        const mergedOptions = {
+            ...options,
+            headers: {
+                ...(options.headers || {}),
+                ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}),
+            },
+        };
+        const response = await fetch(url, mergedOptions);
+        if (response.status === 401 && refreshToken && !triedRefresh) {
+            triedRefresh = true;
+            console.log("Refreshing token...");
+            const refreshResponse = await fetch(`/api/v1/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`,
+                {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ refreshToken }),
-                });
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            );
+            if (refreshResponse.ok) {
                 const refreshData = await refreshResponse.json();
-                if (refreshResponse.ok && refreshData.accessToken) {
-                    accessToken = refreshData.accessToken;
-                    sessionStorage.setItem('jwt', accessToken);
-                    continue; // Retry original request with new token
-                } else {
-                    throw new Error('Unable to refresh token');
+                if (refreshData.accessToken) {
+                    sessionStorage.setItem('jwt', accessToken = refreshData.accessToken);
+                    sessionStorage.setItem('refreshToken', refreshData.refreshToken);
+                    onTokenRefresh(refreshData.accessToken, refreshData.refreshToken);  
+                    continue;
                 }
             }
+        }
+        // If we reach here, request failed
+        return response;
+    }
+}
+
+export const fetchEntries = async (token, refreshToken, onTokenRefresh) => {
+    try {
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/entries',
+            options: { method: 'GET' },
+            token,
+            refreshToken,
+            onTokenRefresh
+        });
+        if (response.ok) {
             const responseData = await response.json();
             return Array.isArray(responseData) ? responseData : [];
-        } catch (error) {
-            console.error("Error fetching entries:", error);
-            return [];
         }
+        console.error("Failed to fetch entries:", response.status, response.statusText);
+        return [];
+    } catch (error) {
+        console.error("Error fetching entries:", error);
+        return [];
     }
 };
 
-export const exportEntries = async (token) => {
+// TODO: Finish
+export const exportEntries = async (token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch('/api/v1/entries/export', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'text/csv',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/entries/export',
+            options: {
+                method: 'GET',
+                headers: { 'Content-Type': 'text/csv' },
             },
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-
         if (!response.ok) {
             throw new Error('Failed to export data');
         }
-
         // Stream the response as a Blob
         const blob = await response.blob();
-
         // Create a temporary <a> element for downloading the file
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = 'exported_data.csv';
-
         // Append the link to the document, trigger the download, and remove the link
         document.body.appendChild(link);
         link.click();
@@ -117,154 +127,209 @@ export const login = async (userData) => {
     }
 };
 
-export const getUser = async (userName, token) => {
+export const getUser = async (userName, token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch(`/api/v1/user?userName=${encodeURIComponent(userName)}`, {
-            method: 'GET',
-            headers: {
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            },
+        const response = await fetchWithAutoRefresh({
+            url: `/api/v1/user?userName=${encodeURIComponent(userName)}`,
+            options: { method: 'GET' },
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return responseData;
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error("Failed to fetch user:", response.status, response.statusText);
+        return null;
     } catch (error) {
         console.error('Error fetching user:', error);
         return null;
     }
 };
 
-export const getPayments = async (token) => {
+export const getPayments = async (token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch('/api/v1/payments', {
-            method: 'GET',
-            headers: {
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            },
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/payments',
+            options: { method: 'GET' },
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return Array.isArray(responseData) ? responseData : [];
+        if (response.ok) {
+            const responseData = await response.json();
+            return Array.isArray(responseData) ? responseData : [];
+        }
+        console.error("Failed to fetch payments:", response.status, response.statusText);
+        return [];
     } catch (error) {
         console.error('Error fetching payments:', error);
         return [];
     }
 };
 
-export const postPayment = async (paymentData, token) => {
+export const postPayment = async (paymentData, token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch('/api/v1/payments', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/payments',
+            options: {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(paymentData),
             },
-            body: JSON.stringify(paymentData),
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return responseData;
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to post payment:', response.status, response.statusText);
+        return null;
     } catch (error) {
         console.error('Error posting payment:', error);
         return null;
     }
 };
 
-export const updatePayment = async (paymentData, token) => {
+export const updatePayment = async (paymentData, token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch('/api/v1/payments', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/payments',
+            options: {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(paymentData),
             },
-            body: JSON.stringify(paymentData),
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return responseData;
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to update payment:', response.status, response.statusText);
+        return null;
     } catch (error) {
         console.error('Error updating payment:', error);
         return null;
     }
 };
 
-export const createEntry = async (entryData, token) => {
+export const createEntry = async (entryData, token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch('/api/v1/new', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/new',
+            options: {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(entryData),
             },
-            body: JSON.stringify(entryData),
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return responseData;
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to create entry:', response.status, response.statusText);
+        return null;
     } catch (error) {
         console.error('Error creating entry:', error);
         return null;
     }
 };
 
-export const getBills = async (token) => {
+export const getBills = async (token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch('/api/v1/bills', {
-            method: 'GET',
-            headers: {
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            },
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/bills',
+            options: { method: 'GET' },
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return Array.isArray(responseData) ? responseData : [];
+        if (response.ok) {
+            const responseData = await response.json();
+            return Array.isArray(responseData) ? responseData : [];
+        }
+        console.error('Failed to fetch bills:', response.status, response.statusText);
+        return [];
     } catch (error) {
         console.error('Error fetching bills:', error);
         return [];
     }
 };
 
-export const getBillByName = async (name, token) => {
+export const getBillByName = async (name, token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch(`/api/v1/bills/?name=${encodeURIComponent(name)}`, {
-            method: 'GET',
-            headers: {
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            },
+        const response = await fetchWithAutoRefresh({
+            url: `/api/v1/bills/?name=${encodeURIComponent(name)}`,
+            options: { method: 'GET' },
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return responseData;
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to fetch bill by name:', response.status, response.statusText);
+        return null;
     } catch (error) {
         console.error('Error fetching bill by name:', error);
         return null;
     }
 };
 
-export const createBill = async (billData, token) => {
+export const createBill = async (billData, token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch('/api/v1/bills', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/bills',
+            options: {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(billData),
             },
-            body: JSON.stringify(billData),
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return responseData;
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to create bill:', response.status, response.statusText);
+        return null;
     } catch (error) {
         console.error('Error creating bill:', error);
         return null;
     }
 };
 
-export const deleteBill = async (billData, token) => {
+export const deleteBill = async (billData, token, refreshToken, onTokenRefresh) => {
     try {
-        const response = await fetch('/api/v1/bills', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/bills',
+            options: {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(billData),
             },
-            body: JSON.stringify(billData),
+            token,
+            refreshToken,
+            onTokenRefresh
         });
-        const responseData = await response.json();
-        return responseData;
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to delete bill:', response.status, response.statusText);
+        return null;
     } catch (error) {
         console.error('Error deleting bill:', error);
         return null;

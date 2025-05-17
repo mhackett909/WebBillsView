@@ -5,7 +5,7 @@ import { getUser } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 
 const Account = () => {
-  const { username, jwt } = useContext(AuthContext);
+  const { username, jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,12 +16,17 @@ const Account = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
   const navigate = useNavigate();
 
+  const handleTokenRefresh = (newAccessToken, newRefreshToken) => {
+      setJwt(newAccessToken);
+      setRefresh(newRefreshToken);
+  };
+
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
     setError(null);
     if (username && jwt) {
-      getUser(username, jwt)
+      getUser(username, jwt, refresh, handleTokenRefresh)
         .then(data => {
           if (isMounted) {
             if (data && data.username) {
@@ -45,7 +50,7 @@ const Account = () => {
       setLoading(false);
     }
     return () => { isMounted = false; };
-  }, [username, jwt]);
+  }, [username, jwt, refresh]);
 
   // Handlers for dialog open/close
   const openDialog = (field) => { setEditField(field); setAlert(null); };

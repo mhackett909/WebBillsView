@@ -33,6 +33,22 @@ const Login = () => {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    const jwt = sessionStorage.getItem('jwt');
+    if (jwt) {
+      // Optionally check for expiry
+      try {
+        const payload = JSON.parse(atob(jwt.split('.')[1]));
+        const expiry = payload.exp * 1000;
+        if (Date.now() < expiry) {
+          navigate('/home');
+        }
+      } catch (e) {
+        // If JWT is invalid, do nothing
+      }
+    }
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputtedUserName || !password) return;
