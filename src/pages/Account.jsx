@@ -50,7 +50,7 @@ const Account = () => {
       setLoading(false);
     }
     return () => { isMounted = false; };
-  }, [username, jwt, refresh]);
+  }, [username, jwt, refresh, handleTokenRefresh]);
 
   // Handlers for dialog open/close
   const openDialog = (field) => { setEditField(field); setAlert(null); };

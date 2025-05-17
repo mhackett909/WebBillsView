@@ -45,7 +45,7 @@ const Bills = () => {
         };
         setActiveTab(0);
         loadEntries();
-    }, [jwt, refresh]);
+    }, [jwt, refresh, handleTokenRefresh]);
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
