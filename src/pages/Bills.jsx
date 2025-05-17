@@ -31,12 +31,11 @@ const Bills = () => {
     const navigate = useNavigate();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
 
-    const handleTokenRefresh = (newAccessToken, newRefreshToken) => {
-        setJwt(newAccessToken);
-        setRefresh(newRefreshToken);
-    };
-
     useEffect(() => {
+        const handleTokenRefresh = (newAccessToken, newRefreshToken) => {
+            setJwt(newAccessToken);
+            setRefresh(newRefreshToken);
+        };
         const loadEntries = async () => {
             const fetchedEntries = await fetchEntries(jwt, refresh, handleTokenRefresh);
             setEntries(fetchedEntries);
@@ -45,7 +44,7 @@ const Bills = () => {
         };
         setActiveTab(0);
         loadEntries();
-    }, [jwt, refresh, handleTokenRefresh]);
+    }, [jwt, refresh, setJwt, setRefresh]);
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);

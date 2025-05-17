@@ -16,12 +16,11 @@ const Account = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
   const navigate = useNavigate();
 
-  const handleTokenRefresh = (newAccessToken, newRefreshToken) => {
+  useEffect(() => {
+    const handleTokenRefresh = (newAccessToken, newRefreshToken) => {
       setJwt(newAccessToken);
       setRefresh(newRefreshToken);
-  };
-
-  useEffect(() => {
+    };
     let isMounted = true;
     setLoading(true);
     setError(null);
@@ -50,7 +49,7 @@ const Account = () => {
       setLoading(false);
     }
     return () => { isMounted = false; };
-  }, [username, jwt, refresh, handleTokenRefresh]);
+  }, [username, jwt, refresh, setJwt, setRefresh]);
 
   // Handlers for dialog open/close
   const openDialog = (field) => { setEditField(field); setAlert(null); };
