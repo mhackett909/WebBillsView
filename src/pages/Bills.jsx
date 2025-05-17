@@ -29,11 +29,11 @@ const Bills = () => {
     ]);
 
     const navigate = useNavigate();
-    const { jwt } = useContext(AuthContext);
+    const { jwt, refreshToken } = useContext(AuthContext);
 
     useEffect(() => {
         const loadEntries = async () => {
-            const fetchedEntries = await fetchEntries(jwt);
+            const fetchedEntries = await fetchEntries(jwt, refreshToken);
             setEntries(fetchedEntries);
             // Only show non-archived by default
             setFilteredEntries(fetchedEntries.filter((entry) => !entry.archived));

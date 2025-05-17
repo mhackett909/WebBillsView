@@ -17,20 +17,40 @@ export const AuthContext = createContext();
 
 // ProtectedRoute component
 const ProtectedRoute = ({ children }) => {
-  const { jwt } = useContext(AuthContext);
+  const { jwt, setJwt } = useContext(AuthContext);
   const location = useLocation();
+
   if (!jwt) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
+
+  // Check if JWT is expired (client-side)
+  const isJwtExpired = () => {
+    try {
+      const payload = JSON.parse(atob(jwt.split('.')[1]));
+      const expiry = payload.exp * 1000;
+      return Date.now() > expiry;
+    } catch (e) {
+      return true; // Invalid JWT
+    }
+  };
+
+  if (isJwtExpired()) {
+    setJwt(null);
+    sessionStorage.removeItem('jwt');
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+
   return children;
 };
 
 const App = () => {
   const [jwt, setJwt] = useState(sessionStorage.getItem('jwt') || null);
   const [username, setUsername] = useState(sessionStorage.getItem('username') || '');
+  const [refresh, setRefresh] = useState(sessionStorage.getItem('refreshToken') || null);
 
   return (
-    <AuthContext.Provider value={{ jwt, setJwt, username, setUsername }}>
+    <AuthContext.Provider value={{ jwt, setJwt, username, setUsername, refresh, setRefresh }}>
       <BrowserRouter>
         <div className="App">
           <AppToolbar />

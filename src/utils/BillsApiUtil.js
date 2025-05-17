@@ -1,16 +1,53 @@
-export const fetchEntries = async (token) => {
-    try {
-        const response = await fetch(`/api/v1/entries`, {
-            method: 'GET',
-            headers: {
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-            },
-        });
-        const responseData = await response.json();
-        return Array.isArray(responseData) ? responseData : [];
-    } catch (error) {
-        console.error("Error fetching entries:", error);
-        return [];
+// export const fetchEntries = async (token) => {
+//     try {
+//         const response = await fetch(`/api/v1/entries`, {
+//             method: 'GET',
+//             headers: {
+//                 ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+//             },
+//         });
+//         const responseData = await response.json();
+//         return Array.isArray(responseData) ? responseData : [];
+//     } catch (error) {
+//         console.error("Error fetching entries:", error);
+//         return [];
+//     }
+// };
+
+export const fetchEntries = async (token, refreshToken) => {
+    let accessToken = token;
+    let triedRefresh = false;
+    while (true) {
+        try {
+            const response = await fetch(`/api/v1/entries`, {
+                method: 'GET',
+                headers: {
+                    ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}),
+                },
+            });
+            if (response.status === 401 && refreshToken && !triedRefresh) {
+                // Try to refresh the token
+                triedRefresh = true;
+                const refreshResponse = await fetch('/api/v1/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refreshToken }),
+                });
+                const refreshData = await refreshResponse.json();
+                if (refreshResponse.ok && refreshData.accessToken) {
+                    accessToken = refreshData.accessToken;
+                    sessionStorage.setItem('jwt', accessToken);
+                    continue; // Retry original request with new token
+                } else {
+                    throw new Error('Unable to refresh token');
+                }
+            }
+            const responseData = await response.json();
+            return Array.isArray(responseData) ? responseData : [];
+        } catch (error) {
+            console.error("Error fetching entries:", error);
+            return [];
+        }
     }
 };
 
