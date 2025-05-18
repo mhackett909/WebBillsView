@@ -154,7 +154,7 @@ const Invoice = () => {
     if (!newPartyName.trim()) return;
     setCreatingParty(true);
     try {
-      const billData = { name: newPartyName.trim(), status: 1 };
+      const billData = { name: newPartyName.trim(), status: 1, recycle: false };
       const result = await createBill(billData, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
         setParties((prev) => [...prev, result]);
@@ -380,7 +380,7 @@ const Invoice = () => {
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
             <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-              Invoice created successfully!
+              Invoice updated successfully!
             </Alert>
           </Snackbar>
         </>
