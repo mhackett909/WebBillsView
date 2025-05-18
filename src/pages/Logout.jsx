@@ -11,6 +11,7 @@ const Logout = () => {
     setUsername(null);
     sessionStorage.removeItem('username');
     sessionStorage.removeItem('jwt');
+    sessionStorage.removeItem('refreshToken');
     navigate('/', { state: { showLogoutSnackbar: true }, replace: true });
   }, [navigate, setJwt, setUsername]);
 

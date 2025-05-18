@@ -138,7 +138,7 @@ const Login = () => {
         onClose={() => setShowAccountCreated(false)}
       />
       <Snackbar
-        open={loginError}
+        open={!!loginError}
         message={loginError}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         onClose={() => setLoginError('')}

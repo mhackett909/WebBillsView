@@ -8,12 +8,15 @@ import MenuItem from '@mui/material/MenuItem';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useState, useContext } from 'react';
 import { AuthContext } from '../../App';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 
 const AppToolbar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
     const navigate = useNavigate(); // Initialize navigate
     const { jwt, username } = useContext(AuthContext);
+
+    const contactEnabled = process.env.REACT_APP_CONTACT_ME_ENABLED === 'true';
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -61,14 +64,28 @@ const AppToolbar = () => {
             <Toolbar style={{ justifyContent: 'space-between' }}>
                 {/* Left Side: Bill Manager */}
                 <Box style={{ display: 'flex', alignItems: 'center' }}>
+                    <RequestQuoteIcon sx={{ fontSize: '2rem', color: '#00e676', marginRight: '18px', filter: 'drop-shadow(0 1px 2px #1976d2)' }} />
                     <Typography
-                        variant="h6"
+                        variant="h5"
                         color="inherit"
                         component={Link}
                         to="/home"
-                        style={{ textDecoration: 'none', color: 'inherit', marginRight: '20px' }}
+                        style={{
+                            textDecoration: 'none',
+                            color: 'inherit',
+                            marginRight: '20px',
+                            fontWeight: 900,
+                            letterSpacing: '2px',
+                            fontFamily: 'Montserrat, Segoe UI, Arial, sans-serif',
+                            textShadow: '0 2px 4px #1976d2',
+                            background: 'none',
+                            WebkitBackgroundClip: 'initial',
+                            WebkitTextFillColor: 'initial',
+                            display: 'inline-block',
+                            fontSize: '1.7rem',
+                        }}
                     >
-                        Bill Manager
+                        Bill Manager <span style={{ color: 'yellow', fontWeight: 900, fontSize: '1.15em', letterSpacing: '3px', marginLeft: '6px', textTransform: 'uppercase', textShadow: '0 1px 2px #1976d2', fontStyle: 'italic', fontFamily: 'Montserrat, Segoe UI, Arial, sans-serif' }}>Web</span>
                     </Typography>
                 </Box>
                 {/* Right Side: History, Account, and User Dropdown */}
@@ -102,7 +119,9 @@ const AppToolbar = () => {
                         onClose={handleUserMenuClose}
                     >
                         <MenuItem onClick={handleNavigateToAccount}>Account</MenuItem>
-                        <MenuItem onClick={handleNavigateToContact}>Support</MenuItem>
+                        {contactEnabled && (
+                          <MenuItem onClick={handleNavigateToContact}>Support</MenuItem>
+                        )}
                         <MenuItem onClick={handleNavigateToLogout}>Logout</MenuItem>
                     </Menu>
                   </Box>

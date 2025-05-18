@@ -13,8 +13,8 @@ const CheckBoxControls = ({
             <CheckboxGroup
                 legend="Flow"
                 options={[
-                    { value: 'OUTGOING', label: 'Outgoing' },
-                    { value: 'INCOMING', label: 'Incoming' },
+                    { value: 'OUTGOING', label: 'Expense' },
+                    { value: 'INCOMING', label: 'Income' },
                 ]}
                 selectedValue={filters.flow || ''}
                 onChange={(value) => handleFilterChange('flow', value)}

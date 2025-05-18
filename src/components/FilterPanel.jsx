@@ -1,6 +1,4 @@
-import {
-    Box,
-} from '@mui/material';
+import { Box } from '@mui/material';
 import DatePickers from './filters/DatePickers';
 import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
@@ -18,10 +16,8 @@ const FilterPanel = ({
     setIncludeArchived,
     filterBills,
     clearFilters,
+    availableBillers,
 }) => {
-    // Temporary array of available billers
-    const availableBillers = ['Bill 1', 'Bill 2', 'Bill 3', 'Bill 4', 'Bill 5'];
-
     return (
         <Box className="filters-panel">
             <InvoiceSearch
