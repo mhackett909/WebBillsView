@@ -48,7 +48,7 @@ const Home = () => {
     }, [jwt, refresh, handleTokenRefresh]);
 
     // Fetch billers based on includeArchived filter
-    const fetchBillers = async () => {
+    const fetchBillers = useCallback(async () => {
         let filterParam;
         if (includeArchived === false) filterParam = 'active';
         else if (includeArchived === 'only') filterParam = 'inactive';
@@ -67,11 +67,11 @@ const Home = () => {
                 return { ...prev, biller: [] };
             }
         });
-    };
+    }, [jwt, refresh, handleTokenRefresh, includeArchived]);
 
     useEffect(() => {
         fetchBillers();
-    }, [jwt, refresh, handleTokenRefresh, includeArchived]);
+    }, [fetchBillers]);
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);

@@ -28,7 +28,7 @@ const Invoice = () => {
   const [newPartyName, setNewPartyName] = useState('');
   const [partySnackbar, setPartySnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [creatingParty, setCreatingParty] = useState(false);
-  const [setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ const Invoice = () => {
         })
         .finally(() => setLoading(false));
     }
-  }, [id, jwt, refresh, handleTokenRefresh]);
+  }, [id, jwt, refresh, setLoading, handleTokenRefresh]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -181,172 +181,183 @@ const Invoice = () => {
 
   return (
     <Box maxWidth={500} mx="auto" mt={4}>
-      <Typography variant="h4" mb={2}>{id ? 'Edit Invoice' : 'New Invoice'}</Typography>
-      <form onSubmit={id ? handleEditEntrySubmit : handleSubmit}>
-        <FormControl fullWidth margin="normal" required>
-          <InputLabel>Party</InputLabel>
-          <Select
-            name="billId"
-            value={form.billId}
-            label="Party"
-            onChange={handleChange}
-          >
-            {parties.map((bill) => (
-              <MenuItem key={bill.id} value={bill.id}>{bill.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Box display="flex" gap={2} mb={2}>
-          <Button
-            variant="outlined"
-            color="secondary"
-            fullWidth
-            onClick={handleNewPartyOpen}
-          >
-            New Party
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            fullWidth
-            disabled={!form.billId}
-            onClick={() => {
-              if (form.billId) navigate(`/bills/${form.billId}`);
-            }}
-          >
-            Edit Party
-          </Button>
-        </Box>
-        <TextField
-          label="Date"
-          name="date"
-          type="date"
-          value={form.date}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          InputLabelProps={{ shrink: true }}
-          required
-        />
-        <FormControl fullWidth margin="normal" required>
-          <InputLabel>Flow</InputLabel>
-          <Select
-            name="flow"
-            value={form.flow}
-            label="Flow"
-            onChange={handleChange}
-          >
-            <MenuItem value="income">Income</MenuItem>
-            <MenuItem value="expense">Expense</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          label="Amount"
-          name="amount"
-          type="number"
-          value={form.amount}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-          inputProps={{
-            inputMode: 'decimal',
-            pattern: '^\\d*(\\.\\d{0,2})?$',
-            step: '0.01',
-            min: '0',
-          }}
-        />
-        <TextField
-          label="Description"
-          name="services"
-          value={form.services}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          multiline
-          minRows={2}
-        />
-        {error && <Typography color="error" mt={1}>{error}</Typography>}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }}
-          disabled={submitting}
-        >
-          {submitting ? (id ? 'Saving...' : 'Submitting...') : (id ? 'Save Changes' : 'Create Invoice')}
-        </Button>
-        {id && (
-          <>
+      {loading ? (
+        <>
+          <Typography variant="h4" mb={2}>{id ? 'Edit Invoice' : 'New Invoice'}</Typography>
+          <Box display="flex" justifyContent="center" alignItems="center" my={2}>
+            <Typography variant="body2" color="text.secondary">Loading...</Typography>
+          </Box>
+        </>
+      ) : (
+        <>
+          <Typography variant="h4" mb={2}>{id ? 'Edit Invoice' : 'New Invoice'}</Typography>
+          <form onSubmit={id ? handleEditEntrySubmit : handleSubmit}>
+            <FormControl fullWidth margin="normal" required>
+              <InputLabel>Party</InputLabel>
+              <Select
+                name="billId"
+                value={form.billId}
+                label="Party"
+                onChange={handleChange}
+              >
+                {parties.map((bill) => (
+                  <MenuItem key={bill.id} value={bill.id}>{bill.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Box display="flex" gap={2} mb={2}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                fullWidth
+                onClick={handleNewPartyOpen}
+              >
+                New Party
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                disabled={!form.billId}
+                onClick={() => {
+                  if (form.billId) navigate(`/bills/${form.billId}`);
+                }}
+              >
+                Edit Party
+              </Button>
+            </Box>
+            <TextField
+              label="Date"
+              name="date"
+              type="date"
+              value={form.date}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              InputLabelProps={{ shrink: true }}
+              required
+            />
+            <FormControl fullWidth margin="normal" required>
+              <InputLabel>Flow</InputLabel>
+              <Select
+                name="flow"
+                value={form.flow}
+                label="Flow"
+                onChange={handleChange}
+              >
+                <MenuItem value="income">Income</MenuItem>
+                <MenuItem value="expense">Expense</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              label="Amount"
+              name="amount"
+              type="number"
+              value={form.amount}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              inputProps={{
+                inputMode: 'decimal',
+                pattern: '^\\d*(\\.\\d{0,2})?$',
+                step: '0.01',
+                min: '0',
+              }}
+            />
+            <TextField
+              label="Description"
+              name="services"
+              value={form.services}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              multiline
+              minRows={2}
+            />
+            {error && <Typography color="error" mt={1}>{error}</Typography>}
             <Button
-              variant="outlined"
-              color="error"
+              type="submit"
+              variant="contained"
+              color="primary"
               fullWidth
               sx={{ mt: 2 }}
-              onClick={() => setDeleteDialogOpen(true)}
+              disabled={submitting}
             >
-              Delete
+              {submitting ? (id ? 'Saving...' : 'Submitting...') : (id ? 'Save Changes' : 'Create Invoice')}
             </Button>
-            <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-              <DialogTitle>Delete Invoice?</DialogTitle>
+            {id && (
+              <>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  fullWidth
+                  sx={{ mt: 2 }}
+                  onClick={() => setDeleteDialogOpen(true)}
+                >
+                  Delete
+                </Button>
+                <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+                  <DialogTitle>Delete Invoice?</DialogTitle>
+                  <DialogContent>
+                    <Typography>
+                      Deleting this invoice will also delete all its payments. You can recover it from the recycle bin within 14 days.
+                    </Typography>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={() => { setDeleteDialogOpen(false); navigate('/home'); }} color="error" variant="contained">Delete</Button>
+                  </DialogActions>
+                </Dialog>
+              </>
+            )}
+          </form>
+          <Dialog open={newPartyOpen} onClose={handleNewPartyClose}>
+            <DialogTitle>New Party</DialogTitle>
+            <form onSubmit={handleNewPartySubmit}>
               <DialogContent>
-                <Typography>
-                  Deleting this invoice will also delete all its payments. You can recover it from the recycle bin within 14 days.
-                </Typography>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  label="Party Name"
+                  type="text"
+                  fullWidth
+                  value={newPartyName}
+                  onChange={e => setNewPartyName(e.target.value)}
+                  required
+                  disabled={creatingParty}
+                />
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-                <Button onClick={() => { setDeleteDialogOpen(false); navigate('/home'); }} color="error" variant="contained">Delete</Button>
+                <Button onClick={handleNewPartyClose} disabled={creatingParty}>Cancel</Button>
+                <Button type="submit" variant="contained" disabled={creatingParty || !newPartyName.trim()}>
+                  {creatingParty ? 'Creating...' : 'Create'}
+                </Button>
               </DialogActions>
-            </Dialog>
-          </>
-        )}
-      </form>
-      <Dialog open={newPartyOpen} onClose={handleNewPartyClose}>
-        <DialogTitle>New Party</DialogTitle>
-        <form onSubmit={handleNewPartySubmit}>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Party Name"
-              type="text"
-              fullWidth
-              value={newPartyName}
-              onChange={e => setNewPartyName(e.target.value)}
-              required
-              disabled={creatingParty}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleNewPartyClose} disabled={creatingParty}>Cancel</Button>
-            <Button type="submit" variant="contained" disabled={creatingParty || !newPartyName.trim()}>
-              {creatingParty ? 'Creating...' : 'Create'}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-      <Snackbar
-        open={partySnackbar.open}
-        autoHideDuration={2000}
-        onClose={handlePartySnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handlePartySnackbarClose} severity={partySnackbar.severity} sx={{ width: '100%' }}>
-          {partySnackbar.message}
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={1500}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-          Invoice created successfully!
-        </Alert>
-      </Snackbar>
+            </form>
+          </Dialog>
+          <Snackbar
+            open={partySnackbar.open}
+            autoHideDuration={2000}
+            onClose={handlePartySnackbarClose}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          >
+            <Alert onClose={handlePartySnackbarClose} severity={partySnackbar.severity} sx={{ width: '100%' }}>
+              {partySnackbar.message}
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={1500}
+            onClose={handleSnackbarClose}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          >
+            <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+              Invoice created successfully!
+            </Alert>
+          </Snackbar>
+        </>
+      )}
     </Box>
   );
 };
