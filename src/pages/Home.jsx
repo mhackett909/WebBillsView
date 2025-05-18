@@ -88,7 +88,7 @@ const Home = () => {
         let filtered = entries;
         if (filters.invoice) {
             filtered = filtered.filter((entry) =>
-                entry.id.toString().includes(filters.invoice)
+                entry.entryId && entry.entryId.toString().includes(filters.invoice)
             );
         }
         if (filters.biller.length > 0) {

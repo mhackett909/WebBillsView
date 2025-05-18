@@ -171,6 +171,31 @@ export const getUser = async (userName, token, refreshToken, onTokenRefresh) => 
     }
 };
 
+export const updateUser = async (userData, token, refreshToken, onTokenRefresh) => {
+    try {
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/user',
+            options: {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData),
+            },
+            token,
+            refreshToken,
+            onTokenRefresh
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to update user:', response.status, response.statusText);
+        throw new Error(`Failed to update user: ${response.status} ${response.statusText}`);    
+    } catch (error) {
+        console.error('Error updating user:', error);
+        throw error;
+    }
+};
+
 export const getPayments = async (entryId, token, refreshToken, onTokenRefresh) => {
     try {
         const response = await fetchWithAutoRefresh({
