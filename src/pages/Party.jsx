@@ -82,9 +82,22 @@ const Bills = () => {
   const handleDelete = () => {
     setDeleteDialogOpen(true);
   };
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     setDeleteDialogOpen(false);
-    navigate('/home');
+    setLoading(true);
+    try {
+      const result = await editBill({ ...bill, recycle: true }, jwt, refresh, handleTokenRefresh);
+      if (result && result.id) {
+        setSnackbar({ open: true, message: 'Party deleted (archived) successfully.', severity: 'success' });
+        setTimeout(() => navigate('/home'), 1200);
+      } else {
+        setSnackbar({ open: true, message: 'Failed to delete party.', severity: 'error' });
+      }
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Error deleting party.', severity: 'error' });
+    } finally {
+      setLoading(false);
+    }
   };
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false);

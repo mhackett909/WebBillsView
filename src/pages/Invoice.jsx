@@ -208,7 +208,7 @@ const Invoice = () => {
             <Box display="flex" gap={2} mb={2}>
               <Button
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 fullWidth
                 onClick={handleNewPartyOpen}
               >
@@ -216,7 +216,7 @@ const Invoice = () => {
               </Button>
               <Button
                 variant="outlined"
-                color="primary"
+                color="secondary"
                 fullWidth
                 disabled={!form.billId}
                 onClick={() => {

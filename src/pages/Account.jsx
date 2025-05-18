@@ -10,7 +10,7 @@ const Account = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editField, setEditField] = useState(null); // 'email', 'password', 'deactivate', 'mfa'
-  const [form, setForm] = useState({ email: '', newEmail: '', password: '', mfa: '', newPassword: '', confirmPassword: '' });
+  const [form, setForm] = useState({ newEmail: '', password: '', mfa: '', newPassword: '', confirmPassword: '' });
   const [mfaEnabled, setMfaEnabled] = useState(false);
   const [alert, setAlert] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
@@ -35,7 +35,7 @@ const Account = () => {
           if (isMounted) {
             if (data && data.username) {
               setUser(data);
-              setForm(f => ({ ...f, email: data.email || '', newEmail: data.email || '' }));
+              setForm(f => ({ ...f, newEmail: data.email || '' }));
               setMfaEnabled(data.mfaEnabled); // Keep for legacy, but always use user.mfaEnabled below
             } else {
               setError('Failed to load user data.');
@@ -66,14 +66,13 @@ const Account = () => {
   };
   const closeDialog = () => {
     setEditField(null);
-    setForm({ email: user.email, newEmail: '', password: '', mfa: '', newPassword: '', confirmPassword: '', recycle: false });
+    setForm({ newEmail: '', password: '', mfa: '', newPassword: '', confirmPassword: '', recycle: false });
     setAlert(null);
   };
 
   // Simulate API call
   const handleSave = async () => {
     if (!user) return;
-    let updatedUser = { ...user };
     let apiPayload = null;
     let successMsg = '';
     let failureMsg = '';
@@ -122,7 +121,6 @@ const Account = () => {
     }
     if (apiPayload) {
       try {
-        console.log('API Payload:', apiPayload);
         const result = await updateUser(apiPayload, jwt, refresh, handleTokenRefresh);
         if (result && (!result.error)) {
           setUser(result); // update local user state
