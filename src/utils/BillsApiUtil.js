@@ -189,7 +189,8 @@ export const updateUser = async (userData, token, refreshToken, onTokenRefresh) 
             return responseData;
         }
         console.error('Failed to update user:', response.status, response.statusText);
-        throw new Error(`Failed to update user: ${response.status} ${response.statusText}`);    } catch (error) {
+        throw new Error(`Failed to update user: ${response.status} ${response.statusText}`);    
+    } catch (error) {
         console.error('Error updating user:', error);
         throw error;
     }

@@ -141,7 +141,6 @@ const Payments = () => {
                     amount: parseFloat(paymentForm.amount),
                     recycle: false, // Always pass recycle: false when editing (not deleting)
                 };
-                console.log('Payment Data:', paymentData);
 
                 const result = await updatePayment(paymentData, jwt, refresh, handleTokenRefresh);
                 if (result && result.paymentId) {
@@ -178,8 +177,8 @@ const Payments = () => {
             if (result && result.paymentId) {
                 setSnackbar({ open: true, message: 'Payment deleted successfully.', severity: 'success' });
                 // Refresh payments list after deletion
-                const paymentData = await getPayments(id, jwt, refresh, handleTokenRefresh);
-                setPayments(paymentData);
+                const updatedPayments = await getPayments(id, jwt, refresh, handleTokenRefresh);
+                setPayments(updatedPayments);
             } else {
                 setSnackbar({ open: true, message: 'Failed to delete payment.', severity: 'error' });
             }
