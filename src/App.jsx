@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Home from './pages/Home';
 import Party from './pages/Party';
-import Payments from './pages/Payments';
+import Entries from './pages/Entries';
 import NewUser from './pages/NewUser';
 import NewInvoice from './pages/Invoice';
 import Account from './pages/Account';
@@ -42,7 +42,7 @@ const App = () => {
           <AppToolbar />
           <Routes>
             <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/entries/:id" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
+            <Route path="/entries/:id" element={<ProtectedRoute><Entries /></ProtectedRoute>} />
             <Route path="/user" element={<NewUser />} />
             <Route path="/invoice" element={<ProtectedRoute><NewInvoice /></ProtectedRoute>} />
             <Route path="/invoice/:id" element={<ProtectedRoute><NewInvoice /></ProtectedRoute>} />
