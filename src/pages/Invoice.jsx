@@ -93,6 +93,7 @@ const Invoice = () => {
         ...form,
         amount: parseFloat(form.amount),
         date: form.date,
+        recycle: false, // Always pass recycle: false when creating
       };
       const result = await createEntry(entryData, jwt, refresh, handleTokenRefresh);
       if (result && result.entryId) {
@@ -121,6 +122,7 @@ const Invoice = () => {
         amount: parseFloat(form.amount),
         date: form.date,
         entryId: parseInt(id, 10), // ensure id is an integer
+        recycle: false, // Always pass recycle: false when editing (not deleting)
       };
       const result = await editEntry(entryData, jwt, refresh, handleTokenRefresh);
       if (result && result.entryId) {
@@ -306,7 +308,32 @@ const Invoice = () => {
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-                    <Button onClick={() => { setDeleteDialogOpen(false); navigate('/home'); }} color="error" variant="contained">Delete</Button>
+                    <Button onClick={async () => {
+                      setDeleteDialogOpen(false);
+                      setSubmitting(true);
+                      try {
+                        const entryData = {
+                          ...form,
+                          amount: parseFloat(form.amount),
+                          date: form.date,
+                          entryId: parseInt(id, 10),
+                          recycle: true, // Pass recycle: true when deleting
+                        };
+                        const result = await editEntry(entryData, jwt, refresh, handleTokenRefresh);
+                        if (result && result.entryId) {
+                          setSnackbarOpen(true);
+                          setTimeout(() => {
+                            navigate('/home');
+                          }, 1200);
+                        } else {
+                          setError('Failed to delete invoice.');
+                        }
+                      } catch (err) {
+                        setError('Error deleting invoice.');
+                      } finally {
+                        setSubmitting(false);
+                      }
+                    }} color="error" variant="contained">Delete</Button>
                   </DialogActions>
                 </Dialog>
               </>

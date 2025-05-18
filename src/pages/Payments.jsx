@@ -29,7 +29,7 @@ const Payments = () => {
     const [modalMode, setModalMode] = useState('add'); // 'add' or 'edit'
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [setDeleteTarget] = useState(null);
+    const [deleteTarget, setDeleteTarget] = useState(null);
     const [paymentForm, setPaymentForm] = useState({
         date: '',
         amount: '',
@@ -117,12 +117,12 @@ const Payments = () => {
             return;
         }
         try {
-
             if (modalMode === 'add') {
                 const paymentData = {
                     ...paymentForm,
-                    entryId: id,
+                    entryId: Number(id),
                     amount: parseFloat(paymentForm.amount),
+                    recycle: false, // Always pass recycle: false when adding
                 };
                 const result = await postPayment(paymentData, jwt, refresh, handleTokenRefresh);
                 if (result && result.paymentId) {
@@ -137,9 +137,12 @@ const Payments = () => {
                 const paymentData = {
                     ...paymentForm,
                     paymentId: selectedPayment.paymentId,
-                    entryId: id,
+                    entryId: Number(id),
                     amount: parseFloat(paymentForm.amount),
+                    recycle: false, // Always pass recycle: false when editing (not deleting)
                 };
+                console.log('Payment Data:', paymentData);
+
                 const result = await updatePayment(paymentData, jwt, refresh, handleTokenRefresh);
                 if (result && result.paymentId) {
                     const paymentData = await getPayments(id, jwt, refresh, handleTokenRefresh);
@@ -163,10 +166,26 @@ const Payments = () => {
         setDeleteTarget(null);
     };
     const handleConfirmDelete = async () => {
-        // Dummy delete: just close dialog and show a snackbar, do not call API
+        if (!deleteTarget) return;
         setDeleteDialogOpen(false);
-        setSnackbar({ open: true, message: 'Delete is disabled in demo mode.', severity: 'info' });
-        setDeleteTarget(null);
+        try {
+            const paymentData = {
+                ...deleteTarget,
+                entryId: Number(id),
+                recycle: true, // Pass recycle: true when deleting
+            };
+            const result = await updatePayment(paymentData, jwt, refresh, handleTokenRefresh);
+            if (result && result.paymentId) {
+                setSnackbar({ open: true, message: 'Payment deleted successfully.', severity: 'success' });
+                // Refresh payments list after deletion
+                const paymentData = await getPayments(id, jwt, refresh, handleTokenRefresh);
+                setPayments(paymentData);
+            } else {
+                setSnackbar({ open: true, message: 'Failed to delete payment.', severity: 'error' });
+            }
+        } catch (err) {
+            setSnackbar({ open: true, message: 'Error deleting payment.', severity: 'error' });
+        }
     };
 
     if (loading) {
@@ -406,7 +425,7 @@ const Payments = () => {
             <Dialog open={deleteDialogOpen} onClose={handleCloseDelete}>
                 <DialogTitle>Delete Payment?</DialogTitle>
                 <DialogContent>
-                    <Typography>Are you sure you want to delete this payment? This action cannot be undone.</Typography>
+                    <Typography>Are you sure you want to <strong>delete</strong> this payment? You will have 14 days to restore it from the <strong>Recycle Bin</strong> in the <strong>History</strong> tab.</Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDelete}>Cancel</Button>

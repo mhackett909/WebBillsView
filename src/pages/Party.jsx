@@ -88,7 +88,7 @@ const Bills = () => {
     try {
       const result = await editBill({ ...bill, recycle: true }, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
-        setSnackbar({ open: true, message: 'Party deleted (archived) successfully.', severity: 'success' });
+        setSnackbar({ open: true, message: 'Party deleted (recycled) successfully.', severity: 'success' });
         setTimeout(() => navigate('/home'), 1200);
       } else {
         setSnackbar({ open: true, message: 'Failed to delete party.', severity: 'error' });
