@@ -1,215 +1,120 @@
-import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Tabs, Tab } from '@mui/material';
-import { fetchEntries } from '../utils/BillsApiUtil';
-import dayjs from 'dayjs';
-import FilterPanel from '../components/FilterPanel';
-import DataTable from '../components/DataTable';
-import Statistics from '../components/Statistics';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
+import { useState, useEffect, useContext, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, Typography, TextField, Checkbox, FormControlLabel, Button, Paper, CircularProgress, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { getBillById } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 
 const Bills = () => {
-    const [entries, setEntries] = useState([]);
-    const [filteredEntries, setFilteredEntries] = useState([]);
-    const [activeTab, setActiveTab] = useState(0);
-    const [filters, setFilters] = useState({
-        invoice: '',
-        biller: [],
-        date: '',
-        amountMin: '',
-        amountMax: '',
-    });
-    const [includeArchived, setIncludeArchived] = useState(false);
-    const [selectionModel, setSelectionModel] = useState([]);
-    const [dateRange, setDateRange] = useState([
-        dayjs().subtract(30, 'day').toDate(),
-        dayjs().toDate(),
-    ]);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+  const [bill, setBill] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [archived, setArchived] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-    const navigate = useNavigate();
-    const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
+  const handleTokenRefresh = useCallback((newJwt, newRefresh) => {
+    if (typeof setJwt === 'function') setJwt(newJwt);
+    if (typeof setRefresh === 'function') setRefresh(newRefresh);
+  }, [setJwt, setRefresh]);
 
-    useEffect(() => {
-        const handleTokenRefresh = (newAccessToken, newRefreshToken) => {
-            setJwt(newAccessToken);
-            setRefresh(newRefreshToken);
-        };
-        const loadEntries = async () => {
-            const fetchedEntries = await fetchEntries(jwt, refresh, handleTokenRefresh);
-            setEntries(fetchedEntries);
-            // Only show non-archived by default
-            setFilteredEntries(fetchedEntries.filter((entry) => !entry.archived));
-        };
-        setActiveTab(0);
-        loadEntries();
-    }, [jwt, refresh, setJwt, setRefresh]);
-
-    const handleTabChange = (event, newValue) => {
-        setActiveTab(newValue);
+  useEffect(() => {
+    const fetchBill = async () => {
+      setLoading(true);
+      try {
+        const data = await getBillById(id, jwt, refresh, handleTokenRefresh);
+        if (data) {
+          setBill(data);
+          console.log('Fetched bill:', data);
+          setEditName(data.name || '');
+          setArchived(!data.status);
+        }
+      } catch (err) {
+        setSnackbar({ open: true, message: 'Failed to load party.', severity: 'error' });
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchBill();
+  }, [id, jwt, refresh, handleTokenRefresh]);
 
-    const handleFilterChange = (field, value) => {
-        setFilters((prev) => ({ ...prev, [field]: value }));
-    };
+  const handleSave = () => {
+    // Dummy save, just route home
+    navigate('/home');
+  };
+  const handleDelete = () => {
+    setDeleteDialogOpen(true);
+  };
+  const handleDeleteConfirm = () => {
+    setDeleteDialogOpen(false);
+    navigate('/home');
+  };
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
 
-    const handleAdd = () => {
-        console.log('Add New Invoice button clicked');
-        navigate('/invoice');
-    };
-
-    const filterBills = () => {
-        let filtered = entries;
-
-        if (filters.invoice) {
-            filtered = filtered.filter((entry) =>
-                entry.id.toString().includes(filters.invoice)
-            );
-        }
-        if (filters.biller.length > 0) {
-            filtered = filtered.filter((entry) =>
-                filters.biller.some((biller) =>
-                    entry.name.toLowerCase().includes(biller.toLowerCase())
-                )
-            );
-        }
-        if (dateRange[0] && dateRange[1]) {
-            filtered = filtered.filter((entry) => {
-                const entryDate = new Date(entry.date);
-                return entryDate >= dateRange[0] && entryDate <= dateRange[1];
-            });
-        }
-        if (filters.amountMin !== '') {
-            filtered = filtered.filter((entry) => entry.amount >= filters.amountMin);
-        }
-        if (filters.amountMax !== '') {
-            filtered = filtered.filter((entry) => entry.amount <= filters.amountMax);
-        }
-
-        // Flow filter (single value or none)
-        if (filters.flow && filters.flow !== '') {
-            filtered = filtered.filter((entry) => entry.flow === filters.flow);
-        }
-
-        if (filters.status && filters.status !== '') {
-            const statusBool = filters.status === 'unpaid' ? true : false;
-            filtered = filtered.filter(
-                (entry) => entry.status === statusBool
-            );
-        }
-
-        // ARCHIVED FILTER LOGIC
-        // includeArchived: true => show all (archived and not)
-        // includeArchived: 'only' => show only archived
-        // includeArchived: false => show only non-archived
-        if (includeArchived === 'only') {
-            filtered = filtered.filter((entry) => entry.archived === true);
-        } else if (includeArchived !== true) {
-            filtered = filtered.filter((entry) => !entry.archived);
-        }
-
-        setFilteredEntries(filtered);
-        console.log('Filtering bills with filters:', filters, 'includeArchived:', includeArchived);
-    };
-
-    const clearFilters = () => {
-        setFilters({
-            invoice: '',
-            biller: [],
-            date: '',
-            amountMin: '',
-            amountMax: '',
-        });
-        setDateRange([null, null]);
-        setIncludeArchived(false); // Reset to show only non-archived
-        // Apply the archived filter immediately after clearing
-        setFilteredEntries(entries.filter((entry) => !entry.archived));
-    };
-
-    const columns = [
-        { field: 'entryId', headerName: 'Invoice #', width: 100 },
-        { field: 'name', headerName: 'Party', width: 250 },
-        { field: 'date', headerName: 'Date', width: 150 },
-        { field: 'flow', headerName: 'Flow', width: 150 },
-        { field: 'amount', headerName: 'Amount', width: 130 },
-        {
-            field: 'status',
-            headerName: 'Paid',
-            width: 100,
-            renderCell: (params) =>
-                params.row.status === false ? (
-                    <CheckCircleIcon color="success" titleAccess="Paid" />
-                ) : (
-                    <CancelIcon color="error" titleAccess="Unpaid" />
-                ),
-        },
-        { field: 'services', headerName: 'Description', width: 500 },
-        {
-            field: 'archived',
-            headerName: 'Archived',
-            width: 100,
-            renderCell: (params) =>
-                params.row.archived === true ? (
-                    <CheckCircleIcon color="success" titleAccess="Archived" />
-                ) : '',
-        },
-    ];
-
-    const [columnVisibilityModel, setColumnVisibilityModel] = useState({
-        id: true,
-        name: true,
-        date: true,
-        flow: true,
-        amount: true,
-        status: true,
-        services: true,
-        archived: true,
-    });
-
+  if (loading) {
     return (
-        <Box sx={{ padding: '20px' }}>
-            <Box display="flex" gap="20px">
-                {/* Filter Panel */}
-                <FilterPanel
-                    filters={filters}
-                    dateRange={dateRange}
-                    includeArchived={includeArchived}
-                    handleFilterChange={handleFilterChange}
-                    setDateRange={setDateRange}
-                    setIncludeArchived={setIncludeArchived}
-                    filterBills={filterBills}
-                    clearFilters={clearFilters}
-                />
-                 <Box sx={{ flex: 1 }}>
-                        {/* Tabs for switching between Data Table and Statistics */}
-                        <Tabs
-                            value={activeTab}
-                            onChange={handleTabChange}
-                            className="main-tabs"
-                        >
-                            <Tab label="Entries" />
-                            <Tab label="Stats" />
-                        </Tabs>
-                        {/* Render content based on the active tab */}
-                        {activeTab === 0 && (
-                            <DataTable
-                                rows={filteredEntries}
-                                columns={columns}
-                                selectionModel={selectionModel}
-                                setSelectionModel={setSelectionModel}
-                                columnVisibilityModel={columnVisibilityModel}
-                                setColumnVisibilityModel={setColumnVisibilityModel}
-                                handleAdd={handleAdd}
-                            />
-                        )}
-                        {activeTab === 1 && (
-                            <Statistics />
-                        )}
-                </Box>
-            </Box>
-        </Box>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={300}>
+        <CircularProgress />
+      </Box>
     );
+  }
+  if (!bill) {
+    return (
+      <Box maxWidth={500} mx="auto" mt={4}>
+        <Alert severity="error">Party not found.</Alert>
+      </Box>
+    );
+  }
+
+  return (
+    <Box maxWidth={500} mx="auto" mt={4}>
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h5" mb={2}>Edit Party</Typography>
+        <TextField
+          label="Party Name"
+          value={editName}
+          onChange={e => setEditName(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+        />
+        <FormControlLabel
+          control={<Checkbox checked={archived} onChange={e => setArchived(e.target.checked)} />}
+          label="Archived"
+          sx={{ mb: 2 }}
+        />
+        <Box display="flex" gap={2} mt={2}>
+          <Button variant="contained" color="primary" onClick={handleSave} fullWidth>Save</Button>
+          <Button variant="outlined" color="error" onClick={handleDelete} fullWidth>Delete</Button>
+        </Box>
+      </Paper>
+      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
+        <DialogTitle>Delete Party?</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Deleting this party will also delete all its entries. You will have 14 days to restore them from the recycle bin.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">Delete</Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={2000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Box>
+  );
 };
 
 export default Bills;

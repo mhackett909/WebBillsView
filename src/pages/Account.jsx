@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Box, Card, CardContent, Typography, Button, Grid, TextField, Switch, FormControlLabel, Dialog, DialogTitle, DialogContent, DialogActions, InputAdornment, Alert, Chip, Snackbar, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from '../utils/BillsApiUtil';
+import { getUser, resendVerificationEmail } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 
 const Account = () => {
@@ -16,11 +16,16 @@ const Account = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
   const navigate = useNavigate();
 
+  const mfaEnabledFF = process.env.REACT_APP_MFA_OPTION_ENABLED === 'true';
+  const emailVerificationEnabled = process.env.REACT_APP_EMAIL_VERIFICATION_ENABLED === 'true';
+
+  // Reusable handleTokenRefresh
+  const handleTokenRefresh = useCallback((newAccessToken, newRefreshToken) => {
+    if (typeof setJwt === 'function') setJwt(newAccessToken);
+    if (typeof setRefresh === 'function') setRefresh(newRefreshToken);
+  }, [setJwt, setRefresh]);
+
   useEffect(() => {
-    const handleTokenRefresh = (newAccessToken, newRefreshToken) => {
-      setJwt(newAccessToken);
-      setRefresh(newRefreshToken);
-    };
     let isMounted = true;
     setLoading(true);
     setError(null);
@@ -49,7 +54,7 @@ const Account = () => {
       setLoading(false);
     }
     return () => { isMounted = false; };
-  }, [username, jwt, refresh, setJwt, setRefresh]);
+  }, [username, jwt, refresh, handleTokenRefresh]);
 
   // Handlers for dialog open/close
   const openDialog = (field) => { setEditField(field); setAlert(null); };
@@ -111,6 +116,16 @@ const Account = () => {
     }
   };
 
+  // Handler for resending verification email
+  const handleResendVerification = async () => {
+    try {
+      await resendVerificationEmail(jwt, refresh, handleTokenRefresh);
+      setSnackbar({ open: true, message: 'Verification email sent!' });
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Failed to send verification email.' });
+    }
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
@@ -138,8 +153,19 @@ const Account = () => {
             <Grid item xs={6}><Typography variant="subtitle2">Email</Typography></Grid>
             <Grid item xs={6}>
               <Typography sx={{ display: 'inline', mr: 1 }}>{user.email}</Typography>
-              {user.emailVerified ? <Chip label="Verified" color="success" size="small" /> : <Chip label="Unverified" color="warning" size="small" />}
-              <Button size="small" sx={{ ml: 2 }} onClick={() => openDialog('email')}>Change</Button>
+              {emailVerificationEnabled && (
+                user.emailVerified ? (
+                  <Chip label="Verified" color="success" size="small" />
+                ) : (
+                  <>
+                    <Chip label="Unverified" color="warning" size="small" />
+                    <Button size="small" sx={{ ml: 1 }} onClick={handleResendVerification}>
+                      Resend Verification Email
+                    </Button>
+                  </>
+                )
+              )}
+              <Button size="small" sx={{ ml: 1 }} onClick={() => openDialog('email')}>Change</Button>
             </Grid>
             <Grid item xs={6}><Typography variant="subtitle2">User Role</Typography></Grid>
             <Grid item xs={6}><Typography>{user.roles}</Typography></Grid>
@@ -147,13 +173,18 @@ const Account = () => {
             <Grid item xs={6}><Typography>{user.createdAt}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Last Login</Typography></Grid>
             <Grid item xs={6}><Typography>{user.lastLogin}</Typography></Grid>
-            <Grid item xs={6}><Typography variant="subtitle2">Multi-Factor Auth</Typography></Grid>
-            <Grid item xs={6}>
-              <FormControlLabel
-                control={<Switch checked={user.mfaEnabled} onChange={() => openDialog('mfa')} />}
-                label={user.mfaEnabled ? 'Enabled' : 'Disabled'}
-              />
-            </Grid>
+            {/* MFA label and switch, both hidden if feature flag is off */}
+            {mfaEnabledFF && (
+              <>
+                <Grid item xs={6}><Typography variant="subtitle2">Multi-Factor Auth</Typography></Grid>
+                <Grid item xs={6}>
+                  <FormControlLabel
+                    control={<Switch checked={user.mfaEnabled} onChange={() => openDialog('mfa')} />}
+                    label={user.mfaEnabled ? 'Enabled' : 'Disabled'}
+                  />
+                </Grid>
+              </>
+            )}
           </Grid>
           <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
             <Button variant="outlined" onClick={() => openDialog('password')}>Change Password</Button>
@@ -223,24 +254,26 @@ const Account = () => {
       </Dialog>
 
       {/* MFA Dialog */}
-      <Dialog open={editField === 'mfa'} onClose={closeDialog}>
-        <DialogTitle>{mfaEnabled ? 'Disable' : 'Enable'} Multi-Factor Authentication</DialogTitle>
-        <DialogContent>
-          <Typography sx={{ mb: 2 }}>Enter your password to {mfaEnabled ? 'disable' : 'enable'} MFA.</Typography>
-          <TextField
-            label="Password"
-            type="password"
-            value={form.password}
-            onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-            fullWidth
-          />
-          {alert && <Alert severity="info" sx={{ mt: 2 }}>{alert}</Alert>}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained">{mfaEnabled ? 'Disable' : 'Enable'}</Button>
-        </DialogActions>
-      </Dialog>
+      {mfaEnabledFF && (
+        <Dialog open={editField === 'mfa'} onClose={closeDialog}>
+          <DialogTitle>{mfaEnabled ? 'Disable' : 'Enable'} Multi-Factor Authentication</DialogTitle>
+          <DialogContent>
+            <Typography sx={{ mb: 2 }}>Enter your password to {mfaEnabled ? 'disable' : 'enable'} MFA.</Typography>
+            <TextField
+              label="Password"
+              type="password"
+              value={form.password}
+              onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+              fullWidth
+            />
+            {alert && <Alert severity="info" sx={{ mt: 2 }}>{alert}</Alert>}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeDialog}>Cancel</Button>
+            <Button onClick={handleSave} variant="contained">{mfaEnabled ? 'Disable' : 'Enable'}</Button>
+          </DialogActions>
+        </Dialog>
+      )}
 
       {/* Deactivate Account Dialog */}
       <Dialog open={editField === 'deactivate'} onClose={closeDialog}>
