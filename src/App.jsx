@@ -42,7 +42,7 @@ const App = () => {
           <AppToolbar />
           <Routes>
             <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/payments/:id" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
+            <Route path="/entries/:id" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
             <Route path="/user" element={<NewUser />} />
             <Route path="/invoice" element={<ProtectedRoute><NewInvoice /></ProtectedRoute>} />
             <Route path="/invoice/:id" element={<ProtectedRoute><NewInvoice /></ProtectedRoute>} />
