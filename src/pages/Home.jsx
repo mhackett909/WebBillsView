@@ -36,15 +36,12 @@ const Home = () => {
         if (typeof setRefresh === 'function') setRefresh(newRefreshToken);
     }, [setJwt, setRefresh]);
 
-    useEffect(() => {
-        const loadEntries = async () => {
-            const fetchedEntries = await fetchEntries(jwt, refresh, handleTokenRefresh);
-            setEntries(fetchedEntries);
-            // Only show non-archived by default
-            setFilteredEntries(fetchedEntries.filter((entry) => !entry.archived));
-        };
-        setActiveTab(0);
-        loadEntries();
+    // Move loadEntries outside useEffect and wrap in useCallback
+    const loadEntries = useCallback(async () => {
+        const fetchedEntries = await fetchEntries(jwt, refresh, handleTokenRefresh);
+        setEntries(fetchedEntries);
+        // Only show non-archived by default
+        setFilteredEntries(fetchedEntries.filter((entry) => !entry.archived));
     }, [jwt, refresh, handleTokenRefresh]);
 
     // Fetch billers based on includeArchived filter
@@ -78,6 +75,7 @@ const Home = () => {
     };
 
     const handleFilterChange = (field, value) => {
+        console.log('Filter changed:', field, value);
         setFilters((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -86,9 +84,9 @@ const Home = () => {
         navigate('/invoice');
     };
 
-    const filterBills = () => {
+    // Memoize filterBills to avoid infinite loop in useEffect
+    const filterBills = useCallback(() => {
         let filtered = entries;
-
         if (filters.invoice) {
             filtered = filtered.filter((entry) =>
                 entry.id.toString().includes(filters.invoice)
@@ -113,32 +111,20 @@ const Home = () => {
         if (filters.amountMax !== '') {
             filtered = filtered.filter((entry) => entry.amount <= filters.amountMax);
         }
-
-        // Flow filter (single value or none)
         if (filters.flow && filters.flow !== '') {
             filtered = filtered.filter((entry) => entry.flow === filters.flow);
         }
-
         if (filters.status && filters.status !== '') {
-            const statusBool = filters.status === 'unpaid' ? true : false;
-            filtered = filtered.filter(
-                (entry) => entry.status === statusBool
-            );
+            const statusBool = filters.status === 'unpaid' ? false : true;
+            filtered = filtered.filter((entry) => entry.status === statusBool);
         }
-
-        // ARCHIVED FILTER LOGIC
-        // includeArchived: true => show all (archived and not)
-        // includeArchived: 'only' => show only archived
-        // includeArchived: false => show only non-archived
         if (includeArchived === 'only') {
             filtered = filtered.filter((entry) => entry.archived === true);
         } else if (includeArchived !== true) {
             filtered = filtered.filter((entry) => !entry.archived);
         }
-
         setFilteredEntries(filtered);
-        console.log('Filtering bills with filters:', filters, 'includeArchived:', includeArchived);
-    };
+    }, [entries, filters, dateRange, includeArchived]);
 
     const clearFilters = () => {
         setFilters({
@@ -153,6 +139,19 @@ const Home = () => {
         // Apply the archived filter immediately after clearing
         setFilteredEntries(entries.filter((entry) => !entry.archived));
     };
+
+    // Only run loadEntries on mount
+    useEffect(() => {
+        setActiveTab(0);
+        loadEntries();
+        // eslint-disable-next-line
+    }, []);
+
+    // Run filterBills after entries are loaded
+    useEffect(() => {
+        filterBills();
+        // eslint-disable-next-line
+    }, [entries]);
 
     const columns = [
         { field: 'entryId', headerName: 'Invoice #', width: 100 },

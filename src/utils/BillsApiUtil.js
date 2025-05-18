@@ -363,6 +363,31 @@ export const createBill = async (billData, token, refreshToken, onTokenRefresh) 
     }
 };
 
+export const editBill = async (billData, token, refreshToken, onTokenRefresh) => {
+    try {
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/bills',
+            options: {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(billData),
+            },
+            token,
+            refreshToken,
+            onTokenRefresh
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to edit bill:', response.status, response.statusText);
+        return null;
+    } catch (error) {
+        console.error('Error editing bill:', error);
+        return null;
+    }
+};
+
 export const deleteBill = async (billData, token, refreshToken, onTokenRefresh) => {
     try {
         const response = await fetchWithAutoRefresh({
