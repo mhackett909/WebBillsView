@@ -18,7 +18,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 
-const Payments = () => {
+const Entries = () => {
     const { id } = useParams();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
     const [entry, setEntry] = useState(null);
@@ -446,4 +446,4 @@ const Payments = () => {
     );
 };
 
-export default Payments;
+export default Entries;

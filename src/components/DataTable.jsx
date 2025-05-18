@@ -25,7 +25,7 @@ const DataTable = ({
                         style={{ cursor: 'pointer' }}
                         onClick={() => {
                             if (typeof window !== 'undefined') {
-                                window.location.href = `/payments/${params.row.entryId}`;
+                                window.location.href = `/entries/${params.row.entryId}`;
                             }
                         }}
                     >
