@@ -17,6 +17,7 @@ const Bills = () => {
   const [archived, setArchived] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [archiveWarningOpen, setArchiveWarningOpen] = useState(false);
 
   const handleTokenRefresh = useCallback((newJwt, newRefresh) => {
     if (typeof setJwt === 'function') setJwt(newJwt);
@@ -48,12 +49,20 @@ const Bills = () => {
       setSnackbar({ open: true, message: 'Party name cannot be empty.', severity: 'error' });
       return;
     }
+    if (archived && bill && bill.status !== STATUS_INACTIVE) {
+      setArchiveWarningOpen(true);
+      return;
+    }
+    await doSave();
+  };
+
+  const doSave = async () => {
     setLoading(true);
     try {
       const updatedBill = {
         ...bill,
         name: editName.trim(),
-        status: archived ? STATUS_INACTIVE : STATUS_ACTIVE, // archived true means status 0 (inactive), else 1 (active)
+        status: archived ? STATUS_INACTIVE : STATUS_ACTIVE,
       };
       const result = await editBill(updatedBill, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
@@ -69,6 +78,7 @@ const Bills = () => {
       setLoading(false);
     }
   };
+
   const handleDelete = () => {
     setDeleteDialogOpen(true);
   };
@@ -117,15 +127,27 @@ const Bills = () => {
         </Box>
       </Paper>
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Party?</DialogTitle>
+        <DialogTitle>Delete Party and Entries?</DialogTitle>
         <DialogContent>
           <Typography>
-            Deleting this party will also delete all its entries. You will have 14 days to restore them from the recycle bin.
+            Deleting this party will also <strong>delete all</strong> its entries. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteCancel}>Cancel</Button>
           <Button onClick={handleDeleteConfirm} color="error" variant="contained">Delete</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={archiveWarningOpen} onClose={() => setArchiveWarningOpen(false)}>
+        <DialogTitle>Archive Party?</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Archiving this party will make all its entries <strong>read-only</strong>. You can reactivate them anytime from the <strong>Archives</strong> tool in the <strong>History</strong> menu.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setArchiveWarningOpen(false)}>Cancel</Button>
+          <Button onClick={() => { setArchiveWarningOpen(false); doSave(); }} color="warning" variant="contained">Archive</Button>
         </DialogActions>
       </Dialog>
       <Snackbar

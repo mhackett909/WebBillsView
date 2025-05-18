@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { Box, Card, CardContent, Typography, Button, Grid, TextField, Switch, FormControlLabel, Dialog, DialogTitle, DialogContent, DialogActions, InputAdornment, Alert, Chip, Snackbar, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { getUser, resendVerificationEmail } from '../utils/BillsApiUtil';
+import { getUser, resendVerificationEmail, updateUser } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 
 const Account = () => {
@@ -10,7 +10,7 @@ const Account = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editField, setEditField] = useState(null); // 'email', 'password', 'deactivate', 'mfa'
-  const [form, setForm] = useState({ email: '', password: '', mfa: '', newPassword: '', confirmPassword: '' });
+  const [form, setForm] = useState({ email: '', newEmail: '', password: '', mfa: '', newPassword: '', confirmPassword: '' });
   const [mfaEnabled, setMfaEnabled] = useState(false);
   const [alert, setAlert] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
@@ -35,7 +35,7 @@ const Account = () => {
           if (isMounted) {
             if (data && data.username) {
               setUser(data);
-              setForm(f => ({ ...f, email: data.email || '' }));
+              setForm(f => ({ ...f, email: data.email || '', newEmail: data.email || '' }));
               setMfaEnabled(data.mfaEnabled); // Keep for legacy, but always use user.mfaEnabled below
             } else {
               setError('Failed to load user data.');
@@ -57,14 +57,28 @@ const Account = () => {
   }, [username, jwt, refresh, handleTokenRefresh]);
 
   // Handlers for dialog open/close
-  const openDialog = (field) => { setEditField(field); setAlert(null); };
-  const closeDialog = () => { setEditField(null); setForm({ email: user.email, password: '', mfa: '', newPassword: '', confirmPassword: '' }); setAlert(null); };
+  const openDialog = (field) => {
+    if (field === 'email') {
+      setForm(f => ({ ...f, newEmail: '', recycle: false }));
+    }
+    setEditField(field);
+    setAlert(null);
+  };
+  const closeDialog = () => {
+    setEditField(null);
+    setForm({ email: user.email, newEmail: '', password: '', mfa: '', newPassword: '', confirmPassword: '', recycle: false });
+    setAlert(null);
+  };
 
   // Simulate API call
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!user) return;
+    let updatedUser = { ...user };
+    let apiPayload = null;
+    let successMsg = '';
+    let failureMsg = '';
     if (editField === 'email') {
-      if (!form.email.includes('@')) {
+      if (!form.newEmail || !form.newEmail.includes('@')) {
         setAlert('Please enter a valid email.');
         return;
       }
@@ -72,12 +86,11 @@ const Account = () => {
         setAlert('Password required.');
         return;
       }
-      setUser({ ...user, email: form.email, emailVerified: false });
-      setSnackbar({ open: true, message: 'Email updated. Please verify your new email.' });
-      closeDialog();
-      return;
-    }
-    if (editField === 'password') {
+      // Send newEmail as a separate field, not as email
+      apiPayload = { ...user, newEmail: form.newEmail, password: form.password };
+      successMsg = 'Email updated.';
+      failureMsg = 'Failed to update email.';
+    } else if (editField === 'password') {
       if (!form.password || !form.newPassword || !form.confirmPassword) {
         setAlert('All fields required.');
         return;
@@ -86,33 +99,46 @@ const Account = () => {
         setAlert('Passwords do not match.');
         return;
       }
-      setSnackbar({ open: true, message: 'Password changed successfully.' });
-      closeDialog();
-      return;
-    }
-    if (editField === 'mfa') {
+      apiPayload = { ...user, password: form.password, newPassword: form.newPassword };
+      successMsg = 'Password changed successfully.';
+      failureMsg = 'Failed to change password.';
+    } else if (editField === 'mfa') {
       if (!form.password) {
         setAlert('Password required.');
         return;
       }
       const newMfa = !user.mfaEnabled;
-      setUser({ ...user, mfaEnabled: newMfa });
-      setMfaEnabled(newMfa); // Keep in sync, but UI always uses user.mfaEnabled
-      setSnackbar({ open: true, message: `MFA ${newMfa ? 'enabled' : 'disabled'}.` });
-      closeDialog();
-      return;
-    }
-    if (editField === 'deactivate') {
+      apiPayload = { ...user, password: form.password, mfaEnabled: newMfa };
+      successMsg = `MFA ${newMfa ? 'enabled' : 'disabled'}.`;
+      failureMsg = `Failed to ${newMfa ? 'enable' : 'disable'} MFA.`;
+    } else if (editField === 'deactivate') {
       if (!form.password) {
         setAlert('Password required.');
         return;
       }
-      setSnackbar({ open: true, message: 'Account deactivated. You will be logged out.' });
-      setTimeout(() => {
-        closeDialog();
-        navigate('/logout');
-      }, 1500);
-      return;
+      apiPayload = { ...user, password: form.password, recycle: true };
+      successMsg = 'Account deactivated. You will be logged out.';
+      failureMsg = 'Failed to deactivate account.';
+    }
+    if (apiPayload) {
+      try {
+        console.log('API Payload:', apiPayload);
+        const result = await updateUser(apiPayload, jwt, refresh, handleTokenRefresh);
+        if (result && (!result.error)) {
+          setUser(result); // update local user state
+          setSnackbar({ open: true, message: successMsg });
+          closeDialog();
+          if (editField === 'deactivate') {
+            setTimeout(() => {
+              navigate('/logout');
+            }, 1500);
+          }
+        } else {
+          setSnackbar({ open: true, message: failureMsg });
+        }
+      } catch (err) {
+        setSnackbar({ open: true, message: failureMsg });
+      }
     }
   };
 
@@ -194,15 +220,16 @@ const Account = () => {
       </Card>
 
       {/* Change Email Dialog */}
-      <Dialog open={editField === 'email'} onClose={closeDialog}>
+      <Dialog open={editField === 'email'} onClose={closeDialog} PaperProps={{ sx: { minHeight: 220 } }}>
         <DialogTitle>Change Email</DialogTitle>
         <DialogContent>
           <TextField
             label="New Email"
             type="email"
-            value={form.email}
-            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-            fullWidth sx={{ mb: 2 }}
+            value={form.newEmail ?? ''}
+            onChange={e => setForm(f => ({ ...f, newEmail: e.target.value }))}
+            name="newEmail"
+            fullWidth sx={{ mb: 2, mt: 1 }}
           />
           <TextField
             label="Password"
@@ -211,6 +238,7 @@ const Account = () => {
             onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
             fullWidth
             InputProps={{ endAdornment: <InputAdornment position="end">*</InputAdornment> }}
+            sx={{ mb: 2 }}
           />
           {alert && <Alert severity="info" sx={{ mt: 2 }}>{alert}</Alert>}
         </DialogContent>

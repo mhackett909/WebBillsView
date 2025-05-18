@@ -298,10 +298,10 @@ const Invoice = () => {
                   Delete
                 </Button>
                 <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-                  <DialogTitle>Delete Invoice?</DialogTitle>
+                  <DialogTitle>Delete Invoice and Payments?</DialogTitle>
                   <DialogContent>
                     <Typography>
-                      Deleting this invoice will also delete all its payments. You can recover it from the recycle bin within 14 days.
+                      Deleting this invoice will also <strong>delete all</strong> its payments. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
                     </Typography>
                   </DialogContent>
                   <DialogActions>
