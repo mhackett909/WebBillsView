@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Paper, Typography, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Alert, Snackbar } from '@mui/material';
-import { fetchEntryById, getPayments, postPayment, updatePayment, getBillById } from '../utils/BillsApiUtil';
+import { getBillById, fetchEntryById, getPayments, postPayment, updatePayment } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -39,6 +39,7 @@ const Payments = () => {
     });
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
     const [billName, setBillName] = useState('');
+    const [billEnabled, setBillEnabled] = useState(true);
 
     const handleTokenRefresh = useCallback((newJwt, newRefresh) => {
         if (typeof setJwt === 'function') setJwt(newJwt);
@@ -54,12 +55,14 @@ const Payments = () => {
                 setEntry(entryData);
                 const paymentData = await getPayments(id, jwt, refresh, handleTokenRefresh);
                 setPayments(paymentData);
-                // Fetch bill name if billId exists
+                // Fetch bill name and status if billId exists
                 if (entryData && entryData.billId) {
                     const bill = await getBillById(entryData.billId, jwt, refresh, handleTokenRefresh);
                     setBillName(bill && bill.name ? bill.name : entryData.billId);
+                    setBillEnabled(bill && bill.status ? true : false);
                 } else {
                     setBillName('');
+                    setBillEnabled(true);
                 }
             } catch (err) {
                 setError('Failed to load entry or payments.');
@@ -190,6 +193,13 @@ const Payments = () => {
 
     return (
         <Box maxWidth={800} mx="auto" mt={4}>
+            {/* Read-only banner if bill is archived */}
+            {!billEnabled && (
+                <Alert severity="warning" sx={{ mb: 3 }}>
+                    This entry is <strong>read only</strong> because the party is archived.<br />
+                    To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar to restore the party to an active state.
+                </Alert>
+            )}
             {/* Top half: Entry details */}
             <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
                 <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
@@ -200,6 +210,7 @@ const Payments = () => {
                         size="small"
                         onClick={() => entry && entry.entryId && window.open(`/invoice/${entry.entryId}`, '_self')}
                         sx={{ ml: 2, fontWeight: 'bold', boxShadow: 2, px: 2, py: 0.5, minWidth: 0 }}
+                        disabled={!billEnabled}
                     >
                         Edit Invoice
                     </Button>
@@ -228,7 +239,7 @@ const Payments = () => {
             <Paper sx={{ p: 3 }} elevation={3}>
                 <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
                     <Typography variant="h6" gutterBottom>Payments</Typography>
-                    <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleOpenAdd} size="small">
+                    <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleOpenAdd} size="small" disabled={!billEnabled}>
                         Add Payment
                     </Button>
                 </Box>
@@ -258,34 +269,34 @@ const Payments = () => {
                                         <TableCell>{payment.date}</TableCell>
                                         <TableCell>{payment.amount}</TableCell>
                                         <TableCell>{
-  (() => {
-    switch (payment.type) {
-      case 'cash': return 'Cash';
-      case 'check': return 'Check';
-      case 'credit': return 'Credit';
-      case 'debit': return 'Debit';
-      case 'other': return 'Other';
-      default: return payment.type;
-    }
-  })()
-}</TableCell>
-                                        <TableCell>{
-  (() => {
-    switch (payment.medium) {
-      case 'app': return 'App';
-      case 'web': return 'Website';
-      case 'person': return 'In Person';
-      case 'mail': return 'Mail';
-      case 'phone': return 'Phone';
-      case 'other': return 'Other';
-      default: return payment.medium;
-    }
-  })()
-}</TableCell>
+                                            (() => {
+                                                switch (payment.type) {
+                                                case 'cash': return 'Cash';
+                                                case 'check': return 'Check';
+                                                case 'credit': return 'Credit';
+                                                case 'debit': return 'Debit';
+                                                case 'other': return 'Other';
+                                                default: return payment.type;
+                                                }
+                                            })()
+                                            }</TableCell>
+                                                                                    <TableCell>{
+                                            (() => {
+                                                switch (payment.medium) {
+                                                case 'app': return 'App';
+                                                case 'web': return 'Website';
+                                                case 'person': return 'In Person';
+                                                case 'mail': return 'Mail';
+                                                case 'phone': return 'Phone';
+                                                case 'other': return 'Other';
+                                                default: return payment.medium;
+                                                }
+                                            })()
+                                            }</TableCell>
                                         <TableCell>{payment.notes}</TableCell>
                                         <TableCell align="right">
-                                            <IconButton size="small" onClick={() => handleOpenEdit(payment)}><EditIcon fontSize="small" /></IconButton>
-                                            <IconButton size="small" color="error" onClick={() => handleOpenDelete(payment)}><DeleteIcon fontSize="small" /></IconButton>
+                                            <IconButton size="small" onClick={() => handleOpenEdit(payment)} disabled={!billEnabled}><EditIcon fontSize="small" /></IconButton>
+                                            <IconButton size="small" color="error" onClick={() => handleOpenDelete(payment)} disabled={!billEnabled}><DeleteIcon fontSize="small" /></IconButton>
                                         </TableCell>
                                     </TableRow>
                                 ))

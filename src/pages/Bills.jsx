@@ -1,8 +1,11 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Checkbox, FormControlLabel, Button, Paper, CircularProgress, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { getBillById } from '../utils/BillsApiUtil';
+import { getBillById, editBill } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
+
+const STATUS_INACTIVE = 0;
+const STATUS_ACTIVE = 1;
 
 const Bills = () => {
   const { id } = useParams();
@@ -40,9 +43,31 @@ const Bills = () => {
     fetchBill();
   }, [id, jwt, refresh, handleTokenRefresh]);
 
-  const handleSave = () => {
-    // Dummy save, just route home
-    navigate('/home');
+  const handleSave = async () => {
+    if (!editName.trim()) {
+      setSnackbar({ open: true, message: 'Party name cannot be empty.', severity: 'error' });
+      return;
+    }
+    setLoading(true);
+    try {
+      const updatedBill = {
+        ...bill,
+        name: editName.trim(),
+        status: archived ? STATUS_INACTIVE : STATUS_ACTIVE, // archived true means status 0 (inactive), else 1 (active)
+      };
+      const result = await editBill(updatedBill, jwt, refresh, handleTokenRefresh);
+      if (result && result.id) {
+        setSnackbar({ open: true, message: 'Party updated successfully.', severity: 'success' });
+        setBill(result);
+        setTimeout(() => navigate('/home'), 1200);
+      } else {
+        setSnackbar({ open: true, message: 'Failed to update party.', severity: 'error' });
+      }
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Error updating party.', severity: 'error' });
+    } finally {
+      setLoading(false);
+    }
   };
   const handleDelete = () => {
     setDeleteDialogOpen(true);
