@@ -63,6 +63,7 @@ const Bills = () => {
         ...bill,
         name: editName.trim(),
         status: archived ? STATUS_INACTIVE : STATUS_ACTIVE,
+        recycle: false
       };
       const result = await editBill(updatedBill, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
