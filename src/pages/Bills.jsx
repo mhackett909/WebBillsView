@@ -4,6 +4,9 @@ import { Box, Typography, TextField, Checkbox, FormControlLabel, Button, Paper, 
 import { getBillById, editBill } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 
+const STATUS_INACTIVE = 0;
+const STATUS_ACTIVE = 1;
+
 const Bills = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -50,7 +53,7 @@ const Bills = () => {
       const updatedBill = {
         ...bill,
         name: editName.trim(),
-        status: archived ? 0 : 1, // archived true means status 0 (inactive), else 1 (active)
+        status: archived ? STATUS_INACTIVE : STATUS_ACTIVE, // archived true means status 0 (inactive), else 1 (active)
       };
       const result = await editBill(updatedBill, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {

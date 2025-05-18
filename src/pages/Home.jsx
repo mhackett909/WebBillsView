@@ -75,7 +75,6 @@ const Home = () => {
     };
 
     const handleFilterChange = (field, value) => {
-        console.log('Filter changed:', field, value);
         setFilters((prev) => ({ ...prev, [field]: value }));
     };
 
