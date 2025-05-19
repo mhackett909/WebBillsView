@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, Card, CardContent, Typography, Divider, CircularProgress } from '@mui/material';
+import { Box, Grid, Card, CardContent, Typography, CircularProgress } from '@mui/material';
 import '../styles/tabs.css';
 
 const currency = (amount) => amount?.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) ?? '$0.00';
