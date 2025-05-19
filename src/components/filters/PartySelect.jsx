@@ -9,6 +9,7 @@ const PartySelect = ({ billers, selectedBillers, handleFilterChange }) => {
                 labelId="biller-label"
                 multiple
                 value={selectedBillers || []}
+                size="small"
                 onChange={(e) => handleFilterChange('biller', e.target.value)}
                 displayEmpty
                 fullWidth

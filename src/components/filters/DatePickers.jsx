@@ -23,17 +23,18 @@ const DatePickers = ({ dateRange, setDateRange }) => {
         <Box className="date-pickers">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 {/* Dropdown to select Single Date or Date Range */}
-                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                <FormControl fullWidth sx={{ mb: 1.5 }} size="small">
                     <Select
                         value={dateMode}
                         onChange={(e) => handleDateModeChange(e.target.value)}
+                        size="small"
                     >
                         <MenuItem value="Single Date">Single Date</MenuItem>
                         <MenuItem value="Date Range">Date Range</MenuItem>
                     </Select>
                 </FormControl>
 
-                <Box display="flex" flexDirection="column" gap={2}>
+                <Box display="flex" flexDirection="column" gap={1.5}>
                     {/* Start Date Picker */}
                     <DatePicker
                         label={dateMode === 'Single Date' ? 'Date' : 'Start Date'}
@@ -60,6 +61,7 @@ const DatePickers = ({ dateRange, setDateRange }) => {
                             <TextField
                                 {...params}
                                 fullWidth
+                                size="small"
                                 error={
                                     dateMode === 'Date Range' &&
                                     dateRange[0] &&
@@ -95,6 +97,7 @@ const DatePickers = ({ dateRange, setDateRange }) => {
                                 <TextField
                                     {...params}
                                     fullWidth
+                                    size="small"
                                 />
                             )}
                         />

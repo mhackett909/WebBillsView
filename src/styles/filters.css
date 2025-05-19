@@ -1,27 +1,26 @@
 .filters-panel {
     width: 250px;
-    padding: 20px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    border: 2px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     height: 100%;
 }
 
 .date-pickers {
     border: 2px solid rgb(134, 131, 131); /* Add a dark gray border */
     border-radius: 8px; /* Add rounded corners */
-    padding: 16px; /* Add padding inside the border */
-    margin-bottom: 2px; /* Add space below the component */
+    padding: 12px; /* Add padding inside the border */
 }
 
 .range-picker {
     display: flex; /* Use flexbox for layout */
-    gap: 16px; /* Add spacing between child elements */
-    padding: 16px; /* Add padding inside the border */
+    gap: 10px; /* Add spacing between child elements */
+    padding: 12px; /* Add padding inside the border */
     border: 2px solid rgb(134, 131, 131); /* Add a dark gray border */
     border-radius: 8px; /* Add rounded corners */
 }
@@ -41,7 +40,7 @@
     border: 2px solid rgb(134, 131, 131);
     border-radius: 8px;
     background-color: #fafafa;
-    flex: 1;
+    flex-grow: 1;
     padding-left: 5px;
     text-align: center;
     display: flex;
@@ -56,7 +55,14 @@
     justify-content: center;
 }
 
-.checkbox-label .MuiFormControlLabel-label {
+.checkbox-container .MuiFormControlLabel-label {
     font-size: 14px;
     color: #333;
+    padding: 5px 5px 5px 0px;
+}
+
+.checkbox-container .MuiFormControlLabel-root {
+    padding-top: 10px;
+    margin-top: -15px; /* closer spacing between checkboxes in a row */
+
 }

@@ -8,6 +8,7 @@ const InvoiceSearch = ({ invoice, handleFilterChange }) => {
                 label="Invoice #"
                 type="number"
                 variant="outlined"
+                size="small"
                 value={invoice}
                 onChange={(e) => {
                     const value = e.target.value;

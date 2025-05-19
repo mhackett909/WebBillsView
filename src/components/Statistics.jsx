@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, Card, CardContent, Typography, Divider, CircularProgress } from '@mui/material';
+import { Box, Grid, Card, CardContent, Typography, CircularProgress } from '@mui/material';
 import '../styles/tabs.css';
 
 const currency = (amount) => amount?.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) ?? '$0.00';
@@ -79,99 +79,118 @@ const Statistics = () => {
     }
 
     return (
-        <Box className="tabs-container" sx={{ overflowY: 'auto', padding: 2 }}>
-            <Typography variant="h5" sx={{ mb: 2, textAlign: 'center', color: '#333' }}>Statistics</Typography>
-            <Grid container spacing={2}>
-                {/* Main Stat Cards */}
-                <Grid item xs={12} md={6} lg={3}>
-                    <Card sx={{ bgcolor: '#e3f2fd' }}>
+        <Box className="tabs-container" sx={{ overflowY: 'auto' }}>
+            {/* Removed the old 'Statistics' label at the top */}
+            <Typography variant="subtitle1" sx={{ mb: 2, textAlign: 'center', fontWeight: 700, letterSpacing: 1, bgcolor: '#bbdefb', borderRadius: 1, py: 0.5, boxShadow: 1 }}>
+                Totals Overview
+            </Typography>
+            {/* Totals Row */}
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Total Outgoing Expenses</Typography>
+                            <Typography variant="subtitle2" color="primary">Total Outgoing</Typography>
                             <Typography variant="h6">{currency(totalOutgoing)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={6} lg={3}>
-                    <Card sx={{ bgcolor: '#e8f5e9' }}>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Total Incoming Revenue</Typography>
+                            <Typography variant="subtitle2" color="success.main">Total Incoming</Typography>
                             <Typography variant="h6">{currency(totalIncoming)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={6} lg={3}>
-                    <Card sx={{ bgcolor: '#fffde7' }}>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Total Payments Made (Outgoing)</Typography>
+                            <Typography variant="subtitle2" color="warning.main">Payments Made</Typography>
                             <Typography variant="h6">{currency(totalPaymentsMade)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={6} lg={3}>
-                    <Card sx={{ bgcolor: '#fce4ec' }}>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Total Payments Received (Incoming)</Typography>
+                            <Typography variant="subtitle2" color="secondary">Payments Received</Typography>
                             <Typography variant="h6">{currency(totalPaymentsReceived)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
-                {/* Max/Unpaid/Average Cards */}
-                <Grid item xs={12} md={4}>
-                    <Card>
+            </Grid>
+
+            {/* Grouped Section: Averages & Maximums */}
+            <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, textAlign: 'center', fontWeight: 700, letterSpacing: 1, bgcolor: '#ede7f6', borderRadius: 1, py: 0.5, boxShadow: 1 }}>
+                Averages & Maximums
+            </Typography>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Maximum Outgoing Expense</Typography>
-                            <Typography variant="h6">{currency(maxOutgoing)}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="subtitle2">Maximum Incoming Revenue</Typography>
-                            <Typography variant="h6">{currency(maxIncoming)}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="subtitle2">Average Outgoing Payment</Typography>
+                            <Typography variant="subtitle2" color="primary">Avg Outgoing</Typography>
                             <Typography variant="h6">{currency(avgOutgoing)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                    <Card>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Average Incoming Payment</Typography>
+                            <Typography variant="subtitle2" color="success.main">Avg Incoming</Typography>
                             <Typography variant="h6">{currency(avgIncoming)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                    <Card>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Total Unpaid Outgoing Expenses</Typography>
+                            <Typography variant="subtitle2" color="primary">Max Outgoing</Typography>
+                            <Typography variant="h6">{currency(maxOutgoing)}</Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card variant="outlined">
+                        <CardContent>
+                            <Typography variant="subtitle2" color="success.main">Max Incoming</Typography>
+                            <Typography variant="h6">{currency(maxIncoming)}</Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+
+            {/* Grouped Section: Unpaid */}
+            <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, textAlign: 'center', fontWeight: 700, letterSpacing: 1, bgcolor: '#ffe0b2', borderRadius: 1, py: 0.5, boxShadow: 1 }}>
+                Unpaid
+            </Typography>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={12} sm={6} md={6}>
+                    <Card variant="outlined">
+                        <CardContent>
+                            <Typography variant="subtitle2" color="error.main">Unpaid Outgoing</Typography>
                             <Typography variant="h6">{currency(unpaidOutgoing)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                    <Card>
+                <Grid item xs={12} sm={6} md={6}>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Total Unpaid Incoming Revenue</Typography>
+                            <Typography variant="subtitle2" color="error.main">Unpaid Incoming</Typography>
                             <Typography variant="h6">{currency(unpaidIncoming)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
             </Grid>
-            <Divider sx={{ my: 3 }} />
-            {/* Top 5 Parties */}
+
+            {/* Top Payment Insights */}
+            <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, textAlign: 'center', fontWeight: 700, letterSpacing: 1, bgcolor: '#b3e5fc', borderRadius: 1, py: 0.5, boxShadow: 1 }}>
+                Top Payment Insights
+            </Typography>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                    <Card>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Top 5 Outgoing Entries by Party</Typography>
+                            <Typography variant="subtitle2" color="primary">Top 5 Outgoing by Party</Typography>
                             {outgoingByParty.length === 0 ? <Typography>No data</Typography> : (
                                 outgoingByParty.map(([party, count]) => (
                                     <Typography key={party}>{party}: {count}</Typography>
@@ -179,11 +198,9 @@ const Statistics = () => {
                             )}
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Card>
+                    <Card variant="outlined" sx={{ mt: 2 }}>
                         <CardContent>
-                            <Typography variant="subtitle2">Top 5 Incoming Entries by Party</Typography>
+                            <Typography variant="subtitle2" color="success.main">Top 5 Incoming by Party</Typography>
                             {incomingByParty.length === 0 ? <Typography>No data</Typography> : (
                                 incomingByParty.map(([party, count]) => (
                                     <Typography key={party}>{party}: {count}</Typography>
@@ -192,14 +209,10 @@ const Statistics = () => {
                         </CardContent>
                     </Card>
                 </Grid>
-            </Grid>
-            <Divider sx={{ my: 3 }} />
-            {/* Payments by Type */}
-            <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                    <Card>
+                    <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2">Total Payments by Type (Outgoing)</Typography>
+                            <Typography variant="subtitle2" color="warning.main">Payments by Type (Outgoing)</Typography>
                             {outgoingByType.length === 0 ? <Typography>No data</Typography> : (
                                 outgoingByType.map(([type, amt]) => (
                                     <Typography key={type}>{type}: {currency(amt)}</Typography>
@@ -207,11 +220,9 @@ const Statistics = () => {
                             )}
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Card>
+                    <Card variant="outlined" sx={{ mt: 2 }}>
                         <CardContent>
-                            <Typography variant="subtitle2">Total Payments by Type (Incoming)</Typography>
+                            <Typography variant="subtitle2" color="secondary">Payments by Type (Incoming)</Typography>
                             {incomingByType.length === 0 ? <Typography>No data</Typography> : (
                                 incomingByType.map(([type, amt]) => (
                                     <Typography key={type}>{type}: {currency(amt)}</Typography>

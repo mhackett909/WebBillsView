@@ -192,7 +192,7 @@ const Account = () => {
               <Button size="small" sx={{ ml: 1 }} onClick={() => openDialog('email')}>Change</Button>
             </Grid>
             <Grid item xs={6}><Typography variant="subtitle2">User Role</Typography></Grid>
-            <Grid item xs={6}><Typography>{user.roles}</Typography></Grid>
+            <Grid item xs={6}><Typography>{user.roles === 'ROLE_ADMIN' ? 'Admin' : user.roles === 'ROLE_USER' ? 'User' : user.roles}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Account Created</Typography></Grid>
             <Grid item xs={6}><Typography>{user.createdAt}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Last Login</Typography></Grid>
