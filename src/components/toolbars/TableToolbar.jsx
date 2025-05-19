@@ -12,7 +12,7 @@ const CustomToolbar = ({ handleAdd }) => {
     const exportCsvEnabled = process.env.REACT_APP_EXPORT_CSV_ENABLED === 'true';
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', padding: '8px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', padding: '8px', background: '#f5f5f5', borderBottom: '1px solid #ddd' }}>
             <div style={{ display: 'flex', gap: '8px' }}>
                 <Button variant="contained" onClick={handleAdd}>
                     New Invoice

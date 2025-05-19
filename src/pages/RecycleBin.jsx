@@ -1,4 +1,6 @@
 import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
+import TablePagination from '@mui/material/TablePagination';
+import { useState } from 'react';
 
 const dummyData = [
   {
@@ -37,6 +39,17 @@ const dummyData = [
 ];
 
 const RecycleBin = () => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <Box maxWidth={1000} mx="auto" mt={4}>
       <Typography variant="h4" mb={3}>Recycle Bin</Typography>
@@ -61,7 +74,7 @@ const RecycleBin = () => {
                 <TableCell colSpan={9} align="center">No recycled items found.</TableCell>
               </TableRow>
             ) : (
-              dummyData.map((item) => (
+              dummyData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>{item.entity}</TableCell>
                   <TableCell>{item.deletionDate}</TableCell>
@@ -79,6 +92,15 @@ const RecycleBin = () => {
             )}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          component="div"
+          count={dummyData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
     </Box>
   );
