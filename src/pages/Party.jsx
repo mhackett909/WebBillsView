@@ -119,8 +119,17 @@ const Bills = () => {
     );
   }
 
+  const billEnabled = !!bill.status;
+
   return (
     <Box maxWidth={500} mx="auto" mt={4}>
+      {/* Read-only banner if bill is archived */}
+      {!billEnabled && (
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          This party is <strong>read only</strong> because it is archived.<br />
+          To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar.
+        </Alert>
+      )}
       <Paper sx={{ p: 3 }}>
         <Typography variant="h5" mb={2}>Edit Party</Typography>
         <TextField
@@ -129,15 +138,16 @@ const Bills = () => {
           onChange={e => setEditName(e.target.value)}
           fullWidth
           sx={{ mb: 2 }}
+          disabled={!billEnabled}
         />
         <FormControlLabel
-          control={<Checkbox checked={archived} onChange={e => setArchived(e.target.checked)} />}
+          control={<Checkbox checked={archived} onChange={e => setArchived(e.target.checked)} disabled={!billEnabled} />}
           label="Archived"
           sx={{ mb: 2 }}
         />
         <Box display="flex" gap={2} mt={2}>
-          <Button variant="contained" color="primary" onClick={handleSave} fullWidth>Save</Button>
-          <Button variant="outlined" color="error" onClick={handleDelete} fullWidth>Delete</Button>
+          <Button variant="contained" color="primary" onClick={handleSave} fullWidth disabled={!billEnabled}>Save</Button>
+          <Button variant="outlined" color="error" onClick={handleDelete} fullWidth disabled={!billEnabled}>Delete</Button>
         </Box>
       </Paper>
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
