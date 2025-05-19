@@ -126,7 +126,12 @@ const Entries = () => {
                 };
                 const result = await postPayment(paymentData, jwt, refresh, handleTokenRefresh);
                 if (result && result.paymentId) {
-                    const paymentData = await getPayments(id, jwt, refresh, handleTokenRefresh);
+                    // Refresh entry and payments after add
+                    const [entryData, paymentData] = await Promise.all([
+                        fetchEntryById(id, jwt, refresh, handleTokenRefresh),
+                        getPayments(id, jwt, refresh, handleTokenRefresh)
+                    ]);
+                    setEntry(entryData);
                     setPayments(paymentData);
                     setSnackbar({ open: true, message: 'Payment added successfully!', severity: 'success' });
                     setModalOpen(false);
@@ -141,10 +146,14 @@ const Entries = () => {
                     amount: parseFloat(paymentForm.amount),
                     recycle: false, // Always pass recycle: false when editing (not deleting)
                 };
-
                 const result = await updatePayment(paymentData, jwt, refresh, handleTokenRefresh);
                 if (result && result.paymentId) {
-                    const paymentData = await getPayments(id, jwt, refresh, handleTokenRefresh);
+                    // Refresh entry and payments after edit
+                    const [entryData, paymentData] = await Promise.all([
+                        fetchEntryById(id, jwt, refresh, handleTokenRefresh),
+                        getPayments(id, jwt, refresh, handleTokenRefresh)
+                    ]);
+                    setEntry(entryData);
                     setPayments(paymentData);
                     setSnackbar({ open: true, message: 'Payment updated successfully!', severity: 'success' });
                     setModalOpen(false);
@@ -176,8 +185,12 @@ const Entries = () => {
             const result = await updatePayment(paymentData, jwt, refresh, handleTokenRefresh);
             if (result && result.paymentId) {
                 setSnackbar({ open: true, message: 'Payment deleted successfully.', severity: 'success' });
-                // Refresh payments list after deletion
-                const updatedPayments = await getPayments(id, jwt, refresh, handleTokenRefresh);
+                // Refresh entry and payments after delete
+                const [entryData, updatedPayments] = await Promise.all([
+                    fetchEntryById(id, jwt, refresh, handleTokenRefresh),
+                    getPayments(id, jwt, refresh, handleTokenRefresh)
+                ]);
+                setEntry(entryData);
                 setPayments(updatedPayments);
             } else {
                 setSnackbar({ open: true, message: 'Failed to delete payment.', severity: 'error' });

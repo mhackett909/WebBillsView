@@ -70,6 +70,8 @@ const Invoice = () => {
               services: entry.services || '',
               status: entry.status || 0,
             });
+          } else {
+            setError('Invoice not found.');
           }
         })
         .finally(() => setLoading(false));
@@ -94,6 +96,7 @@ const Invoice = () => {
         amount: parseFloat(form.amount),
         date: form.date,
         recycle: false, // Always pass recycle: false when creating
+        overpaid: false, // Always pass overpaid: false for now
       };
       const result = await createEntry(entryData, jwt, refresh, handleTokenRefresh);
       if (result && result.entryId) {
@@ -128,7 +131,7 @@ const Invoice = () => {
       if (result && result.entryId) {
         setSnackbarOpen(true);
         setTimeout(() => {
-          navigate('/home');
+          navigate(`/entries/${result.entryId}`);
         }, 1200);
       } else {
         setError('Failed to update invoice.');
@@ -190,6 +193,10 @@ const Invoice = () => {
             <Typography variant="body2" color="text.secondary">Loading...</Typography>
           </Box>
         </>
+      ) : error ? (
+        <Box maxWidth={500} mx="auto" mt={4}>
+          <Alert severity="error">{error}</Alert>
+        </Box>
       ) : (
         <>
           <Typography variant="h4" mb={2}>{id ? 'Edit Invoice' : 'New Invoice'}</Typography>
@@ -254,9 +261,15 @@ const Invoice = () => {
             <TextField
               label="Amount"
               name="amount"
-              type="number"
+              type="text"
               value={form.amount}
-              onChange={handleChange}
+              onChange={e => {
+                // Only allow valid money input: digits, optional one dot, up to 2 decimals
+                const value = e.target.value;
+                if (value === '' || /^\d{0,9}(\.\d{0,2})?$/.test(value)) {
+                  setForm(prev => ({ ...prev, amount: value }));
+                }
+              }}
               fullWidth
               margin="normal"
               required
@@ -265,6 +278,7 @@ const Invoice = () => {
                 pattern: '^\\d*(\\.\\d{0,2})?$',
                 step: '0.01',
                 min: '0',
+                maxLength: 12
               }}
             />
             <TextField
