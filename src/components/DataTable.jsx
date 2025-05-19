@@ -1,6 +1,7 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Chip } from '@mui/material';
 import '../styles/tabs.css';
+import dayjs from 'dayjs';
 
 import CustomToolbar from './toolbars/TableToolbar';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -55,6 +56,16 @@ const DataTable = ({
                 renderCell: (params) => (
                     <span>{params.value}</span>
                 ),
+            };
+        }
+        // Date column
+        if (col.field === 'date') {
+            return {
+                ...col,
+                renderCell: (params) => {
+                    // Format using dayjs to match the picker's local format
+                    return params.value ? dayjs(params.value).format('YYYY-MM-DD') : '';
+                },
             };
         }
         // Flow column
