@@ -11,7 +11,11 @@ const DatePickers = ({ dateRange, setDateRange }) => {
     const handleDateModeChange = (newMode) => {
         setDateMode(newMode);
         if (newMode === 'Single Date') {
-            setDateRange([dateRange[0], null]); // Clear end date when switching to Single Date mode
+            const startOfDay = dayjs(dateRange[0]).startOf('day');
+            const endOfDay = dayjs(dateRange[0]).endOf('day');
+            setDateRange([startOfDay, endOfDay]);
+        } else {
+            setDateRange([dateRange[0], null]);
         }
     };
 
@@ -35,10 +39,21 @@ const DatePickers = ({ dateRange, setDateRange }) => {
                         label={dateMode === 'Single Date' ? 'Date' : 'Start Date'}
                         value={dateRange[0]}
                         onChange={(newValue) => {
-                            if (dateMode === 'Single Date') {
-                                setDateRange([newValue, null]); // Clear end date in Single Date mode
+                            if (newValue) {
+                                const startOfDay = dayjs(newValue).startOf('day');
+                                const endOfDay = dayjs(newValue).endOf('day');
+                                console.log('Date mode:', dateMode);
+                                if (dateMode === 'Single Date') {
+                                    setDateRange([startOfDay.toDate(), endOfDay.toDate()]);
+                                } else {
+                                    setDateRange([startOfDay.toDate(), dateRange[1]]);
+                                }
                             } else {
-                                setDateRange([newValue, dateRange[1]]);
+                                if (dateMode === 'Single Date') {
+                                    setDateRange([null, null]);
+                                } else {
+                                    setDateRange([null, dateRange[1]]);
+                                }
                             }
                         }}
                         renderInput={(params) => (
@@ -69,7 +84,12 @@ const DatePickers = ({ dateRange, setDateRange }) => {
                             label="End Date"
                             value={dateRange[1]}
                             onChange={(newValue) => {
-                                setDateRange([dateRange[0], newValue]);
+                                if (newValue) {
+                                    const endOfDay = dayjs(newValue).startOf('day');
+                                    setDateRange([dateRange[0], endOfDay.toDate()]);
+                                } else {
+                                    setDateRange([dateRange[0], null]);
+                                }
                             }}
                             renderInput={(params) => (
                                 <TextField

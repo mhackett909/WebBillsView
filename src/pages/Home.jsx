@@ -3,10 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 import { fetchEntries, getBills } from '../utils/BillsApiUtil';
 import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import FilterPanel from '../components/FilterPanel';
 import DataTable from '../components/DataTable';
 import Statistics from '../components/Statistics';
 import { AuthContext } from '../App';
+
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const Home = () => {
     const [entries, setEntries] = useState([]);
@@ -22,8 +27,8 @@ const Home = () => {
     const [includeArchived, setIncludeArchived] = useState(false);
     const [selectionModel, setSelectionModel] = useState([]);
     const [dateRange, setDateRange] = useState([
-        dayjs().subtract(30, 'day').toDate(),
-        dayjs().toDate(),
+        dayjs().subtract(30, 'day').startOf('day').toDate(),
+        dayjs().startOf('day').toDate(),
     ]);
     const [availableBillers, setAvailableBillers] = useState([]);
 
@@ -98,10 +103,18 @@ const Home = () => {
                 )
             );
         }
-        if (dateRange[0] && dateRange[1]) {
+        if (dateRange[0] || dateRange[1]) {
             filtered = filtered.filter((entry) => {
-                const entryDate = new Date(entry.date);
-                return entryDate >= dateRange[0] && entryDate <= dateRange[1];
+                // Always compare using dayjs for both entry and range
+                const entryDate = dayjs(entry.date).startOf('day');
+                const start = dateRange[0] ? dayjs(dateRange[0]).startOf('day') : null;
+                const end = dateRange[1] ? dayjs(dateRange[1]).startOf('day') : null;
+                console.log('Start Date:', start);
+                console.log('End Date:', end);
+                if (start && end) return entryDate.isSameOrAfter(start) && entryDate.isSameOrBefore(end);
+                if (start) return entryDate.isSameOrAfter(start);
+                if (end) return entryDate.isSameOrBefore(end);
+                return true;
             });
         }
         if (filters.amountMin !== '') {
