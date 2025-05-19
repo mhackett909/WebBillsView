@@ -203,31 +203,31 @@ const Home = () => {
                 clearFilters={clearFilters}
                 availableBillers={availableBillers}
             />
-                <Box flexGrow={1}>
-                    {/* Tabs for switching between Data Table and Statistics */}
-                    <Tabs
-                        value={activeTab}
-                        onChange={handleTabChange}
-                        className="main-tabs"
-                    >
-                        <Tab label="Entries" />
-                        <Tab label="Stats" />
-                    </Tabs>
-                    {/* Render content based on the active tab */}
-                    {activeTab === 0 && (
-                        <DataTable
-                            rows={filteredEntries}
-                            columns={columns}
-                            selectionModel={selectionModel}
-                            setSelectionModel={setSelectionModel}
-                            columnVisibilityModel={columnVisibilityModel}
-                            setColumnVisibilityModel={setColumnVisibilityModel}
-                            handleAdd={handleAdd}
-                        />
-                    )}
-                    {activeTab === 1 && (
-                        <Statistics />
-                    )}
+            <Box flexGrow={1}>
+                {/* Tabs for switching between Data Table and Statistics */}
+                <Tabs
+                    value={activeTab}
+                    onChange={handleTabChange}
+                    className="main-tabs"
+                >
+                    <Tab label="Entries" />
+                    <Tab label="Stats" />
+                </Tabs>
+                {/* Render content based on the active tab */}
+                {activeTab === 0 && (
+                    <DataTable
+                        rows={filteredEntries}
+                        columns={columns}
+                        selectionModel={selectionModel}
+                        setSelectionModel={setSelectionModel}
+                        columnVisibilityModel={columnVisibilityModel}
+                        setColumnVisibilityModel={setColumnVisibilityModel}
+                        handleAdd={handleAdd}
+                    />
+                )}
+                {activeTab === 1 && (
+                    <Statistics />
+                )}
             </Box>
         </Box>
     );
