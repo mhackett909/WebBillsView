@@ -190,46 +190,44 @@ const Home = () => {
     });
 
     return (
-        <Box sx={{ padding: '20px' }}>
-            <Box display="flex" gap="20px">
-                {/* Filter Panel */}
-                <FilterPanel
-                    filters={filters}
-                    dateRange={dateRange}
-                    includeArchived={includeArchived}
-                    handleFilterChange={handleFilterChange}
-                    setDateRange={setDateRange}
-                    setIncludeArchived={setIncludeArchived}
-                    filterBills={filterBills}
-                    clearFilters={clearFilters}
-                    availableBillers={availableBillers}
-                />
-                 <Box sx={{ flex: 1 }}>
-                        {/* Tabs for switching between Data Table and Statistics */}
-                        <Tabs
-                            value={activeTab}
-                            onChange={handleTabChange}
-                            className="main-tabs"
-                        >
-                            <Tab label="Entries" />
-                            <Tab label="Stats" />
-                        </Tabs>
-                        {/* Render content based on the active tab */}
-                        {activeTab === 0 && (
-                            <DataTable
-                                rows={filteredEntries}
-                                columns={columns}
-                                selectionModel={selectionModel}
-                                setSelectionModel={setSelectionModel}
-                                columnVisibilityModel={columnVisibilityModel}
-                                setColumnVisibilityModel={setColumnVisibilityModel}
-                                handleAdd={handleAdd}
-                            />
-                        )}
-                        {activeTab === 1 && (
-                            <Statistics />
-                        )}
-                </Box>
+        <Box display="flex" gap="20px" padding="15px">
+            {/* Filter Panel */}
+            <FilterPanel
+                filters={filters}
+                dateRange={dateRange}
+                includeArchived={includeArchived}
+                handleFilterChange={handleFilterChange}
+                setDateRange={setDateRange}
+                setIncludeArchived={setIncludeArchived}
+                filterBills={filterBills}
+                clearFilters={clearFilters}
+                availableBillers={availableBillers}
+            />
+                <Box flexGrow={1}>
+                    {/* Tabs for switching between Data Table and Statistics */}
+                    <Tabs
+                        value={activeTab}
+                        onChange={handleTabChange}
+                        className="main-tabs"
+                    >
+                        <Tab label="Entries" />
+                        <Tab label="Stats" />
+                    </Tabs>
+                    {/* Render content based on the active tab */}
+                    {activeTab === 0 && (
+                        <DataTable
+                            rows={filteredEntries}
+                            columns={columns}
+                            selectionModel={selectionModel}
+                            setSelectionModel={setSelectionModel}
+                            columnVisibilityModel={columnVisibilityModel}
+                            setColumnVisibilityModel={setColumnVisibilityModel}
+                            handleAdd={handleAdd}
+                        />
+                    )}
+                    {activeTab === 1 && (
+                        <Statistics />
+                    )}
             </Box>
         </Box>
     );

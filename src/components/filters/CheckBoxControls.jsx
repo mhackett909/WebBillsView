@@ -29,7 +29,7 @@ const CheckBoxControls = ({
                 onChange={(value) => handleFilterChange('status', value)}
             />
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', mt: 2, mb: 1 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', mt: 1.5, mb: 1 }}>
             <CheckboxGroup
                 legend="Archives"
                 options={[
