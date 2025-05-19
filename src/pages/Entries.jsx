@@ -306,6 +306,7 @@ const Entries = () => {
                                                 case 'check': return 'Check';
                                                 case 'credit': return 'Credit';
                                                 case 'debit': return 'Debit';
+                                                case 'eft': return 'Electronic Fund Transfer';
                                                 case 'other': return 'Other';
                                                 default: return payment.type;
                                                 }
@@ -320,6 +321,8 @@ const Entries = () => {
                                                 case 'mail': return 'Mail';
                                                 case 'phone': return 'Phone';
                                                 case 'other': return 'Other';
+                                                case 'ach': return 'ACH';
+                                                case 'wire': return 'Wire';
                                                 default: return payment.medium;
                                                 }
                                             })()
@@ -398,6 +401,7 @@ const Entries = () => {
                         <MenuItem value="check">Check</MenuItem>
                         <MenuItem value="credit">Credit</MenuItem>
                         <MenuItem value="debit">Debit</MenuItem>
+                        <MenuItem value="eft">Electronic Fund Transfer</MenuItem>
                         <MenuItem value="other">Other</MenuItem>
                     </TextField>
                     <TextField
@@ -415,6 +419,8 @@ const Entries = () => {
                         <MenuItem value="person">In Person</MenuItem>
                         <MenuItem value="mail">Mail</MenuItem>
                         <MenuItem value="phone">Phone</MenuItem>
+                        <MenuItem value="ach">ACH</MenuItem>
+                        <MenuItem value="wire">Wire</MenuItem>
                         <MenuItem value="other">Other</MenuItem>
                     </TextField>
                     <TextField
