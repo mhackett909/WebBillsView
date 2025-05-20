@@ -85,10 +85,14 @@ const Statistics = () => {
     const incomingByType = Object.entries(
         incoming.filter(paid).reduce((acc, e) => { acc[e.paymentType] = (acc[e.paymentType] || 0) + (e.amount || 0); return acc; }, {})
     );
-    // 13. Average Payment Amount (Outgoing)
-    const avgOutgoing = outgoing.length ? totalOutgoing / outgoing.length : 0;
-    // 14. Average Payment Amount (Incoming)
-    const avgIncoming = incoming.length ? totalIncoming / incoming.length : 0;
+    // 13. Average Payment Amount (Outgoing, paid only)
+    const paidOutgoing = outgoing.filter(paid);
+    const avgPaidOutgoing = paidOutgoing.length ? paidOutgoing.reduce((sum, e) => sum + (e.amount || 0), 0) / paidOutgoing.length : 0;
+    const maxPaidOutgoing = paidOutgoing.length ? Math.max(...paidOutgoing.map(e => e.amount || 0)) : 0;
+    // 14. Average Payment Amount (Incoming, paid only)
+    const paidIncoming = incoming.filter(paid);
+    const avgPaidIncoming = paidIncoming.length ? paidIncoming.reduce((sum, e) => sum + (e.amount || 0), 0) / paidIncoming.length : 0;
+    const maxPaidIncoming = paidIncoming.length ? Math.max(...paidIncoming.map(e => e.amount || 0)) : 0;
 
     // Top 5 Expenses by Type (paid only)
     const topExpensesByType = outgoingByType
@@ -146,16 +150,16 @@ const Statistics = () => {
                 <Grid item xs={12} sm={6} md={6}>
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2" color="success.dark" sx={{ fontWeight: 700 }}>Avg Income Received</Typography>
-                            <Typography variant="h6">{currency(avgIncoming)}</Typography>
+                            <Typography variant="subtitle2" color="success.dark" sx={{ fontWeight: 700 }}>Avg Payment Received</Typography>
+                            <Typography variant="h6">{currency(avgPaidIncoming)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2" color="success.dark" sx={{ fontWeight: 700 }}>Max Income Received</Typography>
-                            <Typography variant="h6">{currency(maxIncoming)}</Typography>
+                            <Typography variant="subtitle2" color="success.dark" sx={{ fontWeight: 700 }}>Max Payment Received</Typography>
+                            <Typography variant="h6">{currency(maxPaidIncoming)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -194,16 +198,16 @@ const Statistics = () => {
                 <Grid item xs={12} sm={6} md={6}>
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2" color="primary.dark" sx={{ fontWeight: 700 }}>Avg Expense Paid</Typography>
-                            <Typography variant="h6">{currency(avgOutgoing)}</Typography>
+                            <Typography variant="subtitle2" color="primary.dark" sx={{ fontWeight: 700 }}>Avg Payment Made</Typography>
+                            <Typography variant="h6">{currency(avgPaidOutgoing)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2" color="primary.dark" sx={{ fontWeight: 700 }}>Max Expense Paid</Typography>
-                            <Typography variant="h6">{currency(maxOutgoing)}</Typography>
+                            <Typography variant="subtitle2" color="primary.dark" sx={{ fontWeight: 700 }}>Max Payment Made</Typography>
+                            <Typography variant="h6">{currency(maxPaidOutgoing)}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
