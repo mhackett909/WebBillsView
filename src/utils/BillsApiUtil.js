@@ -64,10 +64,14 @@ export const fetchEntries = async (token, refreshToken, onTokenRefresh) => {
     }
 };
 
-export const fetchEntryById = async (id, token, refreshToken, onTokenRefresh) => {
+export const fetchEntryById = async (id, token, refreshToken, onTokenRefresh, filter) => {
     try {
+        let url = `/api/v1/entries/${encodeURIComponent(id)}`;
+        if (filter) {
+            url += `?filter=${encodeURIComponent(filter)}`;
+        }
         const response = await fetchWithAutoRefresh({
-            url: `/api/v1/entries/${encodeURIComponent(id)}`,
+            url,
             options: { method: 'GET' },
             token,
             refreshToken,
@@ -242,10 +246,14 @@ export const postPayment = async (paymentData, token, refreshToken, onTokenRefre
     }
 };
 
-export const updatePayment = async (paymentData, token, refreshToken, onTokenRefresh) => {
+export const updatePayment = async (paymentData, token, refreshToken, onTokenRefresh, filter) => {
     try {
+        let url = '/api/v1/payments';
+        if (filter) {
+            url += `?filter=${encodeURIComponent(filter)}`;
+        }
         const response = await fetchWithAutoRefresh({
-            url: '/api/v1/payments',
+            url,
             options: {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -292,11 +300,14 @@ export const createEntry = async (entryData, token, refreshToken, onTokenRefresh
     }
 };
 
-export const editEntry = async (entryData, token, refreshToken, onTokenRefresh) => {
+export const editEntry = async (entryData, token, refreshToken, onTokenRefresh, filter) => {
     try {
-        console.log('Editing entry:', entryData);
+        let url = '/api/v1/entries/edit';
+        if (filter) {
+            url += `?filter=${encodeURIComponent(filter)}`;
+        }
         const response = await fetchWithAutoRefresh({
-            url: '/api/v1/entries/edit',
+            url,
             options: {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -342,10 +353,14 @@ export const getBills = async (token, refreshToken, onTokenRefresh, filter) => {
     }
 };
 
-export const getBillById = async (id, token, refreshToken, onTokenRefresh) => {
+export const getBillById = async (id, token, refreshToken, onTokenRefresh, filter) => {
     try {
+        let url = `/api/v1/bills/${encodeURIComponent(id)}`;
+        if (filter) {
+            url += `?filter=${encodeURIComponent(filter)}`;
+        }
         const response = await fetchWithAutoRefresh({
-            url: `/api/v1/bills/${encodeURIComponent(id)}`,
+            url,
             options: { method: 'GET' },
             token,
             refreshToken,
@@ -487,6 +502,48 @@ export const deletePayment = async (paymentId, token, refreshToken, onTokenRefre
         return null;
     } catch (error) {
         console.error('Error deleting payment:', error);
+        return null;
+    }
+};
+
+export const getRecycleBin = async (token, refreshToken, onTokenRefresh) => {
+    try {
+        const response = await fetchWithAutoRefresh({
+            url: '/api/v1/recycle',
+            options: { method: 'GET' },
+            token,
+            refreshToken,
+            onTokenRefresh
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            return Array.isArray(responseData) ? responseData : [];
+        }
+        console.error('Failed to fetch recycled entries:', response.status, response.statusText);
+        return [];
+    } catch (error) {
+        console.error('Error fetching recycled entries:', error);
+        return [];
+    }
+};
+
+export const getPaymentById = async (id, token, refreshToken, onTokenRefresh) => {
+    try {
+        const response = await fetchWithAutoRefresh({
+            url: `/api/v1/payments/${encodeURIComponent(id)}`,
+            options: { method: 'GET' },
+            token,
+            refreshToken,
+            onTokenRefresh
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        }
+        console.error('Failed to fetch payment by id:', response.status, response.statusText);
+        return null;
+    } catch (error) {
+        console.error('Error fetching payment by id:', error);
         return null;
     }
 };

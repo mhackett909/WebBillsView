@@ -59,14 +59,14 @@ const Account = () => {
   // Handlers for dialog open/close
   const openDialog = (field) => {
     if (field === 'email') {
-      setForm(f => ({ ...f, newEmail: '', recycle: false }));
+      setForm(f => ({ ...f, newEmail: '' }));
     }
     setEditField(field);
     setAlert(null);
   };
   const closeDialog = () => {
     setEditField(null);
-    setForm({ newEmail: '', password: '', mfa: '', newPassword: '', confirmPassword: '', recycle: false });
+    setForm({ newEmail: '', password: '', mfa: '', newPassword: '', confirmPassword: '' });
     setAlert(null);
   };
 

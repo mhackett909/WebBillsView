@@ -95,8 +95,6 @@ const Invoice = () => {
         ...form,
         amount: parseFloat(form.amount),
         date: form.date,
-        recycle: false, // Always pass recycle: false when creating
-        overpaid: false, // Always pass overpaid: false for now
       };
       const result = await createEntry(entryData, jwt, refresh, handleTokenRefresh);
       if (result && result.entryId) {
@@ -125,7 +123,6 @@ const Invoice = () => {
         amount: parseFloat(form.amount),
         date: form.date,
         entryId: parseInt(id, 10), // ensure id is an integer
-        recycle: false, // Always pass recycle: false when editing (not deleting)
       };
       const result = await editEntry(entryData, jwt, refresh, handleTokenRefresh);
       if (result && result.entryId) {
@@ -157,7 +154,7 @@ const Invoice = () => {
     if (!newPartyName.trim()) return;
     setCreatingParty(true);
     try {
-      const billData = { name: newPartyName.trim(), status: 1, recycle: false };
+      const billData = { name: newPartyName.trim(), status: 1 };
       const result = await createBill(billData, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
         setParties((prev) => [...prev, result]);

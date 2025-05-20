@@ -38,7 +38,7 @@ const Archives = () => {
 
   const handleRestore = async (bill) => {
     try {
-      const result = await editBill({ ...bill, recycle: false, status: 1 }, jwt, refresh, handleTokenRefresh);
+      const result = await editBill({ ...bill, status: 1 }, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
         setSnackbar({ open: true, message: 'Party restored successfully.', severity: 'success' });
         fetchArchivedBills();

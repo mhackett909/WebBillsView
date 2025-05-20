@@ -43,7 +43,6 @@ const DatePickers = ({ dateRange, setDateRange }) => {
                             if (newValue) {
                                 const startOfDay = dayjs(newValue).startOf('day');
                                 const endOfDay = dayjs(newValue).endOf('day');
-                                console.log('Date mode:', dateMode);
                                 if (dateMode === 'Single Date') {
                                     setDateRange([startOfDay.toDate(), endOfDay.toDate()]);
                                 } else {
