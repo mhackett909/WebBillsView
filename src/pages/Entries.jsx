@@ -122,7 +122,6 @@ const Entries = () => {
                     ...paymentForm,
                     entryId: Number(id),
                     amount: parseFloat(paymentForm.amount),
-                    recycle: false, // Always pass recycle: false when adding
                 };
                 const result = await postPayment(paymentData, jwt, refresh, handleTokenRefresh);
                 if (result && result.paymentId) {
@@ -144,7 +143,6 @@ const Entries = () => {
                     paymentId: selectedPayment.paymentId,
                     entryId: Number(id),
                     amount: parseFloat(paymentForm.amount),
-                    recycle: false, // Always pass recycle: false when editing (not deleting)
                 };
                 const result = await updatePayment(paymentData, jwt, refresh, handleTokenRefresh);
                 if (result && result.paymentId) {

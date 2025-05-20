@@ -31,7 +31,6 @@ const Bills = () => {
         const data = await getBillById(id, jwt, refresh, handleTokenRefresh);
         if (data) {
           setBill(data);
-          console.log('Fetched bill:', data);
           setEditName(data.name || '');
           setArchived(!data.status);
         }
@@ -63,7 +62,6 @@ const Bills = () => {
         ...bill,
         name: editName.trim(),
         status: archived ? STATUS_INACTIVE : STATUS_ACTIVE,
-        recycle: false
       };
       const result = await editBill(updatedBill, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {

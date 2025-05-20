@@ -109,8 +109,6 @@ const Home = () => {
                 const entryDate = dayjs(entry.date).startOf('day');
                 const start = dateRange[0] ? dayjs(dateRange[0]).startOf('day') : null;
                 const end = dateRange[1] ? dayjs(dateRange[1]).startOf('day') : null;
-                console.log('Start Date:', start);
-                console.log('End Date:', end);
                 if (start && end) return entryDate.isSameOrAfter(start) && entryDate.isSameOrBefore(end);
                 if (start) return entryDate.isSameOrAfter(start);
                 if (end) return entryDate.isSameOrBefore(end);
