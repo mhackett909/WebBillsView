@@ -7,9 +7,9 @@ const currency = (amount) => amount?.toLocaleString('en-US', { style: 'currency'
 const dummyEntries = [
     // Outbound (Expenses)
     { entryId: 1, id: 1001, name: 'Acme Corp', date: '2024-05-01', flow: 'outbound', amount: 1200, status: false, services: 'Consulting', archived: false, paymentType: 'ACH' },
-    { entryId: 2, id: 1002, name: 'Beta LLC', date: '2024-05-03', flow: 'outbound', amount: 900, status: false, services: 'Supplies', archived: false, paymentType: 'Wire' },
+    { entryId: 2, id: 1002, name: 'Beta LLC', date: '2024-05-03', flow: 'outbound', amount: 900, status: true, services: 'Supplies', archived: false, paymentType: 'Wire' }, // unpaid expense
     { entryId: 3, id: 1003, name: 'Gamma Ltd', date: '2024-05-05', flow: 'outbound', amount: 800, status: false, services: 'Maintenance', archived: false, paymentType: 'Check' },
-    { entryId: 4, id: 1004, name: 'Delta Inc', date: '2024-05-07', flow: 'outbound', amount: 1500, status: false, services: 'Hardware', archived: false, paymentType: 'Card' },
+    { entryId: 4, id: 1004, name: 'Delta Inc', date: '2024-05-07', flow: 'outbound', amount: 1500, status: true, services: 'Hardware', archived: false, paymentType: 'Card' }, // unpaid expense
     { entryId: 5, id: 1005, name: 'Omega Inc', date: '2024-05-09', flow: 'outbound', amount: 1100, status: false, services: 'Consulting', archived: false, paymentType: 'Credit' },
     { entryId: 6, id: 1006, name: 'Sigma LLC', date: '2024-05-10', flow: 'outbound', amount: 950, status: false, services: 'Supplies', archived: false, paymentType: 'ACH' },
     { entryId: 7, id: 1007, name: 'Theta Group', date: '2024-05-12', flow: 'outbound', amount: 700, status: false, services: 'Maintenance', archived: false, paymentType: 'Wire' },
@@ -18,9 +18,9 @@ const dummyEntries = [
     { entryId: 10, id: 1010, name: 'Epsilon Ltd', date: '2024-05-16', flow: 'outbound', amount: 1050, status: false, services: 'Supplies', archived: false, paymentType: 'Credit' },
     // Inbound (Income)
     { entryId: 11, id: 1011, name: 'Client A', date: '2024-05-17', flow: 'inbound', amount: 2500, status: false, services: 'Web Dev', archived: false, paymentType: 'Wire' },
-    { entryId: 12, id: 1012, name: 'Client B', date: '2024-05-18', flow: 'inbound', amount: 1800, status: false, services: 'Design', archived: false, paymentType: 'ACH' },
+    { entryId: 12, id: 1012, name: 'Client B', date: '2024-05-18', flow: 'inbound', amount: 1800, status: true, services: 'Design', archived: false, paymentType: 'ACH' }, // income outstanding
     { entryId: 13, id: 1013, name: 'Client C', date: '2024-05-19', flow: 'inbound', amount: 3200, status: false, services: 'Consulting', archived: false, paymentType: 'Wire' },
-    { entryId: 14, id: 1014, name: 'Client D', date: '2024-05-20', flow: 'inbound', amount: 2100, status: false, services: 'Support', archived: false, paymentType: 'ACH' },
+    { entryId: 14, id: 1014, name: 'Client D', date: '2024-05-20', flow: 'inbound', amount: 2100, status: true, services: 'Support', archived: false, paymentType: 'ACH' }, // income outstanding
     { entryId: 15, id: 1015, name: 'Client E', date: '2024-05-21', flow: 'inbound', amount: 1800, status: false, services: 'Consulting', archived: false, paymentType: 'Wire' },
     { entryId: 16, id: 1016, name: 'Client F', date: '2024-05-22', flow: 'inbound', amount: 2700, status: false, services: 'Design', archived: false, paymentType: 'ACH' },
     { entryId: 17, id: 1017, name: 'Client G', date: '2024-05-23', flow: 'inbound', amount: 1950, status: false, services: 'Web Dev', archived: false, paymentType: 'Wire' },
