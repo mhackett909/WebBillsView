@@ -56,9 +56,9 @@ const Statistics = () => {
     // 4. Total Payments Received (Incoming, paid only)
     const totalPaymentsReceived = incoming.filter(paid).reduce((sum, e) => sum + (e.amount || 0), 0);
     // 5. Maximum Outgoing Payment
-    const maxOutgoing = outgoing.length ? Math.max(...outgoing.map(e => e.amount || 0)) : 0;
+    // const maxOutgoing = outgoing.length ? Math.max(...outgoing.map(e => e.amount || 0)) : 0;
     // 6. Maximum Incoming Payment
-    const maxIncoming = incoming.length ? Math.max(...incoming.map(e => e.amount || 0)) : 0;
+    // const maxIncoming = incoming.length ? Math.max(...incoming.map(e => e.amount || 0)) : 0;
     // 7. Total Unpaid Outgoing Expenses
     const unpaidOutgoing = outgoing.filter(unpaid).reduce((sum, e) => sum + (e.amount || 0), 0);
     // 8. Total Unpaid Incoming Revenue
@@ -172,7 +172,7 @@ const Statistics = () => {
                 <Grid item xs={12} sm={4} md={4}>
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2" color="primary.main" sx={{ fontWeight: 700 }}>Paid Expenses</Typography>
+                            <Typography variant="subtitle2" color="primary.main" sx={{ fontWeight: 700 }}>Expenses Paid</Typography>
                             <Typography variant="h6">{currency(totalPaymentsMade)}</Typography>
                         </CardContent>
                     </Card>
@@ -180,7 +180,7 @@ const Statistics = () => {
                 <Grid item xs={12} sm={4} md={4}>
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="subtitle2" color="error.main" sx={{ fontWeight: 700 }}>Unpaid Expenses</Typography>
+                            <Typography variant="subtitle2" color="error.main" sx={{ fontWeight: 700 }}>Expenses Unpaid</Typography>
                             <Typography variant="h6">{currency(unpaidOutgoing)}</Typography>
                         </CardContent>
                     </Card>
