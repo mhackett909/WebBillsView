@@ -32,6 +32,7 @@ const Home = () => {
     ]);
     const [availableBillers, setAvailableBillers] = useState([]);
     const [stats, setStats] = useState(null);
+    const [resetFlag, setResetFlag] = useState(false);
 
     const navigate = useNavigate();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -73,11 +74,11 @@ const Home = () => {
     }, [jwt, refresh, handleTokenRefresh, includeArchived]);
 
     // Helper to map UI filters to API filters for getStats
-    const mapFiltersToStatsParams = () => {
+    const mapFiltersToStatsParams = useCallback(() => {
         let archives;
         if (includeArchived === false) archives = false;
-        else if (includeArchived === 'only') archives = null;
-        else if (includeArchived === true) archives = true;
+        else if (includeArchived === 'only') archives = true;
+        else if (includeArchived === true) archives = null;
         // Map status to 'true' or 'false' string
         let paid;
         if (filters.status === 'paid') paid = true;
@@ -90,18 +91,18 @@ const Home = () => {
             partyList: filters.biller && filters.biller.length > 0 ? filters.biller : undefined,
             min: filters.amountMin !== '' ? filters.amountMin : undefined,
             max: filters.amountMax !== '' ? filters.amountMax : undefined,
-            flow: filters.flow || undefined,
+            flow: filters.flow === 'INCOMING' ? 'income' : filters.flow === 'OUTGOING' ? 'expense' : undefined,
             paid,
             archives,
         };
-    };
+    }, [filters, dateRange, includeArchived]);
 
     // Fetch stats for dashboard
     const loadStats = useCallback(async () => {
         const statsFilters = mapFiltersToStatsParams();
         const result = await getStats(jwt, refresh, handleTokenRefresh, statsFilters);
         setStats(result);
-    }, [jwt, refresh, handleTokenRefresh, filters, dateRange, includeArchived]);
+    }, [jwt, refresh, handleTokenRefresh, mapFiltersToStatsParams]);
 
     useEffect(() => {
         fetchBillers();
@@ -179,9 +180,8 @@ const Home = () => {
         });
         setDateRange([null, null]);
         setIncludeArchived(false); // Reset to show only non-archived
-        // Apply the archived filter immediately after clearing
         setFilteredEntries(entries.filter((entry) => !entry.archived));
-        loadStats(); // Call getStats after clearing filters
+        setResetFlag(flag => !flag); // Toggle flag to trigger effect
     };
 
     // Only run loadEntries on mount
@@ -197,6 +197,11 @@ const Home = () => {
         filterBills();
         // eslint-disable-next-line
     }, [entries]);
+
+    useEffect(() => {
+        // Only run after clearFilters is called
+        loadStats();
+    }, [resetFlag]);
 
     const columns = [
         { field: 'entryId', headerName: 'Invoice #', width: 100 },
