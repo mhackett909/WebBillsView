@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
-import { fetchEntries, getBills } from '../utils/BillsApiUtil';
+import { fetchEntries, getBills, getStats } from '../utils/BillsApiUtil';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -31,6 +31,8 @@ const Home = () => {
         dayjs().startOf('day').toDate(),
     ]);
     const [availableBillers, setAvailableBillers] = useState([]);
+    const [stats, setStats] = useState(null);
+    const [resetFlag, setResetFlag] = useState(false);
 
     const navigate = useNavigate();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -70,6 +72,37 @@ const Home = () => {
             }
         });
     }, [jwt, refresh, handleTokenRefresh, includeArchived]);
+
+    // Helper to map UI filters to API filters for getStats
+    const mapFiltersToStatsParams = useCallback(() => {
+        let archives;
+        if (includeArchived === false) archives = false;
+        else if (includeArchived === 'only') archives = true;
+        else if (includeArchived === true) archives = null;
+        // Map status to 'true' or 'false' string
+        let paid;
+        if (filters.status === 'paid') paid = true;
+        else if (filters.status === 'unpaid') paid = false;
+        else paid = undefined;
+        return {
+            startDate: dateRange[0] ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+            endDate: dateRange[1] ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+            invoiceNum: filters.invoice ? Number(filters.invoice) : undefined,
+            partyList: filters.biller && filters.biller.length > 0 ? filters.biller : undefined,
+            min: filters.amountMin !== '' ? filters.amountMin : undefined,
+            max: filters.amountMax !== '' ? filters.amountMax : undefined,
+            flow: filters.flow === 'INCOMING' ? 'income' : filters.flow === 'OUTGOING' ? 'expense' : undefined,
+            paid,
+            archives,
+        };
+    }, [filters, dateRange, includeArchived]);
+
+    // Fetch stats for dashboard
+    const loadStats = useCallback(async () => {
+        const statsFilters = mapFiltersToStatsParams();
+        const result = await getStats(jwt, refresh, handleTokenRefresh, statsFilters);
+        setStats(result);
+    }, [jwt, refresh, handleTokenRefresh, mapFiltersToStatsParams]);
 
     useEffect(() => {
         fetchBillers();
@@ -134,7 +167,8 @@ const Home = () => {
             filtered = filtered.filter((entry) => !entry.archived);
         }
         setFilteredEntries(filtered);
-    }, [entries, filters, dateRange, includeArchived]);
+        loadStats(); // Call getStats after searching/filtering
+    }, [entries, filters, dateRange, includeArchived, loadStats]);
 
     const clearFilters = () => {
         setFilters({
@@ -146,14 +180,15 @@ const Home = () => {
         });
         setDateRange([null, null]);
         setIncludeArchived(false); // Reset to show only non-archived
-        // Apply the archived filter immediately after clearing
         setFilteredEntries(entries.filter((entry) => !entry.archived));
+        setResetFlag(flag => !flag); // Toggle flag to trigger effect
     };
 
     // Only run loadEntries on mount
     useEffect(() => {
         setActiveTab(0);
         loadEntries();
+        loadStats();
         // eslint-disable-next-line
     }, []);
 
@@ -162,6 +197,12 @@ const Home = () => {
         filterBills();
         // eslint-disable-next-line
     }, [entries]);
+
+    useEffect(() => {
+        // Only run after clearFilters is called
+        loadStats();
+        // eslint-disable-next-line
+    }, [resetFlag]);
 
     const columns = [
         { field: 'entryId', headerName: 'Invoice #', width: 100 },
@@ -224,7 +265,7 @@ const Home = () => {
                     />
                 )}
                 {activeTab === 1 && (
-                    <Statistics />
+                    <Statistics stats={stats} />
                 )}
             </Box>
         </Box>
