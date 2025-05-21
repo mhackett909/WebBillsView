@@ -52,8 +52,17 @@ const Entries = () => {
             setError('');
             try {
                 const entryData = await fetchEntryById(id, jwt, refresh, handleTokenRefresh);
-                setEntry(entryData);
                 const paymentData = await getPayments(id, jwt, refresh, handleTokenRefresh);
+                // Calculate balance
+                let balance = 0.0;
+                if (entryData.paid) {
+                    balance = 0.0;
+                } else {
+                    const paidSum = paymentData.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                    balance = parseFloat(entryData.amount) - paidSum;
+                    if (balance < 0) balance = 0.0;
+                }
+                setEntry({ ...entryData, balance });
                 setPayments(paymentData);
                 // Fetch bill name and status if billId exists
                 if (entryData && entryData.billId) {
@@ -130,7 +139,16 @@ const Entries = () => {
                         fetchEntryById(id, jwt, refresh, handleTokenRefresh),
                         getPayments(id, jwt, refresh, handleTokenRefresh)
                     ]);
-                    setEntry(entryData);
+                    // Recalculate balance after adding payment
+                    let balance = 0.0;
+                    if (entryData.paid) {
+                        balance = 0.0;
+                    } else {
+                        const paidSum = paymentData.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                        balance = parseFloat(entryData.amount) - paidSum;
+                        if (balance < 0) balance = 0.0;
+                    }
+                    setEntry({ ...entryData, balance });
                     setPayments(paymentData);
                     setSnackbar({ open: true, message: 'Payment added successfully!', severity: 'success' });
                     setModalOpen(false);
@@ -151,7 +169,16 @@ const Entries = () => {
                         fetchEntryById(id, jwt, refresh, handleTokenRefresh),
                         getPayments(id, jwt, refresh, handleTokenRefresh)
                     ]);
-                    setEntry(entryData);
+                    // Recalculate balance after editing payment
+                    let balance = 0.0;
+                    if (entryData.paid) {
+                        balance = 0.0;
+                    } else {
+                        const paidSum = paymentData.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                        balance = parseFloat(entryData.amount) - paidSum;
+                        if (balance < 0) balance = 0.0;
+                    }
+                    setEntry({ ...entryData, balance });
                     setPayments(paymentData);
                     setSnackbar({ open: true, message: 'Payment updated successfully!', severity: 'success' });
                     setModalOpen(false);
@@ -188,7 +215,16 @@ const Entries = () => {
                     fetchEntryById(id, jwt, refresh, handleTokenRefresh),
                     getPayments(id, jwt, refresh, handleTokenRefresh)
                 ]);
-                setEntry(entryData);
+                // Recalculate balance after deleting payment
+                let balance = 0.0;
+                if (entryData.paid) {
+                    balance = 0.0;
+                } else {
+                    const paidSum = updatedPayments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                    balance = parseFloat(entryData.amount) - paidSum;
+                    if (balance < 0) balance = 0.0;
+                }
+                setEntry({ ...entryData, balance });
                 setPayments(updatedPayments);
             } else {
                 setSnackbar({ open: true, message: 'Failed to delete payment.', severity: 'error' });
@@ -252,16 +288,28 @@ const Entries = () => {
                     <Grid item xs={12} sm={6} md={4}><strong>Date:</strong> {entry.date}</Grid>
                     <Grid item xs={12} sm={6} md={4}><strong>Amount:</strong> {entry.amount}</Grid>
                     <Grid item xs={12} sm={6} md={4}>
-                        <strong>Paid:</strong> {entry.status ? (
-                            <CheckCircleIcon sx={{ color: green[600], verticalAlign: 'middle' }} titleAccess="Active" />
-                        ) : (
-                            <CancelIcon sx={{ color: red[600], verticalAlign: 'middle' }} titleAccess="Inactive" />
-                        )}
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
                         <strong>Flow:</strong> {entry.flow === 'OUTGOING' ? 'Expense' : entry.flow === 'INCOMING' ? 'Income' : entry.flow}
                     </Grid>
                     <Grid item xs={12} md={12}><strong>Services:</strong> {entry.services}</Grid>
+                    <Grid item xs={12}>
+                        <Box display="flex" justifyContent="center" alignItems="center" sx={{ my: 1 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 700, mr: 1 }}>Balance:</Typography>
+                            <Typography variant="h5" sx={{
+                                fontWeight: 900,
+                                color: Number(entry.balance) === 0 ? 'success.main' : 'error.main',
+                                bgcolor: '#f5f5f5',
+                                px: 2,
+                                py: 0.5,
+                                borderRadius: 2,
+                                boxShadow: 1,
+                                minWidth: 60,
+                                textAlign: 'center',
+                                display: 'inline-block'
+                            }}>
+                                ${Number(entry.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </Typography>
+                        </Box>
+                    </Grid>
                 </Grid>
             </Paper>
             {/* Bottom half: Payments table */}

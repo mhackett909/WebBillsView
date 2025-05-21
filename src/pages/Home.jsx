@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
-import { fetchEntries, getBills } from '../utils/BillsApiUtil';
+import { fetchEntries, getBills, getStats } from '../utils/BillsApiUtil';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -31,6 +31,7 @@ const Home = () => {
         dayjs().startOf('day').toDate(),
     ]);
     const [availableBillers, setAvailableBillers] = useState([]);
+    const [stats, setStats] = useState(null);
 
     const navigate = useNavigate();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -70,6 +71,12 @@ const Home = () => {
             }
         });
     }, [jwt, refresh, handleTokenRefresh, includeArchived]);
+
+    // Fetch stats for dashboard
+    const loadStats = useCallback(async () => {
+        const result = await getStats(jwt, refresh, handleTokenRefresh);
+        setStats(result);
+    }, [jwt, refresh, handleTokenRefresh]);
 
     useEffect(() => {
         fetchBillers();
@@ -154,6 +161,7 @@ const Home = () => {
     useEffect(() => {
         setActiveTab(0);
         loadEntries();
+        loadStats();
         // eslint-disable-next-line
     }, []);
 
@@ -224,7 +232,7 @@ const Home = () => {
                     />
                 )}
                 {activeTab === 1 && (
-                    <Statistics />
+                    <Statistics stats={stats} />
                 )}
             </Box>
         </Box>
