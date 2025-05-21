@@ -72,11 +72,36 @@ const Home = () => {
         });
     }, [jwt, refresh, handleTokenRefresh, includeArchived]);
 
+    // Helper to map UI filters to API filters for getStats
+    const mapFiltersToStatsParams = () => {
+        let archives;
+        if (includeArchived === false) archives = false;
+        else if (includeArchived === 'only') archives = null;
+        else if (includeArchived === true) archives = true;
+        // Map status to 'true' or 'false' string
+        let paid;
+        if (filters.status === 'paid') paid = true;
+        else if (filters.status === 'unpaid') paid = false;
+        else paid = undefined;
+        return {
+            startDate: dateRange[0] ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+            endDate: dateRange[1] ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+            invoiceNum: filters.invoice ? Number(filters.invoice) : undefined,
+            partyList: filters.biller && filters.biller.length > 0 ? filters.biller : undefined,
+            min: filters.amountMin !== '' ? filters.amountMin : undefined,
+            max: filters.amountMax !== '' ? filters.amountMax : undefined,
+            flow: filters.flow || undefined,
+            paid,
+            archives,
+        };
+    };
+
     // Fetch stats for dashboard
     const loadStats = useCallback(async () => {
-        const result = await getStats(jwt, refresh, handleTokenRefresh);
+        const statsFilters = mapFiltersToStatsParams();
+        const result = await getStats(jwt, refresh, handleTokenRefresh, statsFilters);
         setStats(result);
-    }, [jwt, refresh, handleTokenRefresh]);
+    }, [jwt, refresh, handleTokenRefresh, filters, dateRange, includeArchived]);
 
     useEffect(() => {
         fetchBillers();
@@ -141,7 +166,8 @@ const Home = () => {
             filtered = filtered.filter((entry) => !entry.archived);
         }
         setFilteredEntries(filtered);
-    }, [entries, filters, dateRange, includeArchived]);
+        loadStats(); // Call getStats after searching/filtering
+    }, [entries, filters, dateRange, includeArchived, loadStats]);
 
     const clearFilters = () => {
         setFilters({
@@ -155,6 +181,7 @@ const Home = () => {
         setIncludeArchived(false); // Reset to show only non-archived
         // Apply the archived filter immediately after clearing
         setFilteredEntries(entries.filter((entry) => !entry.archived));
+        loadStats(); // Call getStats after clearing filters
     };
 
     // Only run loadEntries on mount
