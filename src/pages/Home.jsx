@@ -201,6 +201,7 @@ const Home = () => {
     useEffect(() => {
         // Only run after clearFilters is called
         loadStats();
+        // eslint-disable-next-line
     }, [resetFlag]);
 
     const columns = [
