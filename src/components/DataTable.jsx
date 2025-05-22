@@ -8,6 +8,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import PlusOneIcon from '@mui/icons-material/PlusOne';
 
 const DataTable = ({
     rows,
@@ -84,12 +85,27 @@ const DataTable = ({
         if (col.field === 'status') {
             return {
                 ...col,
-                renderCell: (params) =>
-                    params.row.status ? (
-                        <CheckCircleIcon color="success" titleAccess="Paid" />
-                    ) : (
-                        <CancelIcon color="error" titleAccess="Unpaid" />
-                    ),
+                renderCell: (params) => {
+                    const isPaid = params.row.status;
+                    const isOverpaid = params.row.overpaid;
+                    return (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            {isPaid ? (
+                                <>
+                                    <CheckCircleIcon color="success" titleAccess="Paid" />
+                                    {isOverpaid && (
+                                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                                            {/* Blue +1 icon for overpaid */}
+                                            <PlusOneIcon color="info" fontSize="small" titleAccess="Overpaid" />
+                                        </span>
+                                    )}
+                                </>
+                            ) : (
+                                <CancelIcon color="error" titleAccess="Unpaid" />
+                            )}
+                        </span>
+                    );
+                },
             };
         }
         // Archived column

@@ -49,14 +49,14 @@ const Statistics = ({ stats }) => {
                                     <CardContent sx={{ textAlign: 'center' }}>
                                         <Typography variant="subtitle2" color="success.main" sx={{ fontWeight: 700 }}>Received</Typography>
                                         <Typography variant="h6" sx={{ color: 'success.main' }}>
-                                            {s.totalReceivedPaymentAmount > s.totalIncomeAmount
-                                                ? <>
+                                            {(s.totalIncomeOverpaid && s.totalIncomeOverpaid > 0) ? (
+                                                <>
                                                     <span style={{ color: '#111' }}>{currency(s.totalIncomeAmount)}</span>{' '}
-                                                    <span style={{ color: '#0288d1', fontWeight: 500 }}>
-                                                        {`(+${currency(s.totalReceivedPaymentAmount - s.totalIncomeAmount)})`}
-                                                    </span>
+                                                    <span style={{ color: '#0288d1', fontWeight: 500 }}>{`(+${currency(s.totalIncomeOverpaid)})`}</span>
                                                   </>
-                                                : currency(s.totalReceivedPaymentAmount)}
+                                            ) : (
+                                                currency(s.totalReceivedPaymentAmount)
+                                            )}
                                         </Typography>
                                     </CardContent>
                                 </Card>
@@ -112,14 +112,14 @@ const Statistics = ({ stats }) => {
                                     <CardContent sx={{ textAlign: 'center' }}>
                                         <Typography variant="subtitle2" color="primary.main" sx={{ fontWeight: 700 }}>Paid</Typography>
                                         <Typography variant="h6" sx={{ color: 'primary.main' }}>
-                                            {s.totalSentPaymentAmount > s.totalExpenseAmount
-                                                ? <>
+                                            {(s.totalExpenseOverpaid && s.totalExpenseOverpaid > 0) ? (
+                                                <>
                                                     <span style={{ color: '#111' }}>{currency(s.totalExpenseAmount)}</span>{' '}
-                                                    <span style={{ color: '#7c4dff', fontWeight: 500 }}>
-                                                        {`(+${currency(s.totalSentPaymentAmount - s.totalExpenseAmount)})`}
-                                                    </span>
-                                                  </>
-                                                : currency(s.totalSentPaymentAmount)}
+                                                    <span style={{ color: '#7c4dff', fontWeight: 500 }}>{`(+${currency(s.totalExpenseOverpaid)})`}</span>
+                                                </>
+                                            ) : (
+                                                currency(s.totalSentPaymentAmount)
+                                            )}
                                         </Typography>
                                     </CardContent>
                                 </Card>
