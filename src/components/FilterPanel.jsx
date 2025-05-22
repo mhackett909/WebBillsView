@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import DatePickers from './filters/DatePickers';
 import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
-import PartySelect from './filters/PartySelect';
+import EntitySelect from './filters/EntitySelect';
 import CheckBoxControls from './filters/CheckBoxControls';
 import FilterButtons from './filters/FilterButtons';
 import '../styles/filters.css';
@@ -24,7 +24,7 @@ const FilterPanel = ({
                 invoice={filters.invoice}
                 handleFilterChange={handleFilterChange}
             />
-            <PartySelect
+            <EntitySelect
                 billers={availableBillers}
                 selectedBillers={filters.biller}
                 handleFilterChange={handleFilterChange}

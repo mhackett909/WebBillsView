@@ -56,7 +56,7 @@ const RecycleBin = () => {
       let result = null;
       if (item.entityType === 'Party') {
         const obj = await getBillById(item.entityId, jwt, refresh, handleTokenRefresh, 'bypass');
-        if (!obj) throw new Error('Party not found');
+        if (!obj) throw new Error('Entity not found');
         obj.recycle = false;
         result = await editBill(obj, jwt, refresh, handleTokenRefresh);
       } else if (item.entityType === 'Entry') {
@@ -94,9 +94,9 @@ const RecycleBin = () => {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Entity</TableCell>
+              <TableCell>Component</TableCell>
               <TableCell>Deletion Date</TableCell>
-              <TableCell>Party Name</TableCell>
+              <TableCell>Entity Name</TableCell>
               <TableCell>Invoice Number</TableCell>
               <TableCell>Entry/Payment Date</TableCell>
               <TableCell>Amount</TableCell>

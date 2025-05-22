@@ -199,11 +199,11 @@ const Invoice = () => {
           <Typography variant="h4" mb={2}>{id ? 'Edit Invoice' : 'New Invoice'}</Typography>
           <form onSubmit={id ? handleEditEntrySubmit : handleSubmit}>
             <FormControl fullWidth margin="normal" required>
-              <InputLabel>Party</InputLabel>
+              <InputLabel>Entity</InputLabel>
               <Select
                 name="billId"
                 value={form.billId}
-                label="Party"
+                label="Entity"
                 onChange={handleChange}
               >
                 {parties.map((bill) => (
@@ -218,7 +218,7 @@ const Invoice = () => {
                 fullWidth
                 onClick={handleNewPartyOpen}
               >
-                New Party
+                New Entity
               </Button>
               <Button
                 variant="outlined"
@@ -229,7 +229,7 @@ const Invoice = () => {
                   if (form.billId) navigate(`/bills/${form.billId}`);
                 }}
               >
-                Edit Party
+                Edit Entity
               </Button>
             </Box>
             <TextField
@@ -351,13 +351,13 @@ const Invoice = () => {
             )}
           </form>
           <Dialog open={newPartyOpen} onClose={handleNewPartyClose}>
-            <DialogTitle>New Party</DialogTitle>
+            <DialogTitle>New Entity</DialogTitle>
             <form onSubmit={handleNewPartySubmit}>
               <DialogContent>
                 <TextField
                   autoFocus
                   margin="dense"
-                  label="Party Name"
+                  label="Entity Name"
                   type="text"
                   fullWidth
                   value={newPartyName}

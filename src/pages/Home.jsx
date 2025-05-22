@@ -207,7 +207,7 @@ const Home = () => {
     const columns = [
         { field: 'entryId', headerName: 'Invoice #', width: 100 },
         { field: 'billId', headerName: 'Bill ID', width: 100, hide: true },
-        { field: 'name', headerName: 'Party', width: 250 },
+        { field: 'name', headerName: 'Entity', width: 250 },
         { field: 'date', headerName: 'Date', width: 150 },
         { field: 'flow', headerName: 'Flow', width: 150 },
         { field: 'amount', headerName: 'Amount', width: 130 },

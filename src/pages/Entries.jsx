@@ -14,6 +14,9 @@ import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PlusOneIcon from '@mui/icons-material/PlusOne';
 
 const Entries = () => {
     const { id } = useParams();
@@ -258,8 +261,8 @@ const Entries = () => {
             {/* Read-only banner if bill is archived */}
             {!billEnabled && (
                 <Alert severity="warning" sx={{ mb: 3 }}>
-                    This entry is <strong>read only</strong> because the party is archived.<br />
-                    To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar to restore the party to an active state.
+                    This entry is <strong>read only</strong> because the entity is archived.<br />
+                    To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar to restore the entity to an active state.
                 </Alert>
             )}
             {/* Top half: Entry details */}
@@ -280,16 +283,37 @@ const Entries = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6} md={4}><strong>Entry ID:</strong> {entry.entryId}</Grid>
                     <Grid item xs={12} sm={6} md={4}>
-                        <strong>Party:</strong> {billName}
+                        <strong>Entity:</strong> {billName}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}><strong>Date:</strong> {entry.date}</Grid>
                     <Grid item xs={12} sm={6} md={4}><strong>Amount:</strong> {entry.amount}</Grid>
                     <Grid item xs={12} sm={6} md={4}>
+                        <strong>Paid:</strong>{' '}
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, verticalAlign: 'middle' }}>
+                            {entry.status ? (
+                                <>
+                                    <CheckCircleIcon color="success" titleAccess="Paid" />
+                                    {entry.overpaid && (
+                                        <PlusOneIcon
+                                            fontSize="medium"
+                                            titleAccess="Overpaid"
+                                            style={{ color: entry.flow === 'OUTGOING' ? '#7c4dff' : '#0288d1' }}
+                                        />
+                                    )}
+                                </>
+                            ) : (
+                                <CancelIcon color="error" titleAccess="Unpaid" />
+                            )}
+                        </span>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4}>
                         <strong>Flow:</strong> {entry.flow === 'OUTGOING' ? 'Expense' : entry.flow === 'INCOMING' ? 'Income' : entry.flow}
                     </Grid>
-                    <Grid item xs={12} md={12}><strong>Services:</strong> {entry.services}</Grid>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <strong>Services:</strong> {entry.services}
+                    </Grid>
                     <Grid item xs={12}>
-                        <Box display="flex" justifyContent="center" alignItems="center" sx={{ my: 1 }}>
+                        <Box display="flex" alignItems="center" justifyContent="center" sx={{ my: 1 }}>
                             <Typography variant="h6" sx={{ fontWeight: 700, mr: 1 }}>Balance:</Typography>
                             <Typography variant="h5" sx={{
                                 fontWeight: 900,
@@ -303,7 +327,24 @@ const Entries = () => {
                                 textAlign: 'center',
                                 display: 'inline-block'
                             }}>
-                                ${Number(entry.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                {Number(entry.balance) === 0 && entry.amount && payments && payments.length > 0 ? (
+                                    (() => {
+                                        const paidSum = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                                        const overpaid = paidSum - parseFloat(entry.amount);
+                                        const isOutgoing = entry.flow === 'OUTGOING';
+                                        const overpaidColor = isOutgoing ? '#7c4dff' : '#0288d1';
+                                        return overpaid > 0 ? (
+                                            <>
+                                                $0.00{' '}
+                                                <span style={{ color: overpaidColor, fontWeight: 700, fontSize: '1.1em' }}>
+                                                    {`(+${overpaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`}
+                                                </span>
+                                            </>
+                                        ) : '$0.00';
+                                    })()
+                                ) : (
+                                    `$${Number(entry.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                )}
                             </Typography>
                         </Box>
                     </Grid>

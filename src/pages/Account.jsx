@@ -3,6 +3,7 @@ import { Box, Card, CardContent, Typography, Button, Grid, TextField, Switch, Fo
 import { useNavigate } from 'react-router-dom';
 import { getUser, resendVerificationEmail, updateUser } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
+import dayjs from 'dayjs';
 
 const Account = () => {
   const { username, jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -173,10 +174,10 @@ const Account = () => {
           <Typography variant="h5" sx={{ mb: 2 }}>Account Information</Typography>
           <Grid container spacing={2}>
             <Grid item xs={6}><Typography variant="subtitle2">Username</Typography></Grid>
-            <Grid item xs={6}><Typography>{user.username}</Typography></Grid>
+            <Grid item xs={6}><Typography sx={{ fontWeight: 'bold', color: 'secondary.main', fontSize: '1.1rem', letterSpacing: 0.5 }}>{user.username?.toUpperCase()}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Email</Typography></Grid>
             <Grid item xs={6}>
-              <Typography sx={{ display: 'inline', mr: 1 }}>{user.email}</Typography>
+              <Typography sx={{ display: 'inline', mr: 1 }}>{user.email?.toLowerCase()}</Typography>
               {emailVerificationEnabled && (
                 user.emailVerified ? (
                   <Chip label="Verified" color="success" size="small" />
@@ -194,9 +195,9 @@ const Account = () => {
             <Grid item xs={6}><Typography variant="subtitle2">User Role</Typography></Grid>
             <Grid item xs={6}><Typography>{user.roles === 'ROLE_ADMIN' ? 'Admin' : user.roles === 'ROLE_USER' ? 'User' : user.roles}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Account Created</Typography></Grid>
-            <Grid item xs={6}><Typography>{user.createdAt}</Typography></Grid>
+            <Grid item xs={6}><Typography>{user.createdAt ? dayjs(user.createdAt).format('YYYY-MM-DD HH:mm') : ''}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Last Login</Typography></Grid>
-            <Grid item xs={6}><Typography>{user.lastLogin}</Typography></Grid>
+            <Grid item xs={6}><Typography>{user.lastLogin ? dayjs(user.lastLogin).format('YYYY-MM-DD HH:mm') : ''}</Typography></Grid>
             {/* MFA label and switch, both hidden if feature flag is off */}
             {mfaEnabledFF && (
               <>
