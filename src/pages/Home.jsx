@@ -18,36 +18,29 @@ const Home = () => {
     const [filteredEntries, setFilteredEntries] = useState([]);
     const [activeTab, setActiveTab] = useState(0);
     // Initialize filters and includeArchived from sessionStorage if available
+    // Default filters object for reuse
+    const defaultFilters = {
+        invoice: '',
+        biller: [],
+        amountMin: '',
+        amountMax: '',
+        flow: '',
+        status: '',
+    };
+
     const getInitialFilters = () => {
         const storedFilters = sessionStorage.getItem('filters');
         if (storedFilters) {
             try {
                 const parsed = JSON.parse(storedFilters);
                 if (parsed && typeof parsed === 'object') {
-                    return {
-                        invoice: '',
-                        biller: [],
-                        date: '',
-                        amountMin: '',
-                        amountMax: '',
-                        flow: '',
-                        status: '',
-                        ...parsed
-                    };
+                    return { ...defaultFilters, ...parsed };
                 }
             } catch (e) {
                 // Ignore parse errors
             }
         }
-        return {
-            invoice: '',
-            biller: [],
-            date: '',
-            amountMin: '',
-            amountMax: '',
-            flow: '',
-            status: '',
-        };
+        return { ...defaultFilters };
     };
 
     const getInitialIncludeArchived = () => {
@@ -233,22 +226,14 @@ const Home = () => {
     }, [entries, filters, dateRange, includeArchived, dateMode, loadStats]);
 
     const clearFilters = () => {
-        const clearedFilters = {
-            invoice: '',
-            biller: [],
-            amountMin: '',
-            amountMax: '',
-            flow: '',
-            status: '',
-        };
-        setFilters(clearedFilters);
+        setFilters(defaultFilters);
         setDateRange([null, null]);
         setDateMode('Date Range');
         setIncludeArchived(false); // Reset to show only non-archived
         setFilteredEntries(entries.filter((entry) => !entry.archived));
         setResetFlag(flag => !flag); // Toggle flag to trigger effect
         // Save cleared filters, includeArchived, dateRange, and dateMode to session storage
-        sessionStorage.setItem('filters', JSON.stringify(clearedFilters));
+        sessionStorage.setItem('filters', JSON.stringify(defaultFilters));
         sessionStorage.setItem('includeArchived', 'false');
         sessionStorage.setItem('dateRange', JSON.stringify([null, null]));
         sessionStorage.setItem('dateMode', 'Date Range');
