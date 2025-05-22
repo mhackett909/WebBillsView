@@ -5,9 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import '../../styles/filters.css'; // Import the CSS file
 import dayjs from 'dayjs';
 
-const DatePickers = ({ dateRange, setDateRange }) => {
-    const [dateMode, setDateMode] = useState('Date Range'); // Default to "Date Range"
-
+const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
     const handleDateModeChange = (newMode) => {
         setDateMode(newMode);
         if (newMode === 'Single Date') {

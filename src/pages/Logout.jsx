@@ -12,6 +12,10 @@ const Logout = () => {
     sessionStorage.removeItem('username');
     sessionStorage.removeItem('jwt');
     sessionStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('filters');
+    sessionStorage.removeItem('includeArchived');
+    sessionStorage.removeItem('dateRange');
+    sessionStorage.removeItem('dateMode');
     navigate('/', { state: { showLogoutSnackbar: true }, replace: true });
   }, [navigate, setJwt, setUsername]);
 

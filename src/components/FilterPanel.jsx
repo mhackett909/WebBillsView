@@ -10,9 +10,11 @@ import '../styles/filters.css';
 const FilterPanel = ({
     filters,
     dateRange,
+    dateMode,
     includeArchived,
     handleFilterChange,
     setDateRange,
+    setDateMode,
     setIncludeArchived,
     filterBills,
     clearFilters,
@@ -29,7 +31,12 @@ const FilterPanel = ({
                 selectedBillers={filters.biller}
                 handleFilterChange={handleFilterChange}
             />
-            <DatePickers dateRange={dateRange} setDateRange={setDateRange} />
+            <DatePickers 
+                dateRange={dateRange} 
+                setDateRange={setDateRange}
+                dateMode={dateMode}
+                setDateMode={setDateMode}
+            />
             <AmountRange filters={filters} handleFilterChange={handleFilterChange} />
             <CheckBoxControls
                 filters={filters}

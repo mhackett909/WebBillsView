@@ -64,8 +64,8 @@ const Statistics = ({ stats }) => {
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card variant="outlined">
                                     <CardContent sx={{ textAlign: 'center' }}>
-                                        <Typography variant="subtitle2" color="warning.main" sx={{ fontWeight: 700 }}>Outstanding</Typography>
-                                        <Typography variant="h6">{currency(s.totalIncomeOutstanding)}</Typography>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#7c4dff' }}>Outstanding</Typography>
+                                        <Typography variant="h6" sx={{ color: '#111' }}>{currency(s.totalIncomeOutstanding)}</Typography>
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -100,7 +100,7 @@ const Statistics = ({ stats }) => {
                             <Grid item xs={12}>
                                 <Card variant="outlined">
                                     <CardContent sx={{ textAlign: 'center' }}>
-                                        <Typography variant="subtitle2" color="#7c4dff" sx={{ fontWeight: 700 }}>Total Expenses</Typography>
+                                        <Typography variant="subtitle2" color="#ed6c02" sx={{ fontWeight: 700 }}>Total Expenses</Typography>
                                         <Typography variant="h6">{currency(s.totalExpenseAmount)}</Typography>
                                     </CardContent>
                                 </Card>
@@ -115,7 +115,7 @@ const Statistics = ({ stats }) => {
                                             {(s.totalExpenseOverpaid && s.totalExpenseOverpaid > 0) ? (
                                                 <>
                                                     <span style={{ color: '#111' }}>{currency(s.totalSentPaymentAmount)}</span>{' '}
-                                                    <span style={{ color: '#7c4dff', fontWeight: 500 }}>{`(+${currency(s.totalExpenseOverpaid)})`}</span>
+                                                    <span style={{ color: '#ed6c02', fontWeight: 500 }}>{`(+${currency(s.totalExpenseOverpaid)})`}</span>
                                                 </>
                                             ) : (
                                                 currency(s.totalSentPaymentAmount)
@@ -197,7 +197,7 @@ const Statistics = ({ stats }) => {
                                 {top5(s.topExpenseRecipients).length > 0 ? (
                                     top5(s.topExpenseRecipients).map(([party, amt]) => (
                                         <Typography key={party}>
-                                            <span style={{ color: '#111' }}>{party}</span>: <span style={{ color: '#7c4dff', fontWeight: 500 }}>{currency(amt)}</span>
+                                            <span style={{ color: '#111' }}>{party}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
                                         </Typography>
                                     ))
                                 ) : (
@@ -211,7 +211,7 @@ const Statistics = ({ stats }) => {
                                 {top5(s.topExpenseTypes).length > 0 ? (
                                     top5(s.topExpenseTypes).map(([type, amt]) => (
                                         <Typography key={type}>
-                                            <span style={{ color: '#111' }}>{type}</span>: <span style={{ color: '#7c4dff', fontWeight: 500 }}>{currency(amt)}</span>
+                                            <span style={{ color: '#111' }}>{type}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
                                         </Typography>
                                     ))
                                 ) : (
