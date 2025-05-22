@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 import { fetchEntries, getBills, getStats } from '../utils/BillsApiUtil';
@@ -15,7 +15,6 @@ dayjs.extend(isSameOrBefore);
 
 const Home = () => {
     const [entries, setEntries] = useState([]);
-    const [filteredEntries, setFilteredEntries] = useState([]);
     const [activeTab, setActiveTab] = useState(0);
     // Initialize filters and includeArchived from sessionStorage if available
     // Default filters object for reuse
@@ -83,6 +82,9 @@ const Home = () => {
     const [availableBillers, setAvailableBillers] = useState([]);
     const [stats, setStats] = useState(null);
     const [resetFlag, setResetFlag] = useState(false);
+    const filterParamRef = useRef(getInitialFilters());
+    const dateRangeRef = useRef(getInitialDateRange());
+    const includeArchivedRef = useRef(getInitialIncludeArchived);
 
     const navigate = useNavigate();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -93,13 +95,43 @@ const Home = () => {
         if (typeof setRefresh === 'function') setRefresh(newRefreshToken);
     }, [setJwt, setRefresh]);
 
-    // Move loadEntries outside useEffect and wrap in useCallback
+    // Helper to map UI filters to API filters for backend
+    const mapFiltersToEntryParams = useCallback((f = filterParamRef.current, dr = dateRangeRef.current, ia = includeArchivedRef.current) => {
+        let archives;
+        if (ia === false) archives = false;
+        else if (ia === 'only') archives = true;
+        else if (ia === true) archives = null;
+        // Map status to 'true' or 'false' string
+        let paid;
+        if (f.status === 'paid') paid = true;
+        else if (f.status === 'unpaid') paid = false;
+        else paid = undefined;
+        return {
+            startDate: dr[0] ? dayjs(dr[0]).format('YYYY-MM-DD') : undefined,
+            endDate: dr[1] ? dayjs(dr[1]).format('YYYY-MM-DD') : undefined,
+            invoiceNum: f.invoice ? Number(f.invoice) : undefined,
+            partyList: f.biller && f.biller.length > 0 ? f.biller : undefined,
+            min: f.amountMin !== '' ? f.amountMin : undefined,
+            max: f.amountMax !== '' ? f.amountMax : undefined,
+            flow: f.flow === 'INCOMING' ? 'income' : f.flow === 'OUTGOING' ? 'expense' : undefined,
+            paid,
+            archives,
+        };
+    }, []);
+
+    // Fetch stats for dashboard
+    const loadStats = useCallback(async () => {
+        const params = mapFiltersToEntryParams();
+        const result = await getStats(jwt, refresh, handleTokenRefresh, params);
+        setStats(result);
+    }, [jwt, refresh, handleTokenRefresh, mapFiltersToEntryParams]);
+
+    // Fetch entries from backend using filters
     const loadEntries = useCallback(async () => {
-        const fetchedEntries = await fetchEntries(jwt, refresh, handleTokenRefresh);
+        const params = mapFiltersToEntryParams();
+        const fetchedEntries = await fetchEntries(jwt, refresh, handleTokenRefresh, params);
         setEntries(fetchedEntries);
-        // Only show non-archived by default
-        setFilteredEntries(fetchedEntries.filter((entry) => !entry.archived));
-    }, [jwt, refresh, handleTokenRefresh]);
+    }, [jwt, refresh, handleTokenRefresh, mapFiltersToEntryParams]);
 
     // Fetch billers based on includeArchived filter
     const fetchBillers = useCallback(async () => {
@@ -118,41 +150,23 @@ const Home = () => {
             if (allSelectedStillAvailable) {
                 return prev;
             } else {
-                return { ...prev, biller: [] };
+                const updated = { ...prev, biller: [] };
+                filterParamRef.current = updated;
+                return updated;
             }
         });
     }, [jwt, refresh, handleTokenRefresh, includeArchived]);
 
-    // Helper to map UI filters to API filters for getStats
-    const mapFiltersToStatsParams = useCallback(() => {
-        let archives;
-        if (includeArchived === false) archives = false;
-        else if (includeArchived === 'only') archives = true;
-        else if (includeArchived === true) archives = null;
-        // Map status to 'true' or 'false' string
-        let paid;
-        if (filters.status === 'paid') paid = true;
-        else if (filters.status === 'unpaid') paid = false;
-        else paid = undefined;
-        return {
-            startDate: dateRange[0] ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
-            endDate: dateRange[1] ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
-            invoiceNum: filters.invoice ? Number(filters.invoice) : undefined,
-            partyList: filters.biller && filters.biller.length > 0 ? filters.biller : undefined,
-            min: filters.amountMin !== '' ? filters.amountMin : undefined,
-            max: filters.amountMax !== '' ? filters.amountMax : undefined,
-            flow: filters.flow === 'INCOMING' ? 'income' : filters.flow === 'OUTGOING' ? 'expense' : undefined,
-            paid,
-            archives,
-        };
-    }, [filters, dateRange, includeArchived]);
-
-    // Fetch stats for dashboard
-    const loadStats = useCallback(async () => {
-        const statsFilters = mapFiltersToStatsParams();
-        const result = await getStats(jwt, refresh, handleTokenRefresh, statsFilters);
-        setStats(result);
-    }, [jwt, refresh, handleTokenRefresh, mapFiltersToStatsParams]);
+        // Central filterBills function: calls loadEntries, loadStats, and sets session storage
+    const filterBills = useCallback(() => {
+        // Save filters, includeArchived, dateRange, and dateMode to session storage
+        sessionStorage.setItem('filters', JSON.stringify(filters));
+        sessionStorage.setItem('includeArchived', includeArchived);
+        sessionStorage.setItem('dateRange', JSON.stringify(dateRange));
+        sessionStorage.setItem('dateMode', dateMode);
+        loadEntries();
+        loadStats();
+    }, [filters, includeArchived, dateRange, dateMode, loadEntries, loadStats]);
 
     useEffect(() => {
         fetchBillers();
@@ -163,81 +177,43 @@ const Home = () => {
     };
 
     const handleFilterChange = (field, value) => {
-        setFilters((prev) => ({ ...prev, [field]: value }));
+        setFilters((prev) => {
+            const updated = { ...prev, [field]: value };
+            filterParamRef.current = updated;
+            return updated;
+        });
     };
 
     const handleAdd = () => {
-        console.log('Add New Invoice button clicked');
         navigate('/invoice');
     };
 
-    // Memoize filterBills to avoid infinite loop in useEffect
-    const filterBills = useCallback(() => {
-        let filtered = entries;
-        if (filters.invoice) {
-            filtered = filtered.filter((entry) =>
-                entry.entryId && entry.entryId.toString().includes(filters.invoice)
-            );
-        }
-        if (filters.biller.length > 0) {
-            filtered = filtered.filter((entry) =>
-                filters.biller.some((biller) =>
-                    entry.name.toLowerCase().includes(biller.toLowerCase())
-                )
-            );
-        }
-        if (dateRange[0] || dateRange[1]) {
-            filtered = filtered.filter((entry) => {
-                // Always compare using dayjs for both entry and range
-                const entryDate = dayjs(entry.date).startOf('day');
-                const start = dateRange[0] ? dayjs(dateRange[0]).startOf('day') : null;
-                const end = dateRange[1] ? dayjs(dateRange[1]).startOf('day') : null;
-                if (start && end) return entryDate.isSameOrAfter(start) && entryDate.isSameOrBefore(end);
-                if (start) return entryDate.isSameOrAfter(start);
-                if (end) return entryDate.isSameOrBefore(end);
-                return true;
-            });
-        }
-        if (filters.amountMin !== '') {
-            filtered = filtered.filter((entry) => entry.amount >= filters.amountMin);
-        }
-        if (filters.amountMax !== '') {
-            filtered = filtered.filter((entry) => entry.amount <= filters.amountMax);
-        }
-        if (filters.flow && filters.flow !== '') {
-            filtered = filtered.filter((entry) => entry.flow === filters.flow);
-        }
-        if (filters.status && filters.status !== '') {
-            const statusBool = filters.status === 'unpaid' ? false : true;
-            filtered = filtered.filter((entry) => entry.status === statusBool);
-        }
-        if (includeArchived === 'only') {
-            filtered = filtered.filter((entry) => entry.archived === true);
-        } else if (includeArchived !== true) {
-            filtered = filtered.filter((entry) => !entry.archived);
-        }
-        setFilteredEntries(filtered);
-        // Save filters, includeArchived, dateRange, and dateMode to session storage
-        sessionStorage.setItem('filters', JSON.stringify(filters));
-        sessionStorage.setItem('includeArchived', includeArchived);
-        sessionStorage.setItem('dateRange', JSON.stringify(dateRange));
-        sessionStorage.setItem('dateMode', dateMode);
-        loadStats(); // Call getStats after searching/filtering
-    }, [entries, filters, dateRange, includeArchived, dateMode, loadStats]);
+    const handleDateRangeChange = (newRange) => {
+        setDateRange(newRange);
+        dateRangeRef.current = newRange;
+    };
+
+    const handleIncludeArchivedChange = (newValue) => {
+        setIncludeArchived(newValue);
+        includeArchivedRef.current = newValue;
+    };
 
     const clearFilters = () => {
         setFilters(defaultFilters);
-        setDateRange([null, null]);
+        filterParamRef.current = defaultFilters;
+        handleDateRangeChange([null, null]);
         setDateMode('Date Range');
-        setIncludeArchived(false); // Reset to show only non-archived
-        setFilteredEntries(entries.filter((entry) => !entry.archived));
+        handleIncludeArchivedChange(false); // Reset to show only non-archived
         setResetFlag(flag => !flag); // Toggle flag to trigger effect
         // Save cleared filters, includeArchived, dateRange, and dateMode to session storage
         sessionStorage.setItem('filters', JSON.stringify(defaultFilters));
         sessionStorage.setItem('includeArchived', 'false');
         sessionStorage.setItem('dateRange', JSON.stringify([null, null]));
         sessionStorage.setItem('dateMode', 'Date Range');
+        loadEntries();
+        loadStats();
     };
+
 
     // Only run loadEntries on mount
     useEffect(() => {
@@ -246,12 +222,6 @@ const Home = () => {
         loadStats();
         // eslint-disable-next-line
     }, []);
-
-    // Run filterBills after entries are loaded
-    useEffect(() => {
-        filterBills();
-        // eslint-disable-next-line
-    }, [entries]);
 
     useEffect(() => {
         // Only run after clearFilters is called
@@ -292,9 +262,9 @@ const Home = () => {
                 dateMode={dateMode}
                 includeArchived={includeArchived}
                 handleFilterChange={handleFilterChange}
-                setDateRange={setDateRange}
+                setDateRange={handleDateRangeChange}
                 setDateMode={setDateMode}
-                setIncludeArchived={setIncludeArchived}
+                setIncludeArchived={handleIncludeArchivedChange}
                 filterBills={filterBills}
                 clearFilters={clearFilters}
                 availableBillers={availableBillers}
@@ -312,7 +282,7 @@ const Home = () => {
                 {/* Render content based on the active tab */}
                 {activeTab === 0 && (
                     <DataTable
-                        rows={filteredEntries}
+                        rows={entries}
                         columns={columns}
                         columnVisibilityModel={columnVisibilityModel}
                         setColumnVisibilityModel={setColumnVisibilityModel}

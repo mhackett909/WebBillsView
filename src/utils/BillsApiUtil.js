@@ -43,10 +43,26 @@ async function fetchWithAutoRefresh({
     }
 }
 
-export const fetchEntries = async (token, refreshToken, onTokenRefresh) => {
+export const fetchEntries = async (token, refreshToken, onTokenRefresh, filters) => {
     try {
+        let url = '/api/v1/entries';
+        if (filters && typeof filters === 'object' && Object.keys(filters).length > 0) {
+            // Convert filters object to query string
+            const params = new URLSearchParams();
+            for (const key in filters) {
+                if (filters[key] !== undefined && filters[key] !== null) {
+                    if (Array.isArray(filters[key])) {
+                        filters[key].forEach(val => params.append(key, val));
+                    } else {
+                        params.append(key, filters[key]);
+                    }
+                }
+            }
+            url += `?${params.toString()}`;
+        }
+        console.log("Fetching entries from URL:", url);
         const response = await fetchWithAutoRefresh({
-            url: '/api/v1/entries',
+            url,
             options: { method: 'GET' },
             token,
             refreshToken,
