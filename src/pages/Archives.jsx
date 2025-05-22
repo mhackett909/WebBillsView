@@ -40,13 +40,13 @@ const Archives = () => {
     try {
       const result = await editBill({ ...bill, status: 1 }, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
-        setSnackbar({ open: true, message: 'Party restored successfully.', severity: 'success' });
+        setSnackbar({ open: true, message: 'Entity restored successfully.', severity: 'success' });
         fetchArchivedBills();
       } else {
-        setSnackbar({ open: true, message: 'Failed to restore party.', severity: 'error' });
+        setSnackbar({ open: true, message: 'Failed to restore entity.', severity: 'error' });
       }
     } catch (err) {
-      setSnackbar({ open: true, message: 'Error restoring party.', severity: 'error' });
+      setSnackbar({ open: true, message: 'Error restoring entity.', severity: 'error' });
     }
   };
 
@@ -61,13 +61,13 @@ const Archives = () => {
     try {
       const result = await editBill({ ...deleteTarget, recycle: true }, jwt, refresh, handleTokenRefresh);
       if (result && (result.id || result === true)) {
-        setSnackbar({ open: true, message: 'Party recycled successfully.', severity: 'success' });
+        setSnackbar({ open: true, message: 'Entity recycled successfully.', severity: 'success' });
         fetchArchivedBills();
       } else {
-        setSnackbar({ open: true, message: 'Failed to delete party.', severity: 'error' });
+        setSnackbar({ open: true, message: 'Failed to delete entity.', severity: 'error' });
       }
     } catch (err) {
-      setSnackbar({ open: true, message: 'Error deleting party.', severity: 'error' });
+      setSnackbar({ open: true, message: 'Error deleting entity.', severity: 'error' });
     }
   };
 
@@ -93,7 +93,7 @@ const Archives = () => {
         </Box>
       ) : (
         <>
-          <Typography variant="h4" mb={3}>Archived Parties</Typography>
+          <Typography variant="h4" mb={3}>Archived Entities</Typography>
           <TableContainer component={Paper}>
             <Table size="small">
               <TableHead>
@@ -106,7 +106,7 @@ const Archives = () => {
               <TableBody>
                 {archivedBills.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={3} align="center">No archived parties found.</TableCell>
+                    <TableCell colSpan={3} align="center">No archived entities found.</TableCell>
                   </TableRow>
                 ) : (
                   archivedBills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((bill) => (
@@ -135,10 +135,10 @@ const Archives = () => {
         </>
       )}
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Party Permanently?</DialogTitle>
+        <DialogTitle>Delete Entity Permanently?</DialogTitle>
         <DialogContent>
           <Typography>
-            Deleting this party will also <strong>delete all</strong> its entries. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
+            Deleting this entity will also <strong>delete all</strong> its entries. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
           </Typography>
         </DialogContent>
         <DialogActions>

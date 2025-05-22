@@ -50,7 +50,6 @@ const DataTable = ({
                 width: col.width || 90,
             };
         }
-        // Party column (name)
         if (col.field === 'name') {
             return {
                 ...col,
@@ -88,6 +87,12 @@ const DataTable = ({
                 renderCell: (params) => {
                     const isPaid = params.row.status;
                     const isOverpaid = params.row.overpaid;
+                    const flow = params.row.flow;
+                    let plusOneColor = undefined;
+                    if (isOverpaid) {
+                        if (flow === 'OUTGOING') plusOneColor = '#7c4dff';
+                        else if (flow === 'INCOMING') plusOneColor = '#0288d1';
+                    }
                     return (
                         <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                             {isPaid ? (
@@ -95,8 +100,11 @@ const DataTable = ({
                                     <CheckCircleIcon color="success" titleAccess="Paid" />
                                     {isOverpaid && (
                                         <span style={{ display: 'flex', alignItems: 'center' }}>
-                                            {/* Blue +1 icon for overpaid */}
-                                            <PlusOneIcon color="info" fontSize="small" titleAccess="Overpaid" />
+                                            <PlusOneIcon
+                                                fontSize="small"
+                                                titleAccess="Overpaid"
+                                                style={plusOneColor ? { color: plusOneColor } : {}}
+                                            />
                                         </span>
                                     )}
                                 </>

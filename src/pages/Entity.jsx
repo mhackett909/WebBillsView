@@ -7,7 +7,7 @@ import { AuthContext } from '../App';
 const STATUS_INACTIVE = 0;
 const STATUS_ACTIVE = 1;
 
-const Bills = () => {
+const Entity = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -35,7 +35,7 @@ const Bills = () => {
           setArchived(!data.status);
         }
       } catch (err) {
-        setSnackbar({ open: true, message: 'Failed to load party.', severity: 'error' });
+        setSnackbar({ open: true, message: 'Failed to load entity.', severity: 'error' });
       } finally {
         setLoading(false);
       }
@@ -45,7 +45,7 @@ const Bills = () => {
 
   const handleSave = async () => {
     if (!editName.trim()) {
-      setSnackbar({ open: true, message: 'Party name cannot be empty.', severity: 'error' });
+      setSnackbar({ open: true, message: 'Entity name cannot be empty.', severity: 'error' });
       return;
     }
     if (archived && bill && bill.status !== STATUS_INACTIVE) {
@@ -65,14 +65,14 @@ const Bills = () => {
       };
       const result = await editBill(updatedBill, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
-        setSnackbar({ open: true, message: 'Party updated successfully.', severity: 'success' });
+        setSnackbar({ open: true, message: 'Entity updated successfully.', severity: 'success' });
         setBill(result);
         setTimeout(() => navigate('/home'), 1200);
       } else {
-        setSnackbar({ open: true, message: 'Failed to update party.', severity: 'error' });
+        setSnackbar({ open: true, message: 'Failed to update entity.', severity: 'error' });
       }
     } catch (err) {
-      setSnackbar({ open: true, message: 'Error updating party.', severity: 'error' });
+      setSnackbar({ open: true, message: 'Error updating entity.', severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -87,13 +87,13 @@ const Bills = () => {
     try {
       const result = await editBill({ ...bill, recycle: true }, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
-        setSnackbar({ open: true, message: 'Party deleted (recycled) successfully.', severity: 'success' });
+        setSnackbar({ open: true, message: 'Entity deleted (recycled) successfully.', severity: 'success' });
         setTimeout(() => navigate('/home'), 1200);
       } else {
-        setSnackbar({ open: true, message: 'Failed to delete party.', severity: 'error' });
+        setSnackbar({ open: true, message: 'Failed to delete entity.', severity: 'error' });
       }
     } catch (err) {
-      setSnackbar({ open: true, message: 'Error deleting party.', severity: 'error' });
+      setSnackbar({ open: true, message: 'Error deleting entity.', severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -112,7 +112,7 @@ const Bills = () => {
   if (!bill) {
     return (
       <Box maxWidth={500} mx="auto" mt={4}>
-        <Alert severity="error">Party not found.</Alert>
+        <Alert severity="error">Entity not found.</Alert>
       </Box>
     );
   }
@@ -124,14 +124,14 @@ const Bills = () => {
       {/* Read-only banner if bill is archived */}
       {!billEnabled && (
         <Alert severity="warning" sx={{ mb: 3 }}>
-          This party is <strong>read only</strong> because it is archived.<br />
+          This entity is <strong>read only</strong> because it is archived.<br />
           To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar.
         </Alert>
       )}
       <Paper sx={{ p: 3 }}>
-        <Typography variant="h5" mb={2}>Edit Party</Typography>
+        <Typography variant="h5" mb={2}>Edit Entity</Typography>
         <TextField
-          label="Party Name"
+          label="Entity Name"
           value={editName}
           onChange={e => setEditName(e.target.value)}
           fullWidth
@@ -149,10 +149,10 @@ const Bills = () => {
         </Box>
       </Paper>
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Party and Entries?</DialogTitle>
+        <DialogTitle>Delete Entity and Entries?</DialogTitle>
         <DialogContent>
           <Typography>
-            Deleting this party will also <strong>delete all</strong> its entries. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
+            Deleting this entity will also <strong>delete all</strong> its entries. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -161,10 +161,10 @@ const Bills = () => {
         </DialogActions>
       </Dialog>
       <Dialog open={archiveWarningOpen} onClose={() => setArchiveWarningOpen(false)}>
-        <DialogTitle>Archive Party?</DialogTitle>
+        <DialogTitle>Archive Entity?</DialogTitle>
         <DialogContent>
           <Typography>
-            Archiving this party will make all its entries <strong>read-only</strong>. You can reactivate them anytime from the <strong>Archives</strong> tool in the <strong>History</strong> menu.
+            Archiving this entity will make all its entries <strong>read-only</strong>. You can reactivate them anytime from the <strong>Archives</strong> tool in the <strong>History</strong> menu.
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -186,4 +186,4 @@ const Bills = () => {
   );
 };
 
-export default Bills;
+export default Entity;

@@ -51,7 +51,7 @@ const Statistics = ({ stats }) => {
                                         <Typography variant="h6" sx={{ color: 'success.main' }}>
                                             {(s.totalIncomeOverpaid && s.totalIncomeOverpaid > 0) ? (
                                                 <>
-                                                    <span style={{ color: '#111' }}>{currency(s.totalIncomeAmount)}</span>{' '}
+                                                    <span style={{ color: '#111' }}>{currency(s.totalReceivedPaymentAmount)}</span>{' '}
                                                     <span style={{ color: '#0288d1', fontWeight: 500 }}>{`(+${currency(s.totalIncomeOverpaid)})`}</span>
                                                   </>
                                             ) : (
@@ -114,7 +114,7 @@ const Statistics = ({ stats }) => {
                                         <Typography variant="h6" sx={{ color: 'primary.main' }}>
                                             {(s.totalExpenseOverpaid && s.totalExpenseOverpaid > 0) ? (
                                                 <>
-                                                    <span style={{ color: '#111' }}>{currency(s.totalExpenseAmount)}</span>{' '}
+                                                    <span style={{ color: '#111' }}>{currency(s.totalSentPaymentAmount)}</span>{' '}
                                                     <span style={{ color: '#7c4dff', fontWeight: 500 }}>{`(+${currency(s.totalExpenseOverpaid)})`}</span>
                                                 </>
                                             ) : (
