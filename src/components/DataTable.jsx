@@ -74,7 +74,7 @@ const DataTable = ({
                 ...col,
                 renderCell: (params) =>
                     params.row.flow === 'INCOMING' ? (
-                        <ArrowBackIcon color="primary" titleAccess="Income" />
+                        <ArrowBackIcon sx={{ color: '#0288d1' }} titleAccess="Income" />
                     ) : (
                         <ArrowForwardIcon color="warning" titleAccess="Expense" />
                     ),
@@ -90,7 +90,7 @@ const DataTable = ({
                     const flow = params.row.flow;
                     let plusOneColor = undefined;
                     if (isOverpaid) {
-                        if (flow === 'OUTGOING') plusOneColor = '#7c4dff';
+                        if (flow === 'OUTGOING') plusOneColor = '#ed6c02'; // orange (same as right arrow)
                         else if (flow === 'INCOMING') plusOneColor = '#0288d1';
                     }
                     return (

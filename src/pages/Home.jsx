@@ -17,19 +17,69 @@ const Home = () => {
     const [entries, setEntries] = useState([]);
     const [filteredEntries, setFilteredEntries] = useState([]);
     const [activeTab, setActiveTab] = useState(0);
-    const [filters, setFilters] = useState({
+    // Initialize filters and includeArchived from sessionStorage if available
+    // Default filters object for reuse
+    const defaultFilters = {
         invoice: '',
         biller: [],
-        date: '',
         amountMin: '',
         amountMax: '',
-    });
-    const [includeArchived, setIncludeArchived] = useState(false);
-    const [selectionModel, setSelectionModel] = useState([]);
-    const [dateRange, setDateRange] = useState([
-        dayjs().subtract(30, 'day').startOf('day').toDate(),
-        dayjs().startOf('day').toDate(),
-    ]);
+        flow: '',
+        status: '',
+    };
+
+    const getInitialFilters = () => {
+        const storedFilters = sessionStorage.getItem('filters');
+        if (storedFilters) {
+            try {
+                const parsed = JSON.parse(storedFilters);
+                if (parsed && typeof parsed === 'object') {
+                    return { ...defaultFilters, ...parsed };
+                }
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+        return { ...defaultFilters };
+    };
+
+    const getInitialIncludeArchived = () => {
+        const stored = sessionStorage.getItem('includeArchived');
+        if (stored === 'true') return true;
+        if (stored === 'false') return false;
+        if (stored === 'only') return 'only';
+        return false;
+    };
+
+    const getInitialDateRange = () => {
+        const stored = sessionStorage.getItem('dateRange');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length === 2) {
+                    // Convert to Date objects if possible
+                    return [parsed[0] ? new Date(parsed[0]) : null, parsed[1] ? new Date(parsed[1]) : null];
+                }
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+        return [
+            dayjs().subtract(30, 'day').startOf('day').toDate(),
+            dayjs().startOf('day').toDate(),
+        ];
+    };
+
+    const getInitialDateMode = () => {
+        const stored = sessionStorage.getItem('dateMode');
+        if (stored) return stored;
+        return 'Date Range';
+    };
+
+    const [filters, setFilters] = useState(getInitialFilters);
+    const [includeArchived, setIncludeArchived] = useState(getInitialIncludeArchived);
+    const [dateRange, setDateRange] = useState(getInitialDateRange);
+    const [dateMode, setDateMode] = useState(getInitialDateMode);
     const [availableBillers, setAvailableBillers] = useState([]);
     const [stats, setStats] = useState(null);
     const [resetFlag, setResetFlag] = useState(false);
@@ -167,21 +217,26 @@ const Home = () => {
             filtered = filtered.filter((entry) => !entry.archived);
         }
         setFilteredEntries(filtered);
+        // Save filters, includeArchived, dateRange, and dateMode to session storage
+        sessionStorage.setItem('filters', JSON.stringify(filters));
+        sessionStorage.setItem('includeArchived', includeArchived);
+        sessionStorage.setItem('dateRange', JSON.stringify(dateRange));
+        sessionStorage.setItem('dateMode', dateMode);
         loadStats(); // Call getStats after searching/filtering
-    }, [entries, filters, dateRange, includeArchived, loadStats]);
+    }, [entries, filters, dateRange, includeArchived, dateMode, loadStats]);
 
     const clearFilters = () => {
-        setFilters({
-            invoice: '',
-            biller: [],
-            date: '',
-            amountMin: '',
-            amountMax: '',
-        });
+        setFilters(defaultFilters);
         setDateRange([null, null]);
+        setDateMode('Date Range');
         setIncludeArchived(false); // Reset to show only non-archived
         setFilteredEntries(entries.filter((entry) => !entry.archived));
         setResetFlag(flag => !flag); // Toggle flag to trigger effect
+        // Save cleared filters, includeArchived, dateRange, and dateMode to session storage
+        sessionStorage.setItem('filters', JSON.stringify(defaultFilters));
+        sessionStorage.setItem('includeArchived', 'false');
+        sessionStorage.setItem('dateRange', JSON.stringify([null, null]));
+        sessionStorage.setItem('dateMode', 'Date Range');
     };
 
     // Only run loadEntries on mount
@@ -234,9 +289,11 @@ const Home = () => {
             <FilterPanel
                 filters={filters}
                 dateRange={dateRange}
+                dateMode={dateMode}
                 includeArchived={includeArchived}
                 handleFilterChange={handleFilterChange}
                 setDateRange={setDateRange}
+                setDateMode={setDateMode}
                 setIncludeArchived={setIncludeArchived}
                 filterBills={filterBills}
                 clearFilters={clearFilters}
@@ -257,8 +314,6 @@ const Home = () => {
                     <DataTable
                         rows={filteredEntries}
                         columns={columns}
-                        selectionModel={selectionModel}
-                        setSelectionModel={setSelectionModel}
                         columnVisibilityModel={columnVisibilityModel}
                         setColumnVisibilityModel={setColumnVisibilityModel}
                         handleAdd={handleAdd}

@@ -297,7 +297,7 @@ const Entries = () => {
                                         <PlusOneIcon
                                             fontSize="medium"
                                             titleAccess="Overpaid"
-                                            style={{ color: entry.flow === 'OUTGOING' ? '#7c4dff' : '#0288d1' }}
+                                            style={{ color: entry.flow === 'OUTGOING' ? '#ed6c02' : '#0288d1' }}
                                         />
                                     )}
                                 </>
@@ -332,7 +332,7 @@ const Entries = () => {
                                         const paidSum = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
                                         const overpaid = paidSum - parseFloat(entry.amount);
                                         const isOutgoing = entry.flow === 'OUTGOING';
-                                        const overpaidColor = isOutgoing ? '#7c4dff' : '#0288d1';
+                                        const overpaidColor = isOutgoing ? '#ed6c02' : '#0288d1';
                                         return overpaid > 0 ? (
                                             <>
                                                 $0.00{' '}
