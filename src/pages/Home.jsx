@@ -79,7 +79,13 @@ const Home = () => {
 
     const getInitialDateMode = () => {
         const stored = sessionStorage.getItem('dateMode');
-        if (stored) return stored;
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                // Ignore parse errors, fallback to stored string
+            }
+        }
         return 'Date Range';
     };
 
@@ -106,7 +112,6 @@ const Home = () => {
     // Helper to map UI filters to API filters for backend
     const mapFiltersToEntryParams = useCallback((f = filterParamRef.current, dr = dateRangeRef.current, ia = includeArchivedRef.current) => {
         let archives;
-        console.log('Mapping filters to params:', f, dr, ia);
         if (ia === false) archives = false;
         else if (ia === 'only') archives = true;
         else if (ia === true) archives = null;
@@ -144,7 +149,6 @@ const Home = () => {
             params.sortField = sortModel[0].field;
             params.sortOrder = sortModel[0].sort;
         }
-        console.log('Fetching entries with params:', params);
         const result = await fetchEntries(jwt, refresh, handleTokenRefresh, params);
         // Expect result.entries (array) and result.total (integer)
         let entriesArr = [];
@@ -220,7 +224,6 @@ const Home = () => {
     const handleIncludeArchivedChange = (newValue) => {
         setIncludeArchived(newValue);
         includeArchivedRef.current = newValue;
-        console.log('Include Archived:', newValue);
     };
 
     const clearFilters = () => {
