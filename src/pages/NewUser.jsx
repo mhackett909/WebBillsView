@@ -14,6 +14,9 @@ const NewUser = () => {
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{8,}$/;
+  const emailPattern = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
@@ -29,12 +32,16 @@ const NewUser = () => {
       setError('All fields are required.');
       return;
     }
-    if (!form.email.includes('@')) {
-      setError('Please enter a valid email.');
+    if (!emailPattern.test(form.email)) {
+      setError('Please enter a valid email address.');
       return;
     }
     if (form.password !== form.confirmPassword) {
       setError('Passwords do not match.');
+      return;
+    }
+    if (!passwordPattern.test(form.password)) {
+      setError('Password must be at least 8 characters, include uppercase, lowercase, a number, and a special character.');
       return;
     }
     setSubmitting(true);
