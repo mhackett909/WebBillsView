@@ -48,9 +48,13 @@ const Home = () => {
 
     const getInitialIncludeArchived = () => {
         const stored = sessionStorage.getItem('includeArchived');
-        if (stored === 'true') return true;
-        if (stored === 'false') return false;
-        if (stored === 'only') return 'only';
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
         return false;
     };
 
@@ -181,9 +185,9 @@ const Home = () => {
     const filterBills = useCallback(() => {
         // Save filters, includeArchived, dateRange, and dateMode to session storage
         sessionStorage.setItem('filters', JSON.stringify(filters));
-        sessionStorage.setItem('includeArchived', includeArchived);
+        sessionStorage.setItem('includeArchived', JSON.stringify(includeArchived));
         sessionStorage.setItem('dateRange', JSON.stringify(dateRange));
-        sessionStorage.setItem('dateMode', dateMode);
+        sessionStorage.setItem('dateMode', JSON.stringify(dateMode));
         loadEntries();
         loadStats();
     }, [filters, includeArchived, dateRange, dateMode, loadEntries, loadStats]);
@@ -228,9 +232,9 @@ const Home = () => {
         setResetFlag(flag => !flag); // Toggle flag to trigger effect
         // Save cleared filters, includeArchived, dateRange, and dateMode to session storage
         sessionStorage.setItem('filters', JSON.stringify(defaultFilters));
-        sessionStorage.setItem('includeArchived', 'false');
+        sessionStorage.setItem('includeArchived', JSON.stringify(false));
         sessionStorage.setItem('dateRange', JSON.stringify([null, null]));
-        sessionStorage.setItem('dateMode', 'Date Range');
+        sessionStorage.setItem('dateMode', JSON.stringify('Date Range'));
         loadEntries();
         loadStats();
     };
