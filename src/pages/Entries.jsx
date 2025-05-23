@@ -281,7 +281,7 @@ const Entries = () => {
                     </Button>
                 </Box>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6} md={4}><strong>Entry ID:</strong> {entry.entryId}</Grid>
+                    <Grid item xs={12} sm={6} md={4}><strong>Invoice ID:</strong> {entry.invoiceId}</Grid>
                     <Grid item xs={12} sm={6} md={4}>
                         <strong>Entity:</strong> {billName}
                     </Grid>
@@ -327,10 +327,11 @@ const Entries = () => {
                                 textAlign: 'center',
                                 display: 'inline-block'
                             }}>
-                                {Number(entry.balance) === 0 && entry.amount && payments && payments.length > 0 ? (
+                                {Number(entry.balance) === 0 && (entry.amount !== undefined && entry.amount !== null) && payments && payments.length > 0 ? (
                                     (() => {
                                         const paidSum = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
                                         const overpaid = paidSum - parseFloat(entry.amount);
+                                        console.log('Overpaid:', overpaid);
                                         const isOutgoing = entry.flow === 'OUTGOING';
                                         const overpaidColor = isOutgoing ? '#ed6c02' : '#0288d1';
                                         return overpaid > 0 ? (

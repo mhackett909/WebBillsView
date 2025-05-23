@@ -69,6 +69,7 @@ const Invoice = () => {
               amount: entry.amount || '',
               services: entry.services || '',
               status: entry.status || 0,
+              invoiceId: entry.invoiceId || '', // Save invoiceId in form
             });
           } else {
             setError('Invoice not found.');
