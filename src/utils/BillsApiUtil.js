@@ -70,7 +70,16 @@ export const fetchEntries = async (token, refreshToken, onTokenRefresh, filters)
         });
         if (response.ok) {
             const responseData = await response.json();
-            return Array.isArray(responseData) ? responseData : [];
+            // Expect responseData to be { entries: [...], total: n }
+            if (responseData && Array.isArray(responseData.entries) && typeof responseData.total === 'number') {
+                return responseData;
+            }
+            // Fallback: if responseData is an array (legacy), wrap it
+            if (Array.isArray(responseData)) {
+                return { entries: responseData, total: responseData.length };
+            }
+            // Defensive fallback
+            return { entries: [], total: 0 };
         }
         console.error("Failed to fetch entries:", response.status, response.statusText);
         return [];

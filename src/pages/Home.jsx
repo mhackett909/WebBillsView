@@ -16,6 +16,10 @@ dayjs.extend(isSameOrBefore);
 const Home = () => {
     const [entries, setEntries] = useState([]);
     const [activeTab, setActiveTab] = useState(0);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(25);
+    const [rowCount, setRowCount] = useState(0);
+    const [sortModel, setSortModel] = useState([]);
     // Initialize filters and includeArchived from sessionStorage if available
     // Default filters object for reuse
     const defaultFilters = {
@@ -129,9 +133,24 @@ const Home = () => {
     // Fetch entries from backend using filters
     const loadEntries = useCallback(async () => {
         const params = mapFiltersToEntryParams();
-        const fetchedEntries = await fetchEntries(jwt, refresh, handleTokenRefresh, params);
-        setEntries(fetchedEntries);
-    }, [jwt, refresh, handleTokenRefresh, mapFiltersToEntryParams]);
+        params.pageNum = page; 
+        params.pageSize = pageSize;
+        if (Array.isArray(sortModel) && sortModel.length > 0 && sortModel[0].field && sortModel[0].sort) {
+            params.sortField = sortModel[0].field;
+            params.sortOrder = sortModel[0].sort;
+        }
+        const result = await fetchEntries(jwt, refresh, handleTokenRefresh, params);
+        console.log('Fetched entries:', result);
+        // Expect result.entries (array) and result.total (integer)
+        let entriesArr = [];
+        let total = 0;
+        if (result && Array.isArray(result.entries)) {
+            entriesArr = result.entries;
+            total = typeof result.total === 'number' ? result.total : result.entries.length;
+        }
+        setEntries(entriesArr);
+        setRowCount(total);
+    }, [jwt, refresh, handleTokenRefresh, mapFiltersToEntryParams, page, pageSize, sortModel]);
 
     // Fetch billers based on includeArchived filter
     const fetchBillers = useCallback(async () => {
@@ -229,6 +248,11 @@ const Home = () => {
         // eslint-disable-next-line
     }, [resetFlag]);
 
+    // Fetch entries whenever page, pageSize, or sortModel changes
+    useEffect(() => {
+        loadEntries();
+    }, [page, pageSize, sortModel, loadEntries]);
+
     const columns = [
         { field: 'entryId', headerName: 'Invoice #', width: 100 },
         { field: 'billId', headerName: 'Bill ID', width: 100, hide: true },
@@ -287,6 +311,17 @@ const Home = () => {
                         columnVisibilityModel={columnVisibilityModel}
                         setColumnVisibilityModel={setColumnVisibilityModel}
                         handleAdd={handleAdd}
+                        pagination
+                        paginationMode="server"
+                        page={page}
+                        onPageChange={setPage}
+                        pageSize={pageSize}
+                        onPageSizeChange={setPageSize}
+                        rowCount={rowCount}
+                        sortingMode="server"
+                        sortingOrder={['asc', 'desc']}
+                        sortModel={sortModel}
+                        onSortModelChange={setSortModel}
                     />
                 )}
                 {activeTab === 1 && (
