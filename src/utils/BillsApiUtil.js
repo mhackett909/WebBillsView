@@ -43,10 +43,25 @@ async function fetchWithAutoRefresh({
     }
 }
 
-export const fetchEntries = async (token, refreshToken, onTokenRefresh) => {
+export const fetchEntries = async (token, refreshToken, onTokenRefresh, filters) => {
     try {
+        let url = '/api/v1/entries';
+        if (filters && typeof filters === 'object' && Object.keys(filters).length > 0) {
+            // Convert filters object to query string
+            const params = new URLSearchParams();
+            for (const key in filters) {
+                if (filters[key] !== undefined && filters[key] !== null) {
+                    if (Array.isArray(filters[key])) {
+                        filters[key].forEach(val => params.append(key, val));
+                    } else {
+                        params.append(key, filters[key]);
+                    }
+                }
+            }
+            url += `?${params.toString()}`;
+        }
         const response = await fetchWithAutoRefresh({
-            url: '/api/v1/entries',
+            url,
             options: { method: 'GET' },
             token,
             refreshToken,
@@ -54,7 +69,16 @@ export const fetchEntries = async (token, refreshToken, onTokenRefresh) => {
         });
         if (response.ok) {
             const responseData = await response.json();
-            return Array.isArray(responseData) ? responseData : [];
+            // Expect responseData to be { entries: [...], total: n }
+            if (responseData && Array.isArray(responseData.entries) && typeof responseData.total === 'number') {
+                return responseData;
+            }
+            // Fallback: if responseData is an array (legacy), wrap it
+            if (Array.isArray(responseData)) {
+                return { entries: responseData, total: responseData.length };
+            }
+            // Defensive fallback
+            return { entries: [], total: 0 };
         }
         console.error("Failed to fetch entries:", response.status, response.statusText);
         return [];

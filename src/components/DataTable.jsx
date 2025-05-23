@@ -16,6 +16,17 @@ const DataTable = ({
     columnVisibilityModel,
     setColumnVisibilityModel,
     handleAdd,
+    pagination,
+    paginationMode,
+    page,
+    onPageChange,
+    pageSize,
+    onPageSizeChange,
+    rowCount,
+    sortingMode,
+    sortModel,
+    sortingOrder,
+    onSortModelChange,
 }) => {
     // Enhance the first column (assumed to be ID) to use a Chip for better visuals
     const enhancedColumns = columns.map((col, idx) => {
@@ -146,6 +157,17 @@ const DataTable = ({
                         selectedRow: null,
                     },
                 }}
+                pagination={pagination}
+                paginationMode={paginationMode}
+                page={page}
+                onPageChange={onPageChange}
+                pageSize={pageSize}
+                onPageSizeChange={onPageSizeChange}
+                rowCount={rowCount}
+                sortingMode={sortingMode}
+                sortModel={sortModel}
+                sortingOrder={sortingOrder}
+                onSortModelChange={onSortModelChange}
             />
         </Box>
     );
