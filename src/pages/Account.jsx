@@ -4,6 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { getUser, resendVerificationEmail, updateUser } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const Account = () => {
   const { username, jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -195,9 +199,9 @@ const Account = () => {
             <Grid item xs={6}><Typography variant="subtitle2">User Role</Typography></Grid>
             <Grid item xs={6}><Typography>{user.roles === 'ROLE_ADMIN' ? 'Admin' : user.roles === 'ROLE_USER' ? 'User' : user.roles}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Account Created</Typography></Grid>
-            <Grid item xs={6}><Typography>{user.createdAt ? dayjs(user.createdAt).format('YYYY-MM-DD HH:mm') : ''}</Typography></Grid>
+            <Grid item xs={6}><Typography>{user.createdAt ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, timeZoneName: 'short' }).format(new Date(user.createdAt + 'Z')) : ''}</Typography></Grid>
             <Grid item xs={6}><Typography variant="subtitle2">Last Login</Typography></Grid>
-            <Grid item xs={6}><Typography>{user.lastLogin ? dayjs(user.lastLogin).format('YYYY-MM-DD HH:mm') : ''}</Typography></Grid>
+            <Grid item xs={6}><Typography>{user.lastLogin ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, timeZoneName: 'short' }).format(new Date(user.lastLogin + 'Z')) : ''}</Typography></Grid>
             {/* MFA label and switch, both hidden if feature flag is off */}
             {mfaEnabledFF && (
               <>
