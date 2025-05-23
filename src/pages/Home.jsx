@@ -80,7 +80,7 @@ const Home = () => {
     };
 
     const [filters, setFilters] = useState(getInitialFilters);
-    const [includeArchived, setIncludeArchived] = useState(getInitialIncludeArchived);
+    const [includeArchived, setIncludeArchived] = useState(getInitialIncludeArchived());
     const [dateRange, setDateRange] = useState(getInitialDateRange);
     const [dateMode, setDateMode] = useState(getInitialDateMode);
     const [availableBillers, setAvailableBillers] = useState([]);
@@ -88,7 +88,7 @@ const Home = () => {
     const [resetFlag, setResetFlag] = useState(false);
     const filterParamRef = useRef(getInitialFilters());
     const dateRangeRef = useRef(getInitialDateRange());
-    const includeArchivedRef = useRef(getInitialIncludeArchived);
+    const includeArchivedRef = useRef(getInitialIncludeArchived());
 
     const navigate = useNavigate();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -102,6 +102,7 @@ const Home = () => {
     // Helper to map UI filters to API filters for backend
     const mapFiltersToEntryParams = useCallback((f = filterParamRef.current, dr = dateRangeRef.current, ia = includeArchivedRef.current) => {
         let archives;
+        console.log('Mapping filters to params:', f, dr, ia);
         if (ia === false) archives = false;
         else if (ia === 'only') archives = true;
         else if (ia === true) archives = null;
@@ -139,8 +140,8 @@ const Home = () => {
             params.sortField = sortModel[0].field;
             params.sortOrder = sortModel[0].sort;
         }
+        console.log('Fetching entries with params:', params);
         const result = await fetchEntries(jwt, refresh, handleTokenRefresh, params);
-        console.log('Fetched entries:', result);
         // Expect result.entries (array) and result.total (integer)
         let entriesArr = [];
         let total = 0;
@@ -215,6 +216,7 @@ const Home = () => {
     const handleIncludeArchivedChange = (newValue) => {
         setIncludeArchived(newValue);
         includeArchivedRef.current = newValue;
+        console.log('Include Archived:', newValue);
     };
 
     const clearFilters = () => {

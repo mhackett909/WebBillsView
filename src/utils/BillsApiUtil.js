@@ -60,7 +60,6 @@ export const fetchEntries = async (token, refreshToken, onTokenRefresh, filters)
             }
             url += `?${params.toString()}`;
         }
-        console.log("Fetching entries from URL:", url);
         const response = await fetchWithAutoRefresh({
             url,
             options: { method: 'GET' },
