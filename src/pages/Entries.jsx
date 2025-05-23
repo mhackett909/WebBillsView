@@ -281,7 +281,7 @@ const Entries = () => {
                     </Button>
                 </Box>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6} md={4}><strong>Entry ID:</strong> {entry.entryId}</Grid>
+                    <Grid item xs={12} sm={6} md={4}><strong>Invoice ID:</strong> {entry.invoiceId}</Grid>
                     <Grid item xs={12} sm={6} md={4}>
                         <strong>Entity:</strong> {billName}
                     </Grid>

@@ -264,7 +264,8 @@ const Home = () => {
     }, [page, pageSize, sortModel, loadEntries]);
 
     const columns = [
-        { field: 'entryId', headerName: 'Invoice #', width: 100 },
+        { field: 'invoiceId', headerName: 'Invoice #', width: 100 },
+        { field: 'entryId', headerName: 'Entry ID', width: 100, hide: true },
         { field: 'billId', headerName: 'Bill ID', width: 100, hide: true },
         { field: 'name', headerName: 'Entity', width: 250 },
         { field: 'date', headerName: 'Date', width: 150 },
@@ -277,7 +278,7 @@ const Home = () => {
 
     const [columnVisibilityModel, setColumnVisibilityModel] = useState({
         billId: false, // billId column is hidden by default
-        id: true,
+        entryId: false, // entryId column is hidden by default
         name: true,
         date: true,
         flow: true,
