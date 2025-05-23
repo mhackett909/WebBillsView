@@ -81,9 +81,11 @@ const Account = () => {
     let apiPayload = null;
     let successMsg = '';
     let failureMsg = '';
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{8,}$/;
+    const emailPattern = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
     if (editField === 'email') {
-      if (!form.newEmail || !form.newEmail.includes('@')) {
-        setAlert('Please enter a valid email.');
+      if (!form.newEmail || !emailPattern.test(form.newEmail)) {
+        setAlert('Please enter a valid email address.');
         return;
       }
       if (!form.password) {
@@ -101,6 +103,10 @@ const Account = () => {
       }
       if (form.newPassword !== form.confirmPassword) {
         setAlert('Passwords do not match.');
+        return;
+      }
+      if (!passwordPattern.test(form.newPassword)) {
+        setAlert('Password must be at least 8 characters, include uppercase, lowercase, a number, and a special character.');
         return;
       }
       apiPayload = { ...user, password: form.password, newPassword: form.newPassword };
