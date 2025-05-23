@@ -279,6 +279,7 @@ const Home = () => {
     const [columnVisibilityModel, setColumnVisibilityModel] = useState({
         billId: false, // billId column is hidden by default
         entryId: false, // entryId column is hidden by default
+        invoiceId: true,
         name: true,
         date: true,
         flow: true,
