@@ -115,10 +115,11 @@ const Home = () => {
         if (ia === false) archives = false;
         else if (ia === 'only') archives = true;
         else if (ia === true) archives = null;
-        // Map status to 'true' or 'false' string
+        // Map status to 'true', 'false', or 'overpaid' string
         let paid;
         if (f.status === 'paid') paid = true;
         else if (f.status === 'unpaid') paid = false;
+        else if (f.status === 'overpaid') paid = 'overpaid';
         else paid = undefined;
         return {
             startDate: dr[0] ? dayjs(dr[0]).format('YYYY-MM-DD') : undefined,

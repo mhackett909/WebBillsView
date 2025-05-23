@@ -24,6 +24,7 @@ const CheckBoxControls = ({
                 options={[
                     { value: 'paid', label: 'Paid' },
                     { value: 'unpaid', label: 'Unpaid' },
+                    { value: 'overpaid', label: 'Overpaid' },
                 ]}
                 selectedValue={filters.status || ''}
                 onChange={(value) => handleFilterChange('status', value)}
