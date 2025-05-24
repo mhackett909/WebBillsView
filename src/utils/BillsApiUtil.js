@@ -60,6 +60,8 @@ export const fetchEntries = async (token, refreshToken, onTokenRefresh, filters)
             }
             url += `?${params.toString()}`;
         }
+        console.log("Fetching entries from:", url);
+        console.log("Filters applied:", filters);
         const response = await fetchWithAutoRefresh({
             url,
             options: { method: 'GET' },
@@ -235,7 +237,11 @@ export const getPayments = async (entryId, token, refreshToken, onTokenRefresh) 
         });
         if (response.ok) {
             const responseData = await response.json();
-            return Array.isArray(responseData) ? responseData : [];
+            // If responseData has a paymentDTOList property, return that, else return []
+            if (responseData && Array.isArray(responseData.paymentDTOList)) {
+                return responseData.paymentDTOList;
+            }
+            return [];
         }
         console.error("Failed to fetch payments:", response.status, response.statusText);
         return [];
@@ -367,7 +373,11 @@ export const getBills = async (token, refreshToken, onTokenRefresh, filter) => {
         });
         if (response.ok) {
             const responseData = await response.json();
-            return Array.isArray(responseData) ? responseData : [];
+            // If responseData has a billDTOList property, return that, else return []
+            if (responseData && Array.isArray(responseData.billDTOList)) {
+                return responseData.billDTOList;
+            }
+            return [];
         }
         console.error('Failed to fetch bills:', response.status, response.statusText);
         return [];
@@ -501,35 +511,6 @@ export const resendVerificationEmail = async (token, refreshToken, onTokenRefres
     }
 };
 
-export const deletePayment = async (paymentId, token, refreshToken, onTokenRefresh) => {
-    try {
-        const response = await fetchWithAutoRefresh({
-            url: `/api/v1/payments/${encodeURIComponent(paymentId)}`,
-            options: {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-            },
-            token,
-            refreshToken,
-            onTokenRefresh
-        });
-        if (response.ok) {
-            // Some APIs return a body, some just 204. Try to parse, fallback to true.
-            try {
-                const responseData = await response.json();
-                return responseData;
-            } catch {
-                return true;
-            }
-        }
-        console.error('Failed to delete payment:', response.status, response.statusText);
-        return null;
-    } catch (error) {
-        console.error('Error deleting payment:', error);
-        return null;
-    }
-};
-
 export const getRecycleBin = async (token, refreshToken, onTokenRefresh) => {
     try {
         const response = await fetchWithAutoRefresh({
@@ -541,7 +522,11 @@ export const getRecycleBin = async (token, refreshToken, onTokenRefresh) => {
         });
         if (response.ok) {
             const responseData = await response.json();
-            return Array.isArray(responseData) ? responseData : [];
+            // If responseData has a recycleItems property, return that, else return []
+            if (responseData && Array.isArray(responseData.recycleItems)) {
+                return responseData.recycleItems;
+            }
+            return [];
         }
         console.error('Failed to fetch recycled entries:', response.status, response.statusText);
         return [];
