@@ -8,9 +8,13 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
     const handleDateModeChange = (newMode) => {
         setDateMode(newMode);
         if (newMode === 'Single Date') {
-            const startOfDay = dayjs(dateRange[0]).startOf('day');
-            const endOfDay = dayjs(dateRange[0]).endOf('day');
-            setDateRange([startOfDay, endOfDay]);
+            if (dateRange[0]) {
+                const startOfDay = dayjs(dateRange[0]).startOf('day');
+                const endOfDay = dayjs(dateRange[0]).endOf('day');
+                setDateRange([startOfDay, endOfDay]);
+            } else {
+                setDateRange([null, null]);
+            }
         } else {
             setDateRange([dateRange[0], null]);
         }
