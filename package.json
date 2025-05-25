@@ -1,6 +1,6 @@
 {
-  "name": "bills_react",
-  "version": "0.1.0",
+  "name": "bills_web",
+  "version": "1.0.0",
   "private": true,
   "proxy": "http://localhost:8080",
   "dependencies": {
