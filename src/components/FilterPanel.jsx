@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { useMemo } from 'react';
 import DatePickers from './filters/DatePickers';
 import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
@@ -20,6 +21,27 @@ const FilterPanel = ({
     clearFilters,
     availableBillers,
 }) => {
+    // Validation for AmountRange
+    const amountRangeError = useMemo(() => {
+        return (
+            filters.amountMin !== '' &&
+            Number(filters.amountMin) > Number(filters.amountMax) &&
+            Number(filters.amountMax) !== 0
+        );
+    }, [filters.amountMin, filters.amountMax]);
+
+    // Validation for DatePickers
+    const dateRangeError = useMemo(() => {
+        return (
+            dateMode === 'Date Range' &&
+            dateRange[0] &&
+            dateRange[1] &&
+            new Date(dateRange[0]) > new Date(dateRange[1])
+        );
+    }, [dateMode, dateRange]);
+
+    const disableSearch = amountRangeError || dateRangeError;
+
     return (
         <Box className="filters-panel">
             <InvoiceSearch
@@ -47,6 +69,7 @@ const FilterPanel = ({
             <FilterButtons
                 filterBills={filterBills}
                 clearFilters={clearFilters}
+                disableSearch={disableSearch}
             />
         </Box>
     );
