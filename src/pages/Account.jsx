@@ -6,6 +6,7 @@ import { AuthContext } from '../App';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { passwordPattern } from '../utils/Regex';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -81,7 +82,6 @@ const Account = () => {
     let apiPayload = null;
     let successMsg = '';
     let failureMsg = '';
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{8,}$/;
     const emailPattern = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
     if (editField === 'email') {
       if (!form.newEmail || !emailPattern.test(form.newEmail)) {

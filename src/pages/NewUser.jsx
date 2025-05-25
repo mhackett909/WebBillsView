@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Card, CardContent, Typography, TextField, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { createUser } from '../utils/BillsApiUtil';
+import { passwordPattern } from '../utils/Regex';
 
 const NewUser = () => {
   const [form, setForm] = useState({
@@ -14,7 +15,6 @@ const NewUser = () => {
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_-])[A-Za-z\d@$!%*?&_-]{8,}$/;
   const emailPattern = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
 
   const handleChange = (e) => {
