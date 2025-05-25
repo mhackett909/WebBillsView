@@ -16,6 +16,10 @@ const Logout = () => {
     sessionStorage.removeItem('includeArchived');
     sessionStorage.removeItem('dateRange');
     sessionStorage.removeItem('dateMode');
+    sessionStorage.removeItem('page');
+    sessionStorage.removeItem('pageSize');
+    sessionStorage.removeItem('columnVisibilityModel');
+    sessionStorage.removeItem('sortModel');
     navigate('/', { state: { showLogoutSnackbar: true }, replace: true });
   }, [navigate, setJwt, setUsername]);
 
