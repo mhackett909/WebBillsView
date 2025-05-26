@@ -53,16 +53,7 @@ const Entries = () => {
             try {
                 const entryData = await fetchEntryById(id, jwt, refresh, handleTokenRefresh);
                 const paymentData = await getPayments(id, jwt, refresh, handleTokenRefresh);
-                // Calculate balance
-                let balance = 0.0;
-                if (entryData.paid) {
-                    balance = 0.0;
-                } else {
-                    const paidSum = paymentData.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-                    balance = parseFloat(entryData.amount) - paidSum;
-                    if (balance < 0) balance = 0.0;
-                }
-                setEntry({ ...entryData, balance });
+                setEntry(entryData);
                 setPayments(paymentData);
                 // Fetch bill name and status if billId exists
                 if (entryData && entryData.billId) {
@@ -139,16 +130,7 @@ const Entries = () => {
                         fetchEntryById(id, jwt, refresh, handleTokenRefresh),
                         getPayments(id, jwt, refresh, handleTokenRefresh)
                     ]);
-                    // Recalculate balance after adding payment
-                    let balance = 0.0;
-                    if (entryData.paid) {
-                        balance = 0.0;
-                    } else {
-                        const paidSum = paymentData.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-                        balance = parseFloat(entryData.amount) - paidSum;
-                        if (balance < 0) balance = 0.0;
-                    }
-                    setEntry({ ...entryData, balance });
+                    setEntry(entryData);
                     setPayments(paymentData);
                     setSnackbar({ open: true, message: 'Payment added successfully!', severity: 'success' });
                     setModalOpen(false);
@@ -169,16 +151,7 @@ const Entries = () => {
                         fetchEntryById(id, jwt, refresh, handleTokenRefresh),
                         getPayments(id, jwt, refresh, handleTokenRefresh)
                     ]);
-                    // Recalculate balance after editing payment
-                    let balance = 0.0;
-                    if (entryData.paid) {
-                        balance = 0.0;
-                    } else {
-                        const paidSum = paymentData.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-                        balance = parseFloat(entryData.amount) - paidSum;
-                        if (balance < 0) balance = 0.0;
-                    }
-                    setEntry({ ...entryData, balance });
+                    setEntry(entryData);
                     setPayments(paymentData);
                     setSnackbar({ open: true, message: 'Payment updated successfully!', severity: 'success' });
                     setModalOpen(false);
@@ -215,16 +188,7 @@ const Entries = () => {
                     fetchEntryById(id, jwt, refresh, handleTokenRefresh),
                     getPayments(id, jwt, refresh, handleTokenRefresh)
                 ]);
-                // Recalculate balance after deleting payment
-                let balance = 0.0;
-                if (entryData.paid) {
-                    balance = 0.0;
-                } else {
-                    const paidSum = updatedPayments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-                    balance = parseFloat(entryData.amount) - paidSum;
-                    if (balance < 0) balance = 0.0;
-                }
-                setEntry({ ...entryData, balance });
+                setEntry(entryData);
                 setPayments(updatedPayments);
             } else {
                 setSnackbar({ open: true, message: 'Failed to delete payment.', severity: 'error' });
@@ -317,7 +281,7 @@ const Entries = () => {
                             <Typography variant="h6" sx={{ fontWeight: 700, mr: 1 }}>Balance:</Typography>
                             <Typography variant="h5" sx={{
                                 fontWeight: 900,
-                                color: Number(entry.balance) === 0 ? 'success.main' : 'error.main',
+                                color: Number(entry.balance?.totalBalance ?? 0) === 0 ? 'success.main' : 'error.main',
                                 bgcolor: '#f5f5f5',
                                 px: 2,
                                 py: 0.5,
@@ -327,24 +291,17 @@ const Entries = () => {
                                 textAlign: 'center',
                                 display: 'inline-block'
                             }}>
-                                {Number(entry.balance) === 0 && (entry.amount !== undefined && entry.amount !== null) && payments && payments.length > 0 ? (
-                                    (() => {
-                                        const paidSum = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-                                        const overpaid = paidSum - parseFloat(entry.amount);
-                                        console.log('Overpaid:', overpaid);
-                                        const isOutgoing = entry.flow === 'OUTGOING';
-                                        const overpaidColor = isOutgoing ? '#ed6c02' : '#0288d1';
-                                        return overpaid > 0 ? (
-                                            <>
-                                                $0.00{' '}
-                                                <span style={{ color: overpaidColor, fontWeight: 700, fontSize: '1.1em' }}>
-                                                    {`(+${overpaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`}
-                                                </span>
-                                            </>
-                                        ) : '$0.00';
-                                    })()
+                                {Number(entry.balance?.totalBalance) === 0 && (entry.amount !== undefined && entry.amount !== null) && payments && payments.length > 0 ? (
+                                    Number(entry.balance?.totalOverpaid) > 0 ? (
+                                        <>
+                                            $0.00{' '}
+                                            <span style={{ color: entry.flow === 'OUTGOING' ? '#ed6c02' : '#0288d1', fontWeight: 700, fontSize: '1.1em' }}>
+                                                {`(+${Number(entry.balance.totalOverpaid).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`}
+                                            </span>
+                                        </>
+                                    ) : '$0.00'
                                 ) : (
-                                    `$${Number(entry.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                    `$${Number(entry.balance?.totalBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                 )}
                             </Typography>
                         </Box>
