@@ -310,7 +310,7 @@ const Entries = () => {
                         <strong>Flow:</strong> {entry.flow === 'OUTGOING' ? 'Expense' : entry.flow === 'INCOMING' ? 'Income' : entry.flow}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
-                        <strong>Services:</strong> {entry.services}
+                        <strong>Description:</strong> {entry.services}
                     </Grid>
                     <Grid item xs={12}>
                         <Box display="flex" alignItems="center" justifyContent="center" sx={{ my: 1 }}>
