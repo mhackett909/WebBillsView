@@ -281,7 +281,7 @@ const Entries = () => {
                             <Typography variant="h6" sx={{ fontWeight: 700, mr: 1 }}>Balance:</Typography>
                             <Typography variant="h5" sx={{
                                 fontWeight: 900,
-                                color: Number(entry.balance?.totalBalance) === 0 ? 'success.main' : 'error.main',
+                                color: Number(entry.balance?.totalBalance ?? 0) === 0 ? 'success.main' : 'error.main',
                                 bgcolor: '#f5f5f5',
                                 px: 2,
                                 py: 0.5,
