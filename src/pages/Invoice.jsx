@@ -70,6 +70,7 @@ const Invoice = () => {
               services: entry.services || '',
               status: entry.status || 0,
               invoiceId: entry.invoiceId || '', // Save invoiceId in form
+              overpaid: entry.overpaid || 0,
             });
           } else {
             setError('Invoice not found.');
