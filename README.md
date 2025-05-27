@@ -16,6 +16,7 @@ A modern React/MUI web application for managing user registration, account manag
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (v16 or higher recommended)
 - npm (v8 or higher)
 
@@ -58,8 +59,14 @@ The optimized build will be in the `build/` directory.
 - `build/` - Production build output
 
 ## Customization
+
 - Update backend API URLs and endpoints in `src/utils/BillsApiUtil.js` as needed.
 - Adjust validation logic in `src/utils/Regex.js` to match your backend requirements.
+
+## Repository
+
+- [WebBills UI GitHub Repository](https://github.com/mhackett909/WebBillsView/) - Find the latest source code and updates.
+- [WebBills GitHub Repository](https://github.com/mhackett909/WebBills/) - Backend repository.
 
 ## License
 
