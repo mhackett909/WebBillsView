@@ -61,6 +61,13 @@ The optimized build will be in the `build/` directory.
 - Update backend API URLs and endpoints in `src/utils/BillsApiUtil.js` as needed.
 - Adjust validation logic in `src/utils/Regex.js` to match your backend requirements.
 
+  
+## Repository
+
+Find the latest source code and updates at: [WebBills UI GitHub Repository](https://github.com/mhackett909/WebBillsView/)
+
+Back end: [WebBills GitHub Repository](https://github.com/mhackett909/WebBills/)
+
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
