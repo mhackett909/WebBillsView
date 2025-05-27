@@ -65,9 +65,8 @@ The optimized build will be in the `build/` directory.
 
 ## Repository
 
-Find the latest source code and updates at: [WebBills UI GitHub Repository](https://github.com/mhackett909/WebBillsView/)
-
-Back end: [WebBills GitHub Repository](https://github.com/mhackett909/WebBills/)
+- [WebBills UI GitHub Repository](https://github.com/mhackett909/WebBillsView/) - Find the latest source code and updates.
+- [WebBills GitHub Repository](https://github.com/mhackett909/WebBills/) - Back end repository.
 
 ## License
 
