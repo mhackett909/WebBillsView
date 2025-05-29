@@ -92,7 +92,7 @@ const Invoice = () => {
         })
         .finally(() => setLoading(false));
     }
-  }, [id, jwt, refresh, setLoading, handleTokenRefresh]);
+  }, [id, jwt, refresh, parties, setLoading, handleTokenRefresh]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
