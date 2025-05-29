@@ -185,7 +185,7 @@ const DataTable = ({
                         if (isOverpaid) {
                             const overpaidColor = flow === 'OUTGOING' ? '#ed6c02' : flow === 'INCOMING' ? '#0288d1' : undefined;
                             return (
-                                <span style={{ color: overpaidColor, fontWeight: 700 }}>+{Number(displayValue).toFixed(2)}</span>
+                                <span style={{ color: overpaidColor, fontWeight: 700 }}>+{Number(displayValue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             );
                         }
                         if (Number(displayValue) === 0) {
@@ -194,18 +194,18 @@ const DataTable = ({
                         // If balance equals amount, show in red
                         if (Number(displayValue) === amount) {
                             return (
-                                <span style={{ color: '#d32f2f', fontWeight: 700 }}>-{Number(displayValue).toFixed(2)}</span>
+                                <span style={{ color: '#d32f2f', fontWeight: 700 }}>-{Number(displayValue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                             );
                         }
                         // Show negative balance and in-progress icon in blue for income, orange for expense
                         const flowColor = flow === 'INCOMING' ? '#0288d1' : '#ed6c02';
                         return (
-                            <span style={{ color: flowColor, fontWeight: 700 }}>-{Number(displayValue).toFixed(2)}</span>
+                            <span style={{ color: flowColor, fontWeight: 700 }}>-{Number(displayValue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         );
                     }
                     // If it's a number, format to 2 decimals
                     if (typeof params.value === 'number') {
-                        return <span style={{ fontWeight: 700 }}>{Number(params.value).toFixed(2)}</span>;
+                        return <span style={{ fontWeight: 700 }}>{Number(params.value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>;
                     }
                     return params.value ?? '';
                 },
@@ -217,7 +217,7 @@ const DataTable = ({
                 ...col,
                 renderCell: (params) => {
                     if (typeof params.value === 'number') {
-                        return Number(params.value).toFixed(2);
+                        return Number(params.value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     }
                     return params.value ?? '';
                 },
