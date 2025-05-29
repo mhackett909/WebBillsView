@@ -30,6 +30,7 @@ const Invoice = () => {
   const [creatingParty, setCreatingParty] = useState(false);
   const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
   const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -55,7 +56,7 @@ const Invoice = () => {
     if (id) {
       setLoading(true);
       fetchEntryById(id, jwt, refresh, handleTokenRefresh)
-        .then((entry) => {
+        .then(async (entry) => {
           if (entry) {
             // Map backend flow values to UI values
             let flow = '';
@@ -69,9 +70,22 @@ const Invoice = () => {
               amount: entry.amount || '',
               services: entry.services || '',
               status: entry.status || 0,
-              invoiceId: entry.invoiceId || '', // Save invoiceId in form
-              overpaid: entry.overpaid || 0,
+              invoiceId: entry.invoiceId || '',
             });
+            // Fetch bill and set readOnly if status is false
+            if (entry.billId) {
+              const { getBillById } = await import('../utils/BillsApiUtil');
+              const bill = await getBillById(entry.billId, jwt, refresh, handleTokenRefresh);
+              if (!bill || !bill.status) {
+                setReadOnly(true);
+              } else {
+                setReadOnly(false);
+              }
+              // Add bill to parties if not present
+              if (bill && !parties.some(b => String(b.id) === String(bill.id))) {
+                setParties(prev => [...prev, bill]);
+              }
+            }
           } else {
             setError('Invoice not found.');
           }
@@ -185,6 +199,12 @@ const Invoice = () => {
 
   return (
     <Box maxWidth={500} mx="auto" mt={4}>
+      {readOnly && (
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          This invoice is <strong>read only</strong> because its entity is archived.<br />
+          To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar.
+        </Alert>
+      )}
       {loading ? (
         <>
           <Typography variant="h4" mb={2}>{id ? 'Edit Invoice' : 'New Invoice'}</Typography>
@@ -207,6 +227,7 @@ const Invoice = () => {
                 value={form.billId}
                 label="Entity"
                 onChange={handleChange}
+                disabled={readOnly}
               >
                 {parties.map((bill) => (
                   <MenuItem key={bill.id} value={bill.id}>{bill.name}</MenuItem>
@@ -219,6 +240,7 @@ const Invoice = () => {
                 color="primary"
                 fullWidth
                 onClick={handleNewPartyOpen}
+                disabled={readOnly}
               >
                 New Entity
               </Button>
@@ -226,9 +248,9 @@ const Invoice = () => {
                 variant="outlined"
                 color="secondary"
                 fullWidth
-                disabled={!form.billId}
+                disabled={!form.billId || readOnly}
                 onClick={() => {
-                  if (form.billId) navigate(`/bills/${form.billId}`);
+                  if (form.billId) navigate(`/bills/${form.billId}`, { state: { invoiceId: id } });
                 }}
               >
                 Edit Entity
@@ -244,6 +266,7 @@ const Invoice = () => {
               margin="normal"
               InputLabelProps={{ shrink: true }}
               required
+              disabled={readOnly}
             />
             <FormControl fullWidth margin="normal" required>
               <InputLabel>Flow</InputLabel>
@@ -252,6 +275,7 @@ const Invoice = () => {
                 value={form.flow}
                 label="Flow"
                 onChange={handleChange}
+                disabled={readOnly}
               >
                 <MenuItem value="income">Income</MenuItem>
                 <MenuItem value="expense">Expense</MenuItem>
@@ -279,6 +303,7 @@ const Invoice = () => {
                 min: '0',
                 maxLength: 12
               }}
+              disabled={readOnly}
             />
             <TextField
               label="Description"
@@ -289,6 +314,7 @@ const Invoice = () => {
               margin="normal"
               multiline
               minRows={2}
+              disabled={readOnly}
             />
             {error && <Typography color="error" mt={1}>{error}</Typography>}
             <Button
@@ -297,7 +323,7 @@ const Invoice = () => {
               color="primary"
               fullWidth
               sx={{ mt: 2 }}
-              disabled={submitting}
+              disabled={submitting || readOnly}
             >
               {submitting ? (id ? 'Saving...' : 'Submitting...') : (id ? 'Save Changes' : 'Create Invoice')}
             </Button>
@@ -309,6 +335,7 @@ const Invoice = () => {
                   fullWidth
                   sx={{ mt: 2 }}
                   onClick={() => setDeleteDialogOpen(true)}
+                  disabled={readOnly}
                 >
                   Delete
                 </Button>

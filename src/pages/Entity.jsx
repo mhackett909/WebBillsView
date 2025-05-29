@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, TextField, Checkbox, FormControlLabel, Button, Paper, CircularProgress, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { getBillById, editBill } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
@@ -9,6 +9,8 @@ const STATUS_ACTIVE = 1;
 
 const Entity = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const invoiceId = location.state?.invoiceId;
   const navigate = useNavigate();
   const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -67,7 +69,7 @@ const Entity = () => {
       if (result && result.id) {
         setSnackbar({ open: true, message: 'Entity updated successfully.', severity: 'success' });
         setBill(result);
-        setTimeout(() => navigate('/home'), 1200);
+        setTimeout(() => handleBack(), 1200);
       } else {
         setSnackbar({ open: true, message: 'Failed to update entity.', severity: 'error' });
       }
@@ -88,7 +90,7 @@ const Entity = () => {
       const result = await editBill({ ...bill, recycle: true }, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
         setSnackbar({ open: true, message: 'Entity deleted (recycled) successfully.', severity: 'success' });
-        setTimeout(() => navigate('/home'), 1200);
+        setTimeout(() => handleBack(), 1200);
       } else {
         setSnackbar({ open: true, message: 'Failed to delete entity.', severity: 'error' });
       }
@@ -100,6 +102,14 @@ const Entity = () => {
   };
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false);
+  };
+
+  const handleBack = () => {
+    if (invoiceId) {
+      navigate(`/invoice/${invoiceId}`);
+    } else {
+      navigate('/invoice');
+    }
   };
 
   if (loading) {
