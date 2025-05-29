@@ -41,15 +41,12 @@
     border-radius: 8px;
     background-color: #fafafa;
     flex-grow: 1;
-    padding-left: 5px;
-    text-align: center;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding-left: 5px;
+
 }
 
 .checkbox-label {
-    text-align: center;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -64,5 +61,13 @@
 .checkbox-container .MuiFormControlLabel-root {
     padding-top: 10px;
     margin-top: -15px; /* closer spacing between checkboxes in a row */
+}
 
+.status-container {
+    /* Target the FormControl root directly for the status group */
+    padding-bottom: 35px !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
 }
