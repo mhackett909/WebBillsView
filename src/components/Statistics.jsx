@@ -127,7 +127,7 @@ const Statistics = ({ stats }) => {
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card variant="outlined">
                                     <CardContent sx={{ textAlign: 'center' }}>
-                                        <Typography variant="subtitle2" color="error.main" sx={{ fontWeight: 700 }}>Unpaid</Typography>
+                                        <Typography variant="subtitle2" color="error.main" sx={{ fontWeight: 700 }}>Balance</Typography>
                                         <Typography variant="h6">{currency(s.totalExpenseUnpaid)}</Typography>
                                     </CardContent>
                                 </Card>

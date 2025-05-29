@@ -12,14 +12,18 @@ const CheckboxGroup = ({ legend, options, selectedValue, onChange, row = false }
 
     return (
         <Box className="checkbox-container">
-            <FormControl component="fieldset" sx={{ width: '100%', alignItems: 'center' }}>
+            <FormControl 
+                component="fieldset" 
+                sx={{ width: '100%'}}
+                className={legend === 'Status' ? 'status-container' : undefined}
+            >
                 <FormLabel 
                     component="legend"
                     className="checkbox-label"
                 >
                     {legend}
                 </FormLabel>
-                <FormGroup row={row} sx={{ justifyContent: 'center' }}>
+                <FormGroup row={row}>
                     {options.map((option) => (
                         <FormControlLabel
                             key={option.value}
