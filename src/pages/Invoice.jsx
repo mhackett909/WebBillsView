@@ -71,6 +71,7 @@ const Invoice = () => {
               services: entry.services || '',
               status: entry.status || 0,
               invoiceId: entry.invoiceId || '',
+              overpaid: entry.overpaid || 0,
             });
             // Fetch bill and set readOnly if status is false
             if (entry.billId) {
