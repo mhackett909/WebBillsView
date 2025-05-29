@@ -175,6 +175,7 @@ const Home = () => {
         if (f.status === 'paid') paid = true;
         else if (f.status === 'unpaid') paid = false;
         else if (f.status === 'overpaid') paid = 'overpaid';
+        else if (f.status === 'partial') paid = 'partial';
         else paid = undefined;
         return {
             startDate: dr[0] ? dayjs(dr[0]).format('YYYY-MM-DD') : undefined,
