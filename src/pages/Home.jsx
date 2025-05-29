@@ -122,6 +122,7 @@ const Home = () => {
             flow: true,
             amount: true,
             status: true,
+            balance: true,
             services: true,
             archived: true,
         };
@@ -358,6 +359,7 @@ const Home = () => {
         { field: 'flow', headerName: 'Flow', width: 150 },
         { field: 'amount', headerName: 'Amount', width: 130 },
         { field: 'status', headerName: 'Paid', width: 100 },
+        { field: 'balance', headerName: 'Balance', width: 130 },
         { field: 'services', headerName: 'Description', width: 500 },
         { field: 'archived', headerName: 'Archived', width: 100 },
     ];

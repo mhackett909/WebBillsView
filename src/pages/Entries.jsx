@@ -266,7 +266,14 @@ const Entries = () => {
                                     )}
                                 </>
                             ) : (
-                                <CancelIcon color="error" titleAccess="Unpaid" />
+                                <>
+                                    <CancelIcon color="error" titleAccess="Unpaid" />
+                                    {Number(entry.balance?.totalBalance) > 0 && Number(entry.balance?.totalBalance) < Number(entry.amount) && (
+                                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" stroke={entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2" fill="none"/><path d="M12 6v6l4 2" stroke={entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2"/></svg>
+                                        </span>
+                                    )}
+                                </>
                             )}
                         </span>
                     </Grid>
@@ -281,7 +288,12 @@ const Entries = () => {
                             <Typography variant="h6" sx={{ fontWeight: 700, mr: 1 }}>Balance:</Typography>
                             <Typography variant="h5" sx={{
                                 fontWeight: 900,
-                                color: Number(entry.balance?.totalBalance ?? 0) === 0 ? 'success.main' : 'error.main',
+                                color:
+                                    Number(entry.balance?.totalBalance) > 0 && Number(entry.balance?.totalBalance) < Number(entry.amount)
+                                        ? (entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02')
+                                        : Number(entry.balance?.totalBalance) === 0
+                                        ? 'success.main'
+                                        : 'error.main',
                                 bgcolor: '#f5f5f5',
                                 px: 2,
                                 py: 0.5,

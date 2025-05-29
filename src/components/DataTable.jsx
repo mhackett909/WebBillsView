@@ -101,8 +101,27 @@ const DataTable = ({
                     const flow = params.row.flow;
                     let plusOneColor = undefined;
                     if (isOverpaid) {
-                        if (flow === 'OUTGOING') plusOneColor = '#ed6c02'; // orange (same as right arrow)
+                        if (flow === 'OUTGOING') plusOneColor = '#ed6c02';
                         else if (flow === 'INCOMING') plusOneColor = '#0288d1';
+                    }
+                    // Determine if in progress (balance !== amount)
+                    let inProgress = false;
+                    const balanceObj = params.row.balance;
+                    const amount = Number(params.row.amount);
+                    let balanceValue = undefined;
+                    if (balanceObj && typeof balanceObj === 'object' && balanceObj !== null) {
+                        if (Number(balanceObj.totalBalance) === 0 && Number(balanceObj.totalOverpaid) > 0) {
+                            balanceValue = Number(balanceObj.totalOverpaid);
+                        } else if (Number(balanceObj.totalBalance) === 0 && Number(balanceObj.totalOverpaid) === 0) {
+                            balanceValue = 0;
+                        } else {
+                            balanceValue = Number(balanceObj.totalBalance);
+                        }
+                    } else if (typeof params.row.balance === 'number') {
+                        balanceValue = Number(params.row.balance);
+                    }
+                    if (typeof balanceValue === 'number' && typeof amount === 'number' && balanceValue !== amount) {
+                        inProgress = true;
                     }
                     return (
                         <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -120,7 +139,14 @@ const DataTable = ({
                                     )}
                                 </>
                             ) : (
-                                <CancelIcon color="error" titleAccess="Unpaid" />
+                                <>
+                                    <CancelIcon color="error" titleAccess="Unpaid" />
+                                    {inProgress && (
+                                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" stroke={flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2" fill="none"/><path d="M12 6v6l4 2" stroke={flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2"/></svg>
+                                        </span>
+                                    )}
+                                </>
                             )}
                         </span>
                     );
@@ -135,6 +161,51 @@ const DataTable = ({
                     params.row.archived === true ? (
                         <CheckCircleIcon color="success" titleAccess="Archived" />
                     ) : '',
+            };
+        }
+        // Balance column
+        if (col.field === 'balance') {
+            return {
+                ...col,
+                renderCell: (params) => {
+                    if (params.value && typeof params.value === 'object' && params.value !== null) {
+                        const { totalBalance, totalOverpaid } = params.value;
+                        const flow = params.row.flow;
+                        const amount = Number(params.row.amount);
+                        let displayValue;
+                        let isOverpaid = false;
+                        if (Number(totalBalance) === 0 && Number(totalOverpaid) > 0) {
+                            displayValue = totalOverpaid;
+                            isOverpaid = true;
+                        } else if (Number(totalBalance) === 0 && Number(totalOverpaid) === 0) {
+                            displayValue = 0;
+                        } else {
+                            displayValue = totalBalance;
+                        }
+                        // Show totalOverpaid in color with plus, totalBalance in purple with minus, 0 as normal
+                        if (isOverpaid) {
+                            const overpaidColor = flow === 'OUTGOING' ? '#ed6c02' : flow === 'INCOMING' ? '#0288d1' : undefined;
+                            return (
+                                <span style={{ color: overpaidColor, fontWeight: 500 }}>+{displayValue}</span>
+                            );
+                        }
+                        if (Number(displayValue) === 0) {
+                            return <span style={{ color: '#2e7d32', fontWeight: 500 }}>0.00</span>; // green for 0.00
+                        }
+                        // If balance equals amount, show in red
+                        if (Number(displayValue) === amount) {
+                            return (
+                                <span style={{ color: '#d32f2f', fontWeight: 500 }}>-{displayValue}</span>
+                            );
+                        }
+                        // Show negative balance and in-progress icon in blue for income, orange for expense
+                        const flowColor = flow === 'INCOMING' ? '#0288d1' : '#ed6c02';
+                        return (
+                            <span style={{ color: flowColor, fontWeight: 500 }}>-{displayValue}</span>
+                        );
+                    }
+                    return params.value ?? '';
+                },
             };
         }
         return col;
