@@ -250,7 +250,7 @@ const Entries = () => {
                         <strong>Entity:</strong> {billName}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}><strong>Date:</strong> {entry.date}</Grid>
-                    <Grid item xs={12} sm={6} md={4}><strong>Amount:</strong> {entry.amount}</Grid>
+                    <Grid item xs={12} sm={6} md={4}><strong>Amount:</strong> {Number(entry.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Grid>
                     <Grid item xs={12} sm={6} md={4}>
                         <strong>Paid:</strong>{' '}
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, verticalAlign: 'middle' }}>
@@ -352,7 +352,7 @@ const Entries = () => {
                                     <TableRow key={payment.id || payment.paymentId}>
                                         <TableCell style={{ display: 'none' }}>{payment.id || payment.paymentId}</TableCell>
                                         <TableCell>{payment.date}</TableCell>
-                                        <TableCell>{payment.amount}</TableCell>
+                                        <TableCell>{Number(payment.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                                         <TableCell>{
                                             (() => {
                                                 switch (payment.type) {

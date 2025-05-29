@@ -182,27 +182,42 @@ const DataTable = ({
                         } else {
                             displayValue = totalBalance;
                         }
-                        // Show totalOverpaid in color with plus, totalBalance in purple with minus, 0 as normal
                         if (isOverpaid) {
                             const overpaidColor = flow === 'OUTGOING' ? '#ed6c02' : flow === 'INCOMING' ? '#0288d1' : undefined;
                             return (
-                                <span style={{ color: overpaidColor, fontWeight: 500 }}>+{displayValue}</span>
+                                <span style={{ color: overpaidColor, fontWeight: 700 }}>+{Number(displayValue).toFixed(2)}</span>
                             );
                         }
                         if (Number(displayValue) === 0) {
-                            return <span style={{ color: '#2e7d32', fontWeight: 500 }}>0.00</span>; // green for 0.00
+                            return <span style={{ color: '#2e7d32', fontWeight: 700 }}>0.00</span>; // green for 0.00
                         }
                         // If balance equals amount, show in red
                         if (Number(displayValue) === amount) {
                             return (
-                                <span style={{ color: '#d32f2f', fontWeight: 500 }}>-{displayValue}</span>
+                                <span style={{ color: '#d32f2f', fontWeight: 700 }}>-{Number(displayValue).toFixed(2)}</span>
                             );
                         }
                         // Show negative balance and in-progress icon in blue for income, orange for expense
                         const flowColor = flow === 'INCOMING' ? '#0288d1' : '#ed6c02';
                         return (
-                            <span style={{ color: flowColor, fontWeight: 500 }}>-{displayValue}</span>
+                            <span style={{ color: flowColor, fontWeight: 700 }}>-{Number(displayValue).toFixed(2)}</span>
                         );
+                    }
+                    // If it's a number, format to 2 decimals
+                    if (typeof params.value === 'number') {
+                        return <span style={{ fontWeight: 700 }}>{Number(params.value).toFixed(2)}</span>;
+                    }
+                    return params.value ?? '';
+                },
+            };
+        }
+        // Amount column
+        if (col.field === 'amount') {
+            return {
+                ...col,
+                renderCell: (params) => {
+                    if (typeof params.value === 'number') {
+                        return Number(params.value).toFixed(2);
                     }
                     return params.value ?? '';
                 },
