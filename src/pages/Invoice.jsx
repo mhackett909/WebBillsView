@@ -2,7 +2,7 @@ import { useState, useContext, useEffect, useCallback } from 'react';
 import { Box, TextField, Button, MenuItem, Typography, FormControl, InputLabel, Select, Snackbar, Alert } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { createEntry, getBills, createBill, fetchEntryById, editEntry } from '../utils/BillsApiUtil';
+import { createEntry, getBills, createBill, fetchEntryById, editEntry, getBillById } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -75,7 +75,6 @@ const Invoice = () => {
             });
             // Fetch bill and set readOnly if status is false
             if (entry.billId) {
-              const { getBillById } = await import('../utils/BillsApiUtil');
               const bill = await getBillById(entry.billId, jwt, refresh, handleTokenRefresh);
               if (!bill || !bill.status) {
                 setReadOnly(true);
