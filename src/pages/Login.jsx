@@ -9,6 +9,10 @@ import { AuthContext } from '../App';
 import { login } from '../utils/BillsApiUtil';
 import '../styles/login.css'; // Import the CSS file
 import '../styles/global.css'; // Import the global CSS file
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Login = () => {
   const [inputtedUserName, setInputtedUsername] = useState('');
@@ -16,6 +20,7 @@ const Login = () => {
   const [showLogoutSnackbar, setShowLogoutSnackbar] = useState(false);
   const [showAccountCreated, setShowAccountCreated] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { setJwt, setUsername, setRefresh } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,13 +102,27 @@ const Login = () => {
           />
           <TextField
             label="Password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             variant="outlined"
             fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             sx={{ marginBottom: '15px' }}
             required
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => setShowPassword((show) => !show)}
+                    edge="end"
+                    size="small"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </div>
         <Button
