@@ -70,7 +70,7 @@ const Home = () => {
         }
         return [
             dayjs().subtract(30, 'day').startOf('day').toDate(),
-            dayjs().startOf('day').toDate(),
+            null,
         ];
     };
 
