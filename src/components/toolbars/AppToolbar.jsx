@@ -1,14 +1,13 @@
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import banner from '../../assets/banner.png';
 import { useState, useContext } from 'react';
 import { AuthContext } from '../../App';
-import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 
 const AppToolbar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -60,33 +59,11 @@ const AppToolbar = () => {
     };
 
     return (
-        <AppBar position="static" style={{ backgroundColor: "blue", color: "white" }}>
-            <Toolbar style={{ justifyContent: 'space-between' }}>
+        <AppBar position="static" color="primary" sx={{ bgcolor: 'primary.dark', color: 'white' }}>
+            <Toolbar style={{ justifyContent: 'space-between', paddingLeft: 0, minHeight: 0 }}>
                 {/* Left Side: Bill Manager */}
-                <Box style={{ display: 'flex', alignItems: 'center' }}>
-                    <RequestQuoteIcon sx={{ fontSize: '2rem', color: '#00e676', marginRight: '18px', filter: 'drop-shadow(0 1px 2px #1976d2)' }} />
-                    <Typography
-                        variant="h5"
-                        color="inherit"
-                        component={Link}
-                        to="/home"
-                        style={{
-                            textDecoration: 'none',
-                            color: 'inherit',
-                            marginRight: '20px',
-                            fontWeight: 900,
-                            letterSpacing: '2px',
-                            fontFamily: 'Montserrat, Segoe UI, Arial, sans-serif',
-                            textShadow: '0 2px 4px #1976d2',
-                            background: 'none',
-                            WebkitBackgroundClip: 'initial',
-                            WebkitTextFillColor: 'initial',
-                            display: 'inline-block',
-                            fontSize: '1.7rem',
-                        }}
-                    >
-                        Bill Manager <span style={{ color: 'yellow', fontWeight: 900, fontSize: '1.15em', letterSpacing: '3px', marginLeft: '6px', textTransform: 'uppercase', textShadow: '0 1px 2px #1976d2', fontStyle: 'italic', fontFamily: 'Montserrat, Segoe UI, Arial, sans-serif' }}>Web</span>
-                    </Typography>
+                <Box style={{ display: 'flex', alignItems: 'center', marginLeft: 0, paddingLeft: 0, height: '100%', cursor: 'pointer' }} onClick={() => navigate('/home')}>
+                    <img src={banner} alt="Bill Manager Banner" style={{ height: '65px' }} />
                 </Box>
                 {/* Right Side: History, Account, and User Dropdown */}
                 {jwt && (
@@ -102,6 +79,9 @@ const AppToolbar = () => {
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
                         onClose={handleMenuClose}
+                        PaperProps={{
+                            sx: { bgcolor: 'info.main', color: 'white' }
+                        }}
                     >
                         <MenuItem onClick={handleNavigateToArchives}>Archives</MenuItem>
                         <MenuItem onClick={handleNavigateToRecycleBin}>Recycle Bin</MenuItem>
@@ -117,6 +97,9 @@ const AppToolbar = () => {
                         anchorEl={userMenuAnchorEl}
                         open={Boolean(userMenuAnchorEl)}
                         onClose={handleUserMenuClose}
+                        PaperProps={{
+                            sx: { bgcolor: 'info.main', color: 'white' }
+                        }}
                     >
                         <MenuItem onClick={handleNavigateToAccount}>Account</MenuItem>
                         {contactEnabled && (

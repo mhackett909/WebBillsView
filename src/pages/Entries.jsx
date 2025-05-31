@@ -232,7 +232,7 @@ const Entries = () => {
             {/* Top half: Entry details */}
             <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
                 <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-                    <Typography variant="h6" gutterBottom>Entry Details</Typography>
+                    <Typography variant="h6" gutterBottom>Invoice Details</Typography>
                     <Button
                         variant="contained"
                         color="secondary"
@@ -245,7 +245,7 @@ const Entries = () => {
                     </Button>
                 </Box>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6} md={4}><strong>Invoice ID:</strong> {entry.invoiceId}</Grid>
+                    <Grid item xs={12} sm={6} md={4}><strong>ID:</strong> {entry.invoiceId}</Grid>
                     <Grid item xs={12} sm={6} md={4}>
                         <strong>Entity:</strong> {billName}
                     </Grid>
