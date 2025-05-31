@@ -174,14 +174,14 @@ const Invoice = () => {
       const result = await createBill(billData, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
         setParties((prev) => [...prev, result]);
-        setPartySnackbar({ open: true, message: 'Party created', severity: 'success' });
+        setPartySnackbar({ open: true, message: 'Entity created', severity: 'success' });
         setForm((prev) => ({ ...prev, billId: result.id }));
         setNewPartyOpen(false);
       } else {
-        setPartySnackbar({ open: true, message: 'Failed to create party', severity: 'error' });
+        setPartySnackbar({ open: true, message: 'Failed to create entity', severity: 'error' });
       }
     } catch (err) {
-      setPartySnackbar({ open: true, message: 'Error creating party', severity: 'error' });
+      setPartySnackbar({ open: true, message: 'Error creating entity', severity: 'error' });
     } finally {
       setCreatingParty(false);
     }
