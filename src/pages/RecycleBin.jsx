@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
+import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
 import { getRecycleBin, getBillById, editBill, fetchEntryById, editEntry, getPaymentById, updatePayment } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
@@ -131,22 +131,26 @@ const RecycleBin = () => {
               data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                 <TableRow key={item.entityId}>
                   <TableCell>
-                    <span style={{
-                      display: 'inline-block',
-                      padding: '2px 10px',
-                      borderRadius: '12px',
-                      fontWeight: 600,
-                      color: '#fff',
-                      backgroundColor:
-                        item.entityType === 'Entity' ? '#f57c00' :
-                        item.entityType === 'Invoice' ? '#1976d2' :
-                        item.entityType === 'Payment' ? '#388e3c' :
-                        '#757575',
-                      fontSize: '0.95em',
-                      letterSpacing: 0.5
-                    }}>
-                      {item.entityType}
-                    </span>
+                    <Chip
+                      label={item.entityType}
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: '0.95em',
+                        letterSpacing: 0.5,
+                        color: '#fff',
+                        backgroundColor:
+                          item.entityType === 'Entity' ? '#f57c00' :
+                          item.entityType === 'Invoice' ? '#1976d2' :
+                          item.entityType === 'Payment' ? '#388e3c' :
+                          '#757575',
+                        px: '10px',
+                        py: '2px',
+                        borderRadius: '12px',
+                        height: 'auto',
+                        minHeight: 'unset',
+                      }}
+                      size="small"
+                    />
                   </TableCell>
                   <TableCell>
                     {item.recycleDate
