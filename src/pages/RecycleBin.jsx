@@ -87,7 +87,7 @@ const RecycleBin = () => {
       }
       if (result && (result.id || result.entryId || result.paymentId)) {
         setSnackbar({ open: true, message: `${item.entityType} restored successfully.`, severity: 'success' });
-        // Instead, re-fetch the recycle bin
+        // Re-fetch the recycle bin
         await fetchRecycleBin();
       } else {
         throw new Error('Restore failed');
