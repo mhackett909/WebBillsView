@@ -88,7 +88,7 @@ const Archives = () => {
   return (
     <Box maxWidth={700} mx="auto" mt={4}>
       <Alert severity="info" sx={{ mb: 3 }}>
-        Archived entities are hidden from the main page and are not included in statistics calculations.
+        Archived entities (and their invoices) are hidden from the main page and are not included in statistics calculations.
       </Alert>
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight={300}>
