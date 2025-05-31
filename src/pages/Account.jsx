@@ -3,12 +3,7 @@ import { Box, Card, CardContent, Typography, Button, Grid, TextField, Switch, Fo
 import { useNavigate } from 'react-router-dom';
 import { getUser, resendVerificationEmail, updateUser } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import { passwordPattern } from '../utils/Regex';
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 const Account = () => {
   const { username, jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
