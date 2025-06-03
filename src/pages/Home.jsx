@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 import { fetchEntries, getBills, getStats } from '../utils/BillsApiUtil';
 import dayjs from 'dayjs';
@@ -156,6 +156,7 @@ const Home = () => {
     const includeArchivedRef = useRef(getInitialIncludeArchived());
 
     const navigate = useNavigate();
+    const location = useLocation();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
 
     // Reusable handleTokenRefresh
@@ -340,16 +341,22 @@ const Home = () => {
         // eslint-disable-next-line
     }, []);
 
+    // Call filterBills on location change (including back/forward navigation)
     useEffect(() => {
-        // Only run after clearFilters is called
-        loadStats();
+        filterBills();
         // eslint-disable-next-line
-    }, [resetFlag]);
+    }, [location.key]);
 
     // Fetch entries whenever page, pageSize, or sortModel changes
     useEffect(() => {
         loadEntries();
     }, [page, pageSize, sortModel, loadEntries]);
+
+    // Only run after clearFilters is called
+    useEffect(() => {
+        loadStats();
+        // eslint-disable-next-line
+    }, [resetFlag]);
 
     const columns = [
         { field: 'invoiceId', headerName: 'Invoice #', width: 100 },
