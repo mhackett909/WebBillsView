@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useCallback, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 import { fetchEntries, getBills, getStats } from '../utils/BillsApiUtil';
 import dayjs from 'dayjs';
@@ -156,7 +156,6 @@ const Home = () => {
     const includeArchivedRef = useRef(getInitialIncludeArchived());
 
     const navigate = useNavigate();
-    const location = useLocation();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
 
     // Reusable handleTokenRefresh
@@ -341,11 +340,21 @@ const Home = () => {
         // eslint-disable-next-line
     }, []);
 
-    // Call filterBills on location change (including back/forward navigation)
     useEffect(() => {
-        filterBills();
-        // eslint-disable-next-line
-    }, [location.pathname]);
+    const handlePageShow = (event) => {
+        if (event.persisted) {
+        console.log("Page restored from bfcache. Reloading home data...");
+        loadEntries();
+        loadStats();
+        }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => {
+        window.removeEventListener("pageshow", handlePageShow);
+    };
+    }, []);
+
 
     // Fetch entries whenever page, pageSize, or sortModel changes
     useEffect(() => {
