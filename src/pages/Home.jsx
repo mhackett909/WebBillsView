@@ -341,18 +341,19 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-    const handlePageShow = (event) => {
-        if (event.persisted) {
-        console.log("Page restored from bfcache. Reloading home data...");
-        loadEntries();
-        loadStats();
-        }
-    };
+        const handlePageShow = (event) => {
+            if (event.persisted) {
+            console.log("Page restored from bfcache. Reloading home data...");
+            loadEntries();
+            loadStats();
+            }
+        };
 
-    window.addEventListener("pageshow", handlePageShow);
-    return () => {
-        window.removeEventListener("pageshow", handlePageShow);
-    };
+        window.addEventListener("pageshow", handlePageShow);
+        return () => {
+            window.removeEventListener("pageshow", handlePageShow);
+        };
+        // eslint-disable-next-line
     }, []);
 
 
