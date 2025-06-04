@@ -345,7 +345,7 @@ const Home = () => {
     useEffect(() => {
         filterBills();
         // eslint-disable-next-line
-    }, [location.key]);
+    }, [location.pathname]);
 
     // Fetch entries whenever page, pageSize, or sortModel changes
     useEffect(() => {
