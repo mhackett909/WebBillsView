@@ -28,7 +28,7 @@ export function mapPaymentMedium(medium) {
         case 'app': return 'Mobile App';
         case 'phone': return 'Phone';
         case 'other': return 'Other';
-        case 'service': return 'Service (Zelle, Venmo, PayPal, etc.)'
+        case 'service': return 'Service (Zelle, Venmo, PayPal, etc.)';
         case 'web': return 'Website';
         default: return medium;
     }
