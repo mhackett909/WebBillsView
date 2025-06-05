@@ -80,10 +80,10 @@ export const fetchEntries = async (token, refreshToken, onTokenRefresh, filters)
             // Defensive fallback
             return { entries: [], total: 0 };
         }
-        console.error("Failed to fetch entries:", response.status, response.statusText);
+        console.error("Failed to fetch invoices:", response.status, response.statusText);
         return [];
     } catch (error) {
-        console.error("Error fetching entries:", error);
+        console.error("Error fetching invoices:", error);
         return [];
     }
 };
@@ -105,10 +105,10 @@ export const fetchEntryById = async (id, token, refreshToken, onTokenRefresh, fi
             const responseData = await response.json();
             return responseData; // Return the single entry object directly
         }
-        console.error('Failed to fetch entry by id:', response.status, response.statusText);
+        console.error('Failed to fetch invoice by id:', response.status, response.statusText);
         return null;
     } catch (error) {
-        console.error('Error fetching entry by id:', error);
+        console.error('Error fetching invoice by id:', error);
         return null;
     }
 };
@@ -320,10 +320,10 @@ export const createEntry = async (entryData, token, refreshToken, onTokenRefresh
             const responseData = await response.json();
             return responseData;
         }
-        console.error('Failed to create entry:', response.status, response.statusText);
+        console.error('Failed to create invoice:', response.status, response.statusText);
         return null;
     } catch (error) {
-        console.error('Error creating entry:', error);
+        console.error('Error creating invoice:', error);
         return null;
     }
 };
@@ -349,10 +349,10 @@ export const editEntry = async (entryData, token, refreshToken, onTokenRefresh, 
             const responseData = await response.json();
             return responseData;
         }
-        console.error('Failed to edit entry:', response.status, response.statusText);
+        console.error('Failed to edit invoice:', response.status, response.statusText);
         return null;
     } catch (error) {
-        console.error('Error editing entry:', error);
+        console.error('Error editing invoice:', error);
         return null;
     }
 };

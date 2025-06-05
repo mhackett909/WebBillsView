@@ -159,10 +159,10 @@ const Entity = () => {
         </Box>
       </Paper>
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Entity and Entries?</DialogTitle>
+        <DialogTitle>Delete Entity and Invoices?</DialogTitle>
         <DialogContent>
           <Typography>
-            Deleting this entity will also <strong>delete all</strong> its entries. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
+            Deleting this entity will also <strong>delete all</strong> its invoices. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -174,7 +174,7 @@ const Entity = () => {
         <DialogTitle>Archive Entity?</DialogTitle>
         <DialogContent>
           <Typography>
-            Archiving this entity will make all its entries <strong>read-only</strong>. You can reactivate them anytime from the <strong>Archives</strong> tool in the <strong>History</strong> menu.
+            Archiving this entity will make all its invoices <strong>read-only</strong>. You can reactivate them anytime from the <strong>Archives</strong> tool in the <strong>History</strong> menu.
           </Typography>
         </DialogContent>
         <DialogActions>

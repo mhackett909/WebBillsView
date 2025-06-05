@@ -406,7 +406,7 @@ const Home = () => {
                     onChange={handleTabChange}
                     className="main-tabs"
                 >
-                    <Tab label="Entries" />
+                    <Tab label="Invoices" />
                     <Tab label="Stats" />
                 </Tabs>
                 {/* Render content based on the active tab */}

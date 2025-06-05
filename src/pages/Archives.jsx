@@ -138,10 +138,10 @@ const Archives = () => {
         </>
       )}
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Entity Permanently?</DialogTitle>
+        <DialogTitle>Delete Entity and Invoices Permanently?</DialogTitle>
         <DialogContent>
           <Typography>
-            Deleting this entity will also <strong>delete all</strong> its entries. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
+            Deleting this entity will also <strong>delete all</strong> its invoices. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
           </Typography>
         </DialogContent>
         <DialogActions>

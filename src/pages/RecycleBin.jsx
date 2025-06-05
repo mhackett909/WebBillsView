@@ -113,7 +113,7 @@ const RecycleBin = () => {
               <TableCell>Deletion Date</TableCell>
               <TableCell>Entity Name</TableCell>
               <TableCell>Invoice Number</TableCell>
-              <TableCell>Entry/Payment Date</TableCell>
+              <TableCell>Invoice/Payment Date</TableCell>
               <TableCell>Amount</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Details</TableCell>

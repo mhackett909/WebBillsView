@@ -65,7 +65,7 @@ const Entries = () => {
                     setBillEnabled(true);
                 }
             } catch (err) {
-                setError('Failed to load entry or payments.');
+                setError('Failed to load invoice or payments.');
             } finally {
                 setLoading(false);
             }
@@ -215,7 +215,7 @@ const Entries = () => {
     if (!entry) {
         return (
             <Box maxWidth={600} mx="auto" mt={4}>
-                <Alert severity="warning">Entry not found.</Alert>
+                <Alert severity="warning">Invoice not found.</Alert>
             </Box>
         );
     }
@@ -225,7 +225,7 @@ const Entries = () => {
             {/* Read-only banner if bill is archived */}
             {!billEnabled && (
                 <Alert severity="warning" sx={{ mb: 3 }}>
-                    This entry is <strong>read only</strong> because the entity is archived.<br />
+                    This invoice is <strong>read only</strong> because the entity is archived.<br />
                     To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar to restore the entity to an active state.
                 </Alert>
             )}
