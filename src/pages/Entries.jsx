@@ -430,7 +430,9 @@ const Entries = () => {
                         <MenuItem value="cash">Cash</MenuItem>
                         <MenuItem value="check">Check</MenuItem>
                         <MenuItem value="credit">Credit</MenuItem>
+                        <MenuItem value="cyber">Cybercurrency</MenuItem>
                         <MenuItem value="debit">Debit</MenuItem>
+                        <MenuItem value="prepaid">Prepaid Card</MenuItem>
                         <MenuItem value="other">Other</MenuItem>
                     </TextField>
                     <TextField
