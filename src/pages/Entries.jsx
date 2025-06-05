@@ -363,7 +363,7 @@ const Entries = () => {
                                         </TableCell>
                                     </TableRow>
                                 ))
-                            }
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
