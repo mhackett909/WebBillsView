@@ -1,4 +1,5 @@
 import { Box, Grid, Card, CardContent, Typography, CircularProgress } from '@mui/material';
+import { mapPaymentType } from '../utils/Mappers';
 import '../styles/tabs.css';
 
 const Statistics = ({ stats }) => {
@@ -181,7 +182,7 @@ const Statistics = ({ stats }) => {
                                 {top5(s.topIncomeTypes).length > 0 ? (
                                     top5(s.topIncomeTypes).map(([type, amt]) => (
                                         <Typography key={type}>
-                                            <span style={{ color: '#111' }}>{type}</span>: <span style={{ color: '#0288d1', fontWeight: 500 }}>{currency(amt)}</span>
+                                            <span style={{ color: '#111' }}>{mapPaymentType(type)}</span>: <span style={{ color: '#0288d1', fontWeight: 500 }}>{currency(amt)}</span>
                                         </Typography>
                                     ))
                                 ) : (
@@ -211,7 +212,7 @@ const Statistics = ({ stats }) => {
                                 {top5(s.topExpenseTypes).length > 0 ? (
                                     top5(s.topExpenseTypes).map(([type, amt]) => (
                                         <Typography key={type}>
-                                            <span style={{ color: '#111' }}>{type}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
+                                            <span style={{ color: '#111' }}>{mapPaymentType(type)}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
                                         </Typography>
                                     ))
                                 ) : (

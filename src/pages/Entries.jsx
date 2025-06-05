@@ -17,6 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
+import { mapPaymentType, mapPaymentMedium } from '../utils/Mappers';
 
 const Entries = () => {
     const { id } = useParams();
@@ -313,7 +314,7 @@ const Entries = () => {
                                         </>
                                     ) : '$0.00'
                                 ) : (
-                                    `$${Number(entry.balance?.totalBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                    `-$${Number(entry.balance?.totalBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                                 )}
                             </Typography>
                         </Box>
@@ -353,34 +354,8 @@ const Entries = () => {
                                         <TableCell style={{ display: 'none' }}>{payment.id || payment.paymentId}</TableCell>
                                         <TableCell>{payment.date}</TableCell>
                                         <TableCell>{Number(payment.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                                        <TableCell>{
-                                            (() => {
-                                                switch (payment.type) {
-                                                case 'cash': return 'Cash';
-                                                case 'check': return 'Check';
-                                                case 'credit': return 'Credit';
-                                                case 'debit': return 'Debit';
-                                                case 'eft': return 'Electronic Fund Transfer';
-                                                case 'other': return 'Other';
-                                                default: return payment.type;
-                                                }
-                                            })()
-                                            }</TableCell>
-                                                                                    <TableCell>{
-                                            (() => {
-                                                switch (payment.medium) {
-                                                case 'app': return 'App';
-                                                case 'web': return 'Website';
-                                                case 'person': return 'In Person';
-                                                case 'mail': return 'Mail';
-                                                case 'phone': return 'Phone';
-                                                case 'other': return 'Other';
-                                                case 'ach': return 'ACH';
-                                                case 'wire': return 'Wire';
-                                                default: return payment.medium;
-                                                }
-                                            })()
-                                            }</TableCell>
+                                        <TableCell>{mapPaymentType(payment.type)}</TableCell>
+                                        <TableCell>{mapPaymentMedium(payment.medium)}</TableCell>
                                         <TableCell>{payment.notes}</TableCell>
                                         <TableCell align="right">
                                             <IconButton size="small" onClick={() => handleOpenEdit(payment)} disabled={!billEnabled}><EditIcon fontSize="small" /></IconButton>
