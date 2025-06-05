@@ -454,8 +454,8 @@ const Entries = () => {
                         <MenuItem value="app">Mobile App</MenuItem>
                         <MenuItem value="phone">Phone</MenuItem>
                         <MenuItem value="service">Service (Zelle, Venmo, PayPal, etc.)</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
                         <MenuItem value="web">Website</MenuItem>
+                        <MenuItem value="other">Other</MenuItem>
                     </TextField>
                     <TextField
                         margin="dense"
