@@ -426,11 +426,13 @@ const Entries = () => {
                         fullWidth
                         required
                     >
+                        <MenuItem value="bank">Bank Account</MenuItem>
                         <MenuItem value="cash">Cash</MenuItem>
                         <MenuItem value="check">Check</MenuItem>
                         <MenuItem value="credit">Credit</MenuItem>
+                        <MenuItem value="cyber">Cybercurrency</MenuItem>
                         <MenuItem value="debit">Debit</MenuItem>
-                        <MenuItem value="eft">Electronic Fund Transfer</MenuItem>
+                        <MenuItem value="prepaid">Prepaid Card</MenuItem>
                         <MenuItem value="other">Other</MenuItem>
                     </TextField>
                     <TextField
@@ -443,14 +445,17 @@ const Entries = () => {
                         fullWidth
                         required
                     >
-                        <MenuItem value="app">App</MenuItem>
-                        <MenuItem value="web">Website</MenuItem>
+                        <MenuItem value="ach">ACH</MenuItem>
+                        <MenuItem value="auto">Automatic Payment</MenuItem>
+                        <MenuItem value="eft">Electronic Fund Transfer</MenuItem>
+                        <MenuItem value="ewallet">eWallet (Apple Pay, Google Pay, etc.)</MenuItem>
                         <MenuItem value="person">In Person</MenuItem>
                         <MenuItem value="mail">Mail</MenuItem>
+                        <MenuItem value="app">Mobile App</MenuItem>
                         <MenuItem value="phone">Phone</MenuItem>
-                        <MenuItem value="ach">ACH</MenuItem>
-                        <MenuItem value="wire">Wire</MenuItem>
+                        <MenuItem value="service">Service (Zelle, Venmo, PayPal, etc.)</MenuItem>
                         <MenuItem value="other">Other</MenuItem>
+                        <MenuItem value="web">Website</MenuItem>
                     </TextField>
                     <TextField
                         margin="dense"
