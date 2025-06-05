@@ -66,7 +66,7 @@ const Statistics = ({ stats }) => {
                                 <Card variant="outlined">
                                     <CardContent sx={{ textAlign: 'center' }}>
                                         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#7c4dff' }}>Outstanding</Typography>
-                                        <Typography variant="h6" sx={{ color: '#111' }}>{currency(s.totalIncomeOutstanding)}</Typography>
+                                        <Typography variant="h6" sx={{ color: '#111' }}>{s.totalIncomeOutstanding > 0 ? `-${currency(s.totalIncomeOutstanding)}` : currency(s.totalIncomeOutstanding)}</Typography>
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -129,7 +129,7 @@ const Statistics = ({ stats }) => {
                                 <Card variant="outlined">
                                     <CardContent sx={{ textAlign: 'center' }}>
                                         <Typography variant="subtitle2" color="error.main" sx={{ fontWeight: 700 }}>Balance</Typography>
-                                        <Typography variant="h6">{currency(s.totalExpenseUnpaid)}</Typography>
+                                        <Typography variant="h6">{s.totalExpenseUnpaid > 0 ? `-${currency(s.totalExpenseUnpaid)}` : currency(s.totalExpenseUnpaid)}</Typography>
                                     </CardContent>
                                 </Card>
                             </Grid>
