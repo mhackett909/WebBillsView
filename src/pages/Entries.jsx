@@ -363,7 +363,7 @@ const Entries = () => {
                                         </TableCell>
                                     </TableRow>
                                 ))
-                            )}
+                            }
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -448,10 +448,12 @@ const Entries = () => {
                         <MenuItem value="ach">ACH</MenuItem>
                         <MenuItem value="auto">Automatic Payment</MenuItem>
                         <MenuItem value="eft">Electronic Fund Transfer</MenuItem>
+                        <MenuItem value="ewallet">eWallet (Apple Pay, Google Pay, etc.)</MenuItem>
                         <MenuItem value="person">In Person</MenuItem>
                         <MenuItem value="mail">Mail</MenuItem>
                         <MenuItem value="app">Mobile App</MenuItem>
                         <MenuItem value="phone">Phone</MenuItem>
+                        <MenuItem value="service">Service (Zelle, Venmo, PayPal, etc.)</MenuItem>
                         <MenuItem value="other">Other</MenuItem>
                         <MenuItem value="web">Website</MenuItem>
                     </TextField>
