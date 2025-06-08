@@ -45,19 +45,17 @@ const CheckBoxControls = ({
                 </Box>
             </Box>
             <Box>
-                <Box>
-                    <CheckboxGroup
-                        legend="Status"
-                        options={[
-                            { value: 'paid', label: 'Paid' },
-                            { value: 'unpaid', label: 'Unpaid' },
-                            { value: 'overpaid', label: 'Overpaid' },
-                            { value: 'partial', label: 'Partial' },
-                        ]}
-                        selectedValue={filters.status || ''}
-                        onChange={(value) => handleFilterChange('status', value)}
-                    />
-                </Box>
+                <CheckboxGroup
+                    legend="Status"
+                    options={[
+                        { value: 'paid', label: 'Paid' },
+                        { value: 'unpaid', label: 'Unpaid' },
+                        { value: 'overpaid', label: 'Overpaid' },
+                        { value: 'partial', label: 'Partial' },
+                    ]}
+                    selectedValue={filters.status || ''}
+                    onChange={(value) => handleFilterChange('status', value)}
+                />
             </Box>
         </Box>
     </Box>
