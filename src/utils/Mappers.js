@@ -34,17 +34,22 @@ export function mapPaymentMedium(medium) {
 }
 
 /**
- * Maps a payment type and medium string (format: "type (medium)") to a user-friendly string.
- * If no match, returns "Type (Medium)" with mapped type/medium names.
+ * Maps a payment type and medium string (format: "type|medium") to a user-friendly string.
+ * If no match, returns "Type - Medium" with mapped type/medium names.
  */
 export function mapPaymentTypeMedium(type) {
     if (!type) return '';
-    // Parse type and medium from string like "credit (person)"
+    // Parse type and medium from string like "credit|person"
     let t = type, m = '';
-    const match = /^(.+?)\s*\((.+)\)$/.exec(type);
-    if (match) {
-        t = match[1].trim();
-        m = match[2].trim();
+    if (type.includes('|')) {
+        [t, m] = type.split('|').map(s => s.trim());
+    } else {
+        // Fallback: try to parse legacy format "type (medium)"
+        const match = /^(.+?)\s*\((.+)\)$/.exec(type);
+        if (match) {
+            t = match[1].trim();
+            m = match[2].trim();
+        }
     }
     t = t ? t.toLowerCase() : '';
     m = m ? m.toLowerCase() : '';
@@ -59,10 +64,11 @@ export function mapPaymentTypeMedium(type) {
     if (t === 'check' && m === 'mail') return 'Check (Mail)';
     if (t === 'cash' && m === 'person') return 'Cash (In Person)';
     if (t === 'cash' && m === 'mail') return 'Cash (Mail)';
+    if (t == 'cyber' && m === 'web') return 'Cybercurrency';
     if (t === 'other' && m === 'ewallet') return 'Other - eWallet (Apple Pay, Google Pay, etc.)';
     if (t === 'other' && m === 'service') return 'Other - Service (Zelle, PayPal, Venmo, etc.)';
     if (t === 'other' && m === 'other') return 'Other';
-    // Default: Type (Medium)
+    // Default: Type - Medium
     const typeLabel = mapPaymentType(t);
     const mediumLabel = mapPaymentMedium(m);
     return `${typeLabel} - ${mediumLabel}`;
