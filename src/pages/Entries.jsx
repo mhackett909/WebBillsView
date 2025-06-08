@@ -17,10 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import ScheduleIcon from '@mui/icons-material/Schedule';
 import BoltIcon from '@mui/icons-material/Bolt';
-import LoopIcon from '@mui/icons-material/Loop';
 import { mapPaymentTypeMedium } from '../utils/Mappers';
 
 const Entries = () => {
