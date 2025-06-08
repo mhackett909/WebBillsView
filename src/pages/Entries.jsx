@@ -19,12 +19,6 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
 import { mapPaymentTypeMedium } from '../utils/Mappers';
 
-// Utility to combine type and medium for display
-function combineTypeMedium(type, medium) {
-    if (!type || !medium) return '';
-    return mapPaymentTypeMedium(`${type}|${medium}`);
-}
-
 const Entries = () => {
     const { id } = useParams();
     const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
