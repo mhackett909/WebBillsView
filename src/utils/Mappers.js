@@ -54,16 +54,15 @@ const paymentMethodMap = {
     mail: 'Check (Mail)',
   },
   cash: {
-    person: 'Cash (In Person)',
-    mail: 'Cash (Mail)',
+    person: 'Cash',
   },
   cyber: {
     web: 'Cybercurrency',
   },
   other: {
-    ewallet: 'Other - eWallet (Apple Pay, Google Pay, etc.)',
-    service: 'Other - Service (Zelle, PayPal, Venmo, etc.)',
-    other: 'Other',
+    ewallet: 'eWallet (Apple Pay, Google Pay, etc.)',
+    service: 'Service (Zelle, PayPal, Venmo, etc.)',
+    other: 'Unspecified Method',
   },
 };
 

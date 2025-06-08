@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Paper, Typography, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Alert, Snackbar } from '@mui/material';
+import { Box, Paper, Typography, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Alert, Snackbar, ListSubheader } from '@mui/material';
 import { getBillById, fetchEntryById, getPayments, postPayment, updatePayment } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 import AddIcon from '@mui/icons-material/Add';
@@ -462,19 +462,22 @@ const Entries = () => {
                             }
                         }}
                     >
+                        <ListSubheader>Electronic Payments</ListSubheader>
                         <MenuItem value="bank|ach">{mapPaymentTypeMedium('bank|ach')}</MenuItem>
-                        <MenuItem value="credit|person">{mapPaymentTypeMedium('credit|person')}</MenuItem>
                         <MenuItem value="credit|web">{mapPaymentTypeMedium('credit|web')}</MenuItem>
-                        <MenuItem value="debit|person">{mapPaymentTypeMedium('debit|person')}</MenuItem>
-                        <MenuItem value="debit|web">{mapPaymentTypeMedium('debit|web')}</MenuItem>
-                        <MenuItem value="check|person">{mapPaymentTypeMedium('check|person')}</MenuItem>
-                        <MenuItem value="check|mail">{mapPaymentTypeMedium('check|mail')}</MenuItem>
-                        <MenuItem value="cash|person">{mapPaymentTypeMedium('cash|person')}</MenuItem>
-                        <MenuItem value="cash|mail">{mapPaymentTypeMedium('cash|mail')}</MenuItem>
+                        <MenuItem value="credit|person">{mapPaymentTypeMedium('credit|person')}</MenuItem>
                         <MenuItem value="cyber|web">{mapPaymentTypeMedium('cyber|web')}</MenuItem>
+                        <MenuItem value="debit|web">{mapPaymentTypeMedium('debit|web')}</MenuItem>
+                        <MenuItem value="debit|person">{mapPaymentTypeMedium('debit|person')}</MenuItem>
                         <MenuItem value="other|ewallet">{mapPaymentTypeMedium('other|ewallet')}</MenuItem>
                         <MenuItem value="other|service">{mapPaymentTypeMedium('other|service')}</MenuItem>
+                        <ListSubheader>Paper Methods</ListSubheader>
+                        <MenuItem value="cash|person">{mapPaymentTypeMedium('cash|person')}</MenuItem>
+                        <MenuItem value="check|mail">{mapPaymentTypeMedium('check|mail')}</MenuItem>
+                        <MenuItem value="check|person">{mapPaymentTypeMedium('check|person')}</MenuItem>
+                        <ListSubheader>Other</ListSubheader>
                         <MenuItem value="other|other">{mapPaymentTypeMedium('other|other')}</MenuItem>
+
                     </TextField>
                     <Box display="flex" alignItems="center" mt={1} mb={1}>
                         <input
