@@ -19,6 +19,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
 import BoltIcon from '@mui/icons-material/Bolt';
 import { mapPaymentTypeMedium } from '../utils/Mappers';
+import '../styles/entries.css';
 
 const Entries = () => {
     const { id } = useParams();
@@ -360,7 +361,7 @@ const Entries = () => {
                                             <TableCell>
                                                 {mapPaymentTypeMedium(typeMedium)}
                                                 {payment.autopay && (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 8, color: '#0288d1', fontWeight: 500, fontSize: '0.95em' }}>
+                                                    <span className="autopay-bolt">
                                                         <BoltIcon fontSize="small" />
                                                         Auto
                                                     </span>
@@ -462,7 +463,7 @@ const Entries = () => {
                             }
                         }}
                     >
-                        <ListSubheader>Electronic Payments</ListSubheader>
+                        <ListSubheader className="entries-list-subheader">Electronic Payments</ListSubheader>
                         <MenuItem value="bank|ach">{mapPaymentTypeMedium('bank|ach')}</MenuItem>
                         <MenuItem value="credit|web">{mapPaymentTypeMedium('credit|web')}</MenuItem>
                         <MenuItem value="credit|person">{mapPaymentTypeMedium('credit|person')}</MenuItem>
@@ -471,11 +472,11 @@ const Entries = () => {
                         <MenuItem value="debit|person">{mapPaymentTypeMedium('debit|person')}</MenuItem>
                         <MenuItem value="other|ewallet">{mapPaymentTypeMedium('other|ewallet')}</MenuItem>
                         <MenuItem value="other|service">{mapPaymentTypeMedium('other|service')}</MenuItem>
-                        <ListSubheader>Paper Methods</ListSubheader>
+                        <ListSubheader className="entries-list-subheader">Paper Methods</ListSubheader>
                         <MenuItem value="cash|person">{mapPaymentTypeMedium('cash|person')}</MenuItem>
                         <MenuItem value="check|mail">{mapPaymentTypeMedium('check|mail')}</MenuItem>
                         <MenuItem value="check|person">{mapPaymentTypeMedium('check|person')}</MenuItem>
-                        <ListSubheader>Other</ListSubheader>
+                        <ListSubheader className="entries-list-subheader">Other</ListSubheader>
                         <MenuItem value="other|other">{mapPaymentTypeMedium('other|other')}</MenuItem>
                     </TextField>
                     <Box display="flex" alignItems="center" mt={1} mb={1}>

@@ -1,0 +1,21 @@
+/* Payment method group headings in dropdown */
+.entries-list-subheader {
+  background-color: #e3e6f3 !important; /* darker blue-gray */
+  color: #333b5e !important; /* dark secondary text */
+  font-weight: 700 !important;
+  font-size: 1.08rem !important;
+  letter-spacing: 1px !important;
+  line-height: 1.4 !important;
+  padding: 4px 16px !important;
+  border-bottom: 1px solid #bbdefb !important;
+}
+
+/* Style for autopay bolt icon and text in payments table */
+.autopay-bolt {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  color: #0288d1;
+  font-weight: 500;
+  font-size: 0.95em;
+}
