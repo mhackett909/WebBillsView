@@ -477,7 +477,6 @@ const Entries = () => {
                         <MenuItem value="check|person">{mapPaymentTypeMedium('check|person')}</MenuItem>
                         <ListSubheader>Other</ListSubheader>
                         <MenuItem value="other|other">{mapPaymentTypeMedium('other|other')}</MenuItem>
-
                     </TextField>
                     <Box display="flex" alignItems="center" mt={1} mb={1}>
                         <input
