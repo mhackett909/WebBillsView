@@ -436,9 +436,9 @@ const Entries = () => {
                                 setPaymentForm(prev => ({ ...prev, amount: Number(entry.balance.totalBalance).toFixed(2) }));
                             }
                         }}
-                        disabled={!entry || !entry.balance || Number(entry.balance.totalBalance) <= 0}
+                        disabled={modalMode !== 'add' || !entry || !entry.balance || Number(entry.balance.totalBalance) <= 0}
                     >
-                        Pay remaining balance
+                        Pay Remaining Balance
                     </Button>
                     <TextField
                         margin="dense"
