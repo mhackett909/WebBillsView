@@ -32,8 +32,10 @@ const GoToPage = ({ page, pageSize, rowCount, onPageChange }) => {
             gap={1}
             className="gotopage-container"
         >
-            <span>Page:</span>
+            <label htmlFor="gotopage-input">Page:</label>
             <input
+                id="gotopage-input"
+                className="gotopage-input"
                 type="number"
                 min={1}
                 max={maxPage}

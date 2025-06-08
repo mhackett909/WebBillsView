@@ -14,7 +14,7 @@
     justify-content: center;
 }
 
-.gotopage-container span {
+.gotopage-container span, .gotopage-container label {
     color: #333;
     font-weight: 700;
     margin-right: 4px;
@@ -41,6 +41,6 @@
     background: #115293;
 }
 
-.gotopage-container input[type="number"] {
+.gotopage-input {
     text-align: center;
 }
