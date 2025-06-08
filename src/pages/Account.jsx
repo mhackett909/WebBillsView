@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { getUser, resendVerificationEmail, updateUser } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 import { passwordPattern } from '../utils/Regex';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Account = () => {
   const { username, jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
@@ -15,6 +17,11 @@ const Account = () => {
   const [mfaEnabled, setMfaEnabled] = useState(false);
   const [alert, setAlert] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '' });
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false
+  });
   const navigate = useNavigate();
 
   const mfaEnabledFF = process.env.REACT_APP_MFA_OPTION_ENABLED === 'true';
@@ -258,24 +265,69 @@ const Account = () => {
         <DialogContent>
           <TextField
             label="Current Password"
-            type="password"
+            type={showPassword.current ? 'text' : 'password'}
             value={form.password}
             onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
             fullWidth sx={{ mb: 2 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    onClick={() => setShowPassword(p => ({ ...p, current: !p.current }))}
+                    tabIndex={-1}
+                    size="small"
+                    aria-label={showPassword.current ? 'Hide password' : 'Show password'}
+                    sx={{ minWidth: 0, padding: 0 }}
+                  >
+                    {showPassword.current ? <VisibilityOff /> : <Visibility />}
+                  </Button>
+                </InputAdornment>
+              )
+            }}
           />
           <TextField
             label="New Password"
-            type="password"
+            type={showPassword.new ? 'text' : 'password'}
             value={form.newPassword}
             onChange={e => setForm(f => ({ ...f, newPassword: e.target.value }))}
             fullWidth sx={{ mb: 2 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    onClick={() => setShowPassword(p => ({ ...p, new: !p.new }))}
+                    tabIndex={-1}
+                    size="small"
+                    aria-label={showPassword.new ? 'Hide password' : 'Show password'}
+                    sx={{ minWidth: 0, padding: 0 }}
+                  >
+                    {showPassword.new ? <VisibilityOff /> : <Visibility />}
+                  </Button>
+                </InputAdornment>
+              )
+            }}
           />
           <TextField
             label="Confirm New Password"
-            type="password"
+            type={showPassword.confirm ? 'text' : 'password'}
             value={form.confirmPassword}
             onChange={e => setForm(f => ({ ...f, confirmPassword: e.target.value }))}
             fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    onClick={() => setShowPassword(p => ({ ...p, confirm: !p.confirm }))}
+                    tabIndex={-1}
+                    size="small"
+                    aria-label={showPassword.confirm ? 'Hide password' : 'Show password'}
+                    sx={{ minWidth: 0, padding: 0 }}
+                  >
+                    {showPassword.confirm ? <VisibilityOff /> : <Visibility />}
+                  </Button>
+                </InputAdornment>
+              )
+            }}
           />
           {alert && <Alert severity="info" sx={{ mt: 2 }}>{alert}</Alert>}
         </DialogContent>
