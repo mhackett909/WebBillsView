@@ -1,0 +1,46 @@
+.gotopage-container {
+    position: relative;
+    margin-top: 8px;
+    margin-bottom: 0;
+    z-index: 10;
+    background: rgba(255,255,255,0.95);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 2px 10px;
+    height: 40px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gotopage-container span {
+    color: #333;
+    font-weight: 700;
+    margin-right: 4px;
+    letter-spacing: 0.02em;
+}
+
+.gotopage-container button {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 12px;
+    margin-left: 2px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.gotopage-container button:disabled {
+    background: #bdbdbd;
+    color: #fff;
+    cursor: not-allowed;
+}
+.gotopage-container button:not(:disabled):hover {
+    background: #115293;
+}
+
+.gotopage-container input[type="number"] {
+    text-align: center;
+}

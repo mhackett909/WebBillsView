@@ -9,6 +9,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
+import GoToPage from './GoToPage';
 
 const DataTable = ({
     rows,
@@ -27,6 +28,7 @@ const DataTable = ({
     sortModel,
     sortingOrder,
     onSortModelChange,
+    showGoToPage // new prop
 }) => {
     // Enhance the first column (assumed to be ID) to use a Chip for better visuals
     const enhancedColumns = columns.map((col, idx) => {
@@ -255,6 +257,14 @@ const DataTable = ({
                 sortingOrder={sortingOrder}
                 onSortModelChange={onSortModelChange}
             />
+            {showGoToPage && (
+                <GoToPage
+                    page={page}
+                    pageSize={pageSize}
+                    rowCount={rowCount}
+                    onPageChange={onPageChange}
+                />
+            )}
         </Box>
     );
 };
