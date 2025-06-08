@@ -17,7 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
-import { mapPaymentType, mapPaymentMedium } from '../utils/Mappers';
+import { mapPaymentTypeMedium } from '../utils/Mappers';
 
 const Entries = () => {
     const { id } = useParams();
@@ -337,8 +337,7 @@ const Entries = () => {
                                 <TableCell style={{ display: 'none' }}>ID</TableCell>
                                 <TableCell>Payment Date</TableCell>
                                 <TableCell>Payment Amount</TableCell>
-                                <TableCell>Type</TableCell>
-                                <TableCell>Medium</TableCell>
+                                <TableCell>Method</TableCell>
                                 <TableCell>Notes</TableCell>
                                 <TableCell align="right">Actions</TableCell>
                             </TableRow>
@@ -346,23 +345,25 @@ const Entries = () => {
                         <TableBody>
                             {payments.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} align="center">No payments found.</TableCell>
+                                    <TableCell colSpan={6} align="center">No payments found.</TableCell>
                                 </TableRow>
                             ) : (
-                                payments.map((payment) => (
-                                    <TableRow key={payment.id || payment.paymentId}>
-                                        <TableCell style={{ display: 'none' }}>{payment.id || payment.paymentId}</TableCell>
-                                        <TableCell>{payment.date}</TableCell>
-                                        <TableCell>{Number(payment.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                                        <TableCell>{mapPaymentType(payment.type)}</TableCell>
-                                        <TableCell>{mapPaymentMedium(payment.medium)}</TableCell>
-                                        <TableCell>{payment.notes}</TableCell>
-                                        <TableCell align="right">
-                                            <IconButton size="small" onClick={() => handleOpenEdit(payment)} disabled={!billEnabled}><EditIcon fontSize="small" /></IconButton>
-                                            <IconButton size="small" color="error" onClick={() => handleOpenDelete(payment)} disabled={!billEnabled}><DeleteIcon fontSize="small" /></IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
+                                payments.map((payment) => {
+                                    const typeMedium = `${payment.type}|${payment.medium}`;
+                                    return (
+                                        <TableRow key={payment.id || payment.paymentId}>
+                                            <TableCell style={{ display: 'none' }}>{payment.id || payment.paymentId}</TableCell>
+                                            <TableCell>{payment.date}</TableCell>
+                                            <TableCell>{Number(payment.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                            <TableCell>{mapPaymentTypeMedium(typeMedium)}</TableCell>
+                                            <TableCell>{payment.notes}</TableCell>
+                                            <TableCell align="right">
+                                                <IconButton size="small" onClick={() => handleOpenEdit(payment)} disabled={!billEnabled}><EditIcon fontSize="small" /></IconButton>
+                                                <IconButton size="small" color="error" onClick={() => handleOpenDelete(payment)} disabled={!billEnabled}><DeleteIcon fontSize="small" /></IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })
                             )}
                         </TableBody>
                     </Table>
@@ -418,44 +419,40 @@ const Entries = () => {
                     />
                     <TextField
                         margin="dense"
-                        label="Type"
-                        name="type"
-                        value={paymentForm.type}
-                        onChange={handleFormChange}
+                        label="Method"
+                        name="method"
+                        value={paymentForm.type && paymentForm.medium ? `${paymentForm.type}|${paymentForm.medium}` : ''}
+                        onChange={e => {
+                            const [type, medium] = e.target.value.split('|');
+                            setPaymentForm(prev => ({ ...prev, type, medium }));
+                        }}
                         select
                         fullWidth
                         required
+                        displayEmpty
+                        SelectProps={{
+                            renderValue: (selected) => {
+                                if (!selected) {
+                                    return '';
+                                }
+                                return mapPaymentTypeMedium(selected);
+                            }
+                        }}
                     >
-                        <MenuItem value="bank">Bank Account</MenuItem>
-                        <MenuItem value="cash">Cash</MenuItem>
-                        <MenuItem value="check">Check</MenuItem>
-                        <MenuItem value="credit">Credit</MenuItem>
-                        <MenuItem value="cyber">Cybercurrency</MenuItem>
-                        <MenuItem value="debit">Debit</MenuItem>
-                        <MenuItem value="prepaid">Prepaid Card</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
-                    </TextField>
-                    <TextField
-                        margin="dense"
-                        label="Medium"
-                        name="medium"
-                        value={paymentForm.medium}
-                        onChange={handleFormChange}
-                        select
-                        fullWidth
-                        required
-                    >
-                        <MenuItem value="ach">ACH</MenuItem>
-                        <MenuItem value="auto">Automatic Payment</MenuItem>
-                        <MenuItem value="eft">Electronic Fund Transfer</MenuItem>
-                        <MenuItem value="ewallet">eWallet (Apple Pay, Google Pay, etc.)</MenuItem>
-                        <MenuItem value="person">In Person</MenuItem>
-                        <MenuItem value="mail">Mail</MenuItem>
-                        <MenuItem value="app">Mobile App</MenuItem>
-                        <MenuItem value="phone">Phone</MenuItem>
-                        <MenuItem value="service">Service (Zelle, Venmo, PayPal, etc.)</MenuItem>
-                        <MenuItem value="web">Website</MenuItem>
-                        <MenuItem value="other">Other</MenuItem>
+                        <MenuItem value="credit|person">{mapPaymentTypeMedium('credit|person')}</MenuItem>
+                        <MenuItem value="credit|web">{mapPaymentTypeMedium('credit|web')}</MenuItem>
+                        <MenuItem value="debit|person">{mapPaymentTypeMedium('debit|person')}</MenuItem>
+                        <MenuItem value="debit|web">{mapPaymentTypeMedium('debit|web')}</MenuItem>
+                        <MenuItem value="bank|ach">{mapPaymentTypeMedium('bank|ach')}</MenuItem>
+                        <MenuItem value="bank|auto">{mapPaymentTypeMedium('bank|auto')}</MenuItem>
+                        <MenuItem value="check|person">{mapPaymentTypeMedium('check|person')}</MenuItem>
+                        <MenuItem value="check|mail">{mapPaymentTypeMedium('check|mail')}</MenuItem>
+                        <MenuItem value="cash|person">{mapPaymentTypeMedium('cash|person')}</MenuItem>
+                        <MenuItem value="cash|mail">{mapPaymentTypeMedium('cash|mail')}</MenuItem>
+                        <MenuItem value="cyber|web">{mapPaymentTypeMedium('cyber|web')}</MenuItem>
+                        <MenuItem value="other|ewallet">{mapPaymentTypeMedium('other|ewallet')}</MenuItem>
+                        <MenuItem value="other|service">{mapPaymentTypeMedium('other|service')}</MenuItem>
+                        <MenuItem value="other|other">{mapPaymentTypeMedium('other|other')}</MenuItem>
                     </TextField>
                     <TextField
                         margin="dense"
