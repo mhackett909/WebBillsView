@@ -378,7 +378,7 @@ const Home = () => {
         { field: 'amount', headerName: 'Amount', width: 130 },
         { field: 'status', headerName: 'Paid', width: 100 },
         { field: 'balance', headerName: 'Balance', width: 130 },
-        { field: 'services', headerName: 'Description', width: 500 },
+        { field: 'services', headerName: 'Description', width: 470 },
         { field: 'archived', headerName: 'Archived', width: 100 },
     ];
 
@@ -428,6 +428,7 @@ const Home = () => {
                         sortingOrder={['asc', 'desc']}
                         sortModel={sortModel}
                         onSortModelChange={setSortModel}
+                        showGoToPage
                     />
                 )}
                 {activeTab === 1 && (
