@@ -3,7 +3,7 @@ import { Box, Card, CardContent, Typography, Button, Grid, TextField, Switch, Fo
 import { useNavigate } from 'react-router-dom';
 import { getUser, resendVerificationEmail, updateUser } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
-import { passwordPattern } from '../utils/Regex';
+import { passwordPattern, emailPattern } from '../utils/Regex';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -84,7 +84,6 @@ const Account = () => {
     let apiPayload = null;
     let successMsg = '';
     let failureMsg = '';
-    const emailPattern = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
     if (editField === 'email') {
       if (!form.newEmail || !emailPattern.test(form.newEmail)) {
         setAlert('Please enter a valid email address.');
