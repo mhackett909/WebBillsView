@@ -64,7 +64,7 @@ export function mapPaymentTypeMedium(type) {
     if (t === 'check' && m === 'mail') return 'Check (Mail)';
     if (t === 'cash' && m === 'person') return 'Cash (In Person)';
     if (t === 'cash' && m === 'mail') return 'Cash (Mail)';
-    if (t == 'cyber' && m === 'web') return 'Cybercurrency';
+    if (t === 'cyber' && m === 'web') return 'Cybercurrency';
     if (t === 'other' && m === 'ewallet') return 'Other - eWallet (Apple Pay, Google Pay, etc.)';
     if (t === 'other' && m === 'service') return 'Other - Service (Zelle, PayPal, Venmo, etc.)';
     if (t === 'other' && m === 'other') return 'Other';
