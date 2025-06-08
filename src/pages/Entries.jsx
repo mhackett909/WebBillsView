@@ -17,6 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
+import BoltIcon from '@mui/icons-material/Bolt';
 import { mapPaymentTypeMedium } from '../utils/Mappers';
 
 const Entries = () => {
@@ -93,7 +94,8 @@ const Entries = () => {
             amount: payment.amount || '',
             type: payment.type || '',
             medium: payment.medium || '',
-            notes: payment.notes || ''
+            notes: payment.notes || '',
+            autopay: payment.autopay || false
         });
         setSelectedPayment(payment);
         setModalOpen(true);
@@ -355,7 +357,15 @@ const Entries = () => {
                                             <TableCell style={{ display: 'none' }}>{payment.id || payment.paymentId}</TableCell>
                                             <TableCell>{payment.date}</TableCell>
                                             <TableCell>{Number(payment.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                                            <TableCell>{mapPaymentTypeMedium(typeMedium)}</TableCell>
+                                            <TableCell>
+                                                {mapPaymentTypeMedium(typeMedium)}
+                                                {payment.autopay && (
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 8, color: '#0288d1', fontWeight: 500, fontSize: '0.95em' }}>
+                                                        <BoltIcon fontSize="small" />
+                                                        Auto
+                                                    </span>
+                                                )}
+                                            </TableCell>
                                             <TableCell>{payment.notes}</TableCell>
                                             <TableCell align="right">
                                                 <IconButton size="small" onClick={() => handleOpenEdit(payment)} disabled={!billEnabled}><EditIcon fontSize="small" /></IconButton>
@@ -417,6 +427,19 @@ const Entries = () => {
                             step: '0.01'
                         }}
                     />
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        sx={{ mt: 1, mb: 1 }}
+                        onClick={() => {
+                            if (entry && entry.balance && entry.balance.totalBalance !== undefined && entry.balance.totalBalance !== null) {
+                                setPaymentForm(prev => ({ ...prev, amount: Number(entry.balance.totalBalance).toFixed(2) }));
+                            }
+                        }}
+                        disabled={!entry || !entry.balance || Number(entry.balance.totalBalance) <= 0}
+                    >
+                        Pay remaining balance
+                    </Button>
                     <TextField
                         margin="dense"
                         label="Method"
@@ -439,12 +462,11 @@ const Entries = () => {
                             }
                         }}
                     >
+                        <MenuItem value="bank|ach">{mapPaymentTypeMedium('bank|ach')}</MenuItem>
                         <MenuItem value="credit|person">{mapPaymentTypeMedium('credit|person')}</MenuItem>
                         <MenuItem value="credit|web">{mapPaymentTypeMedium('credit|web')}</MenuItem>
                         <MenuItem value="debit|person">{mapPaymentTypeMedium('debit|person')}</MenuItem>
                         <MenuItem value="debit|web">{mapPaymentTypeMedium('debit|web')}</MenuItem>
-                        <MenuItem value="bank|ach">{mapPaymentTypeMedium('bank|ach')}</MenuItem>
-                        <MenuItem value="bank|auto">{mapPaymentTypeMedium('bank|auto')}</MenuItem>
                         <MenuItem value="check|person">{mapPaymentTypeMedium('check|person')}</MenuItem>
                         <MenuItem value="check|mail">{mapPaymentTypeMedium('check|mail')}</MenuItem>
                         <MenuItem value="cash|person">{mapPaymentTypeMedium('cash|person')}</MenuItem>
@@ -454,6 +476,18 @@ const Entries = () => {
                         <MenuItem value="other|service">{mapPaymentTypeMedium('other|service')}</MenuItem>
                         <MenuItem value="other|other">{mapPaymentTypeMedium('other|other')}</MenuItem>
                     </TextField>
+                    <Box display="flex" alignItems="center" mt={1} mb={1}>
+                        <input
+                            type="checkbox"
+                            id="autopay-checkbox"
+                            checked={!!paymentForm.autopay}
+                            onChange={e => setPaymentForm(prev => ({ ...prev, autopay: e.target.checked }))}
+                            style={{ marginRight: 8 }}
+                        />
+                        <label htmlFor="autopay-checkbox" style={{ userSelect: 'none', cursor: 'pointer' }}>
+                            This payment was made automatically (e.g., Autopay)
+                        </label>
+                    </Box>
                     <TextField
                         margin="dense"
                         label="Notes"
