@@ -438,7 +438,7 @@ const Entries = () => {
                         }}
                         disabled={modalMode !== 'add' || !entry || !entry.balance || Number(entry.balance.totalBalance) <= 0}
                     >
-                        Pay Remaining balance
+                        Pay Remaining Balance
                     </Button>
                     <TextField
                         margin="dense"
