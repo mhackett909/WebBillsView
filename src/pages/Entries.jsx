@@ -432,7 +432,7 @@ const Entries = () => {
                         size="small"
                         sx={{ mt: 1, mb: 1 }}
                         onClick={() => {
-                            if (entry && entry.amount !== undefined && entry.balance && entry.balance.totalBalance !== undefined && entry.balance.totalBalance !== null) {
+                            if (entry && entry.balance && entry.balance.totalBalance !== undefined && entry.balance.totalBalance !== null) {
                                 setPaymentForm(prev => ({ ...prev, amount: Number(entry.balance.totalBalance).toFixed(2) }));
                             }
                         }}
