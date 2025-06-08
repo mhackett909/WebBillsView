@@ -8,7 +8,6 @@ export function mapPaymentType(type) {
         case 'credit': return 'Credit';
         case 'cyber': return 'Cybercurrency';
         case 'debit': return 'Debit';
-        case 'prepaid': return 'Prepaid Card';
         case 'other': return 'Other';
         default: return type;
     }
@@ -18,9 +17,7 @@ export function mapPaymentType(type) {
 export function mapPaymentMedium(medium) {
     const m = medium ? medium.toLowerCase() : '';
     switch (m) {
-        case 'ach': return 'ACH';
-        case 'auto': return 'Automatic Payment';
-        case 'eft': return 'Electronic Fund Transfer';
+        case 'ach': return 'ACH/EFT';
         case 'ewallet': return 'eWallet (Apple Pay, Google Pay, etc.)';
         case 'person': return 'In Person';
         case 'mail': return 'Mail';
