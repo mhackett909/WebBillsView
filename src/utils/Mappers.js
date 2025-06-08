@@ -58,7 +58,7 @@ export function mapPaymentTypeMedium(type) {
     if (t === 'credit' && m === 'web') return 'Credit Card (Online)';
     if (t === 'debit' && m === 'person') return 'Debit Card (In Person)';
     if (t === 'debit' && m === 'web') return 'Debit Card (Online)';
-    if (t === 'bank' && m === 'ach') return 'Bank Transfer (ACH)';
+    if (t === 'bank' && m === 'ach') return 'Bank Transfer (ACH/EFT)';
     if (t === 'bank' && m === 'auto') return 'Bank Transfer (Autopay)';
     if (t === 'check' && m === 'person') return 'Check (In Person)';
     if (t === 'check' && m === 'mail') return 'Check (Mail)';
