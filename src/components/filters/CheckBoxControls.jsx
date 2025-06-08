@@ -44,7 +44,7 @@ const CheckBoxControls = ({
                     />
                 </Box>
             </Box>
-            <Box sx={{ ml: 1 }}>
+            <Box>
                 <Box>
                     <CheckboxGroup
                         legend="Status"
