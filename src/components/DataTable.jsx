@@ -12,7 +12,6 @@ import PlusOneIcon from '@mui/icons-material/PlusOne';
 import CachedIcon from '@mui/icons-material/Cached';
 import GoToPage from './GoToPage';
 
-
 const DataTable = ({
     rows,
     columns,
