@@ -9,8 +9,9 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
-import GoToPage from './GoToPage';
 import CachedIcon from '@mui/icons-material/Cached';
+import GoToPage from './GoToPage';
+
 
 const DataTable = ({
     rows,
@@ -148,7 +149,7 @@ const DataTable = ({
                                         <span style={{ display: 'flex', alignItems: 'center' }}>
                                             <CachedIcon
                                                 fontSize="small"
-                                                sx={{ color: flow === 'INCOMING' ? '#0288d1' : '#ed6c02', animation: 'spin 1s linear infinite' }}
+                                                sx={{ color: flow === 'INCOMING' ? '#0288d1' : '#ed6c02' }}
                                                 titleAccess="In Progress"
                                             />
                                         </span>

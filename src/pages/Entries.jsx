@@ -3,9 +3,6 @@ import { useParams } from 'react-router-dom';
 import { Box, Paper, Typography, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Alert, Snackbar, ListSubheader } from '@mui/material';
 import { getBillById, fetchEntryById, getPayments, postPayment, updatePayment } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -14,6 +11,9 @@ import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
@@ -277,7 +277,7 @@ const Entries = () => {
                                         <span style={{ display: 'flex', alignItems: 'center' }}>
                                             <CachedIcon
                                                 fontSize="small"
-                                                sx={{ color: entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02', animation: 'spin 1s linear infinite' }}
+                                                sx={{ color: entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02' }}
                                                 titleAccess="In Progress"
                                             />
                                         </span>
