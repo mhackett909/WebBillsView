@@ -1,17 +1,18 @@
 # WebBillsView
 
-A modern React/MUI web application for managing user registration, account management, and bill data with advanced filtering and state persistence.
+WebBillsView is a modern, responsive web application for tracking and managing your personal bills and payments. Built with React and Material UI, it offers a clean and intuitive interface for authenticated users to register, organize, and review their billing history. The frontend securely connects to a Spring Boot API using JWT authentication, and the application is production-ready, deployed on AWS with CloudFront and ECS Fargate.
 
 ## Features
 
-- User registration and account management with frontend validation matching backend regex for passwords and emails
-- Centralized regex validation logic
-- Data table with advanced filtering, pagination, column visibility, and sorting
-- Persistent table state (filters, pagination, column visibility, sort) using sessionStorage
-- Responsive UI with Material-UI (MUI)
-- API response handling for backend DTO wrappers
-- Graceful handling of date pickers and filter validation
-- Secure logout and filter clearing with state reset
+- **User Registration & Account Management:** Secure sign-up and profile management with real-time frontend validation that matches backend rules.
+- **Advanced Bill Table:** Powerful data table with filtering, sorting, pagination, and customizable columns.
+- **State Persistence:** Table filters, pagination, and user preferences are automatically saved using sessionStorage for a seamless user experience.
+- **Consistent Validation:** Centralized regex logic ensures consistent validation for emails and passwords both on the frontend and backend.
+- **Responsive Design:** Fully responsive UI built with Material-UI for a smooth experience on desktop and mobile devices.
+- **API Integration:** Robust handling of backend API responses, including support for DTO wrappers.
+- **Date & Filter Management:** Graceful handling of date pickers and input validation for filters.
+- **Security:** Secure logout, automatic state clearing on sign-out, and JWT-based authentication.
+- **Deployment Ready:** Easily deployable to AWS infrastructure via CloudFront and ECS.
 
 ## Getting Started
 
