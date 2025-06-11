@@ -18,6 +18,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
 import BoltIcon from '@mui/icons-material/Bolt';
+import CachedIcon from '@mui/icons-material/Cached';
 import { mapPaymentTypeMedium } from '../utils/Mappers';
 import '../styles/entries.css';
 
@@ -274,7 +275,11 @@ const Entries = () => {
                                     <CancelIcon color="error" titleAccess="Unpaid" />
                                     {Number(entry.balance?.totalBalance) > 0 && Number(entry.balance?.totalBalance) < Number(entry.amount) && (
                                         <span style={{ display: 'flex', alignItems: 'center' }}>
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" stroke={entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2" fill="none"/><path d="M12 6v6l4 2" stroke={entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2"/></svg>
+                                            <CachedIcon
+                                                fontSize="small"
+                                                sx={{ color: entry.flow === 'INCOMING' ? '#0288d1' : '#ed6c02', animation: 'spin 1s linear infinite' }}
+                                                titleAccess="In Progress"
+                                            />
                                         </span>
                                     )}
                                 </>

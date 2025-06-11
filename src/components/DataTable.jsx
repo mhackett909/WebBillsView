@@ -10,6 +10,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
 import GoToPage from './GoToPage';
+import CachedIcon from '@mui/icons-material/Cached';
 
 const DataTable = ({
     rows,
@@ -145,7 +146,11 @@ const DataTable = ({
                                     <CancelIcon color="error" titleAccess="Unpaid" />
                                     {inProgress && (
                                         <span style={{ display: 'flex', alignItems: 'center' }}>
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" stroke={flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2" fill="none"/><path d="M12 6v6l4 2" stroke={flow === 'INCOMING' ? '#0288d1' : '#ed6c02'} strokeWidth="2"/></svg>
+                                            <CachedIcon
+                                                fontSize="small"
+                                                sx={{ color: flow === 'INCOMING' ? '#0288d1' : '#ed6c02', animation: 'spin 1s linear infinite' }}
+                                                titleAccess="In Progress"
+                                            />
                                         </span>
                                     )}
                                 </>
