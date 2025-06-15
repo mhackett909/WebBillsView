@@ -8,9 +8,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import Autocomplete from '@mui/material/Autocomplete';
+import Checkbox from '@mui/material/Checkbox';
 
 const initialState = {
-  billId: '',
+  billId: [], // Change to array for multi-select
   date: dayjs().format('YYYY-MM-DD'),
   flow: '',
   amount: '',
@@ -220,20 +222,30 @@ const Invoice = () => {
         <>
           <Typography variant="h4" mb={2}>{id ? 'Edit Invoice' : 'New Invoice'}</Typography>
           <form onSubmit={id ? handleEditEntrySubmit : handleSubmit}>
-            <FormControl fullWidth margin="normal" required>
-              <InputLabel>Entity</InputLabel>
-              <Select
-                name="billId"
-                value={form.billId}
-                label="Entity"
-                onChange={handleChange}
-                disabled={readOnly}
-              >
-                {parties.map((bill) => (
-                  <MenuItem key={bill.id} value={bill.id}>{bill.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              options={parties}
+              getOptionLabel={(option) => option.name}
+              value={parties.find(p => form.billId && form.billId.length && p.id === form.billId[0]) || null}
+              onChange={(event, newValue) => {
+                setForm(prev => ({
+                  ...prev,
+                  billId: newValue ? [newValue.id] : [],
+                }));
+              }}
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    style={{ marginRight: 8 }}
+                    checked={form.billId && form.billId[0] === option.id}
+                  />
+                  {option.name}
+                </li>
+              )}
+              renderInput={(params) => (
+                <TextField {...params} label="Entity" placeholder="Select entity" required />
+              )}
+              disabled={readOnly}
+            />
             <Box display="flex" gap={2} mb={2}>
               <Button
                 variant="outlined"
@@ -248,9 +260,9 @@ const Invoice = () => {
                 variant="outlined"
                 color="secondary"
                 fullWidth
-                disabled={!form.billId || readOnly}
+                disabled={!form.billId.length || readOnly}
                 onClick={() => {
-                  if (form.billId) navigate(`/bills/${form.billId}`, { state: { invoiceId: id } });
+                  if (form.billId.length) navigate(`/bills/${form.billId[0]}`, { state: { invoiceId: id } });
                 }}
               >
                 Edit Entity
