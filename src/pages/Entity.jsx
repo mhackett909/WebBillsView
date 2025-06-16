@@ -50,7 +50,6 @@ const Entity = () => {
         const billData = await getBillById(id, jwt, refresh, handleTokenRefresh);
         if (!billData) throw new Error('Entity not found');
         setBill(billData);
-        console.log('Bill Data:', billData);
         // Use bill name for partyList filter
         const partyList = billData.name ? [billData.name] : [];
         // Fetch stats and entries
