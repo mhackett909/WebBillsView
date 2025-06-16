@@ -40,13 +40,10 @@ const DataTable = ({
             return {
                 ...col,
                 renderCell: (params) => (
-                    <span
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                            if (typeof window !== 'undefined') {
-                                window.location.href = `/entries/${params.row.entryId}`;
-                            }
-                        }}
+                    <Link
+                        to={`/entries/${params.row.entryId}`}
+                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                        onClick={e => { e.stopPropagation(); }}
                     >
                         <Chip
                             label={params.value}
@@ -63,7 +60,7 @@ const DataTable = ({
                                 },
                             }}
                         />
-                    </span>
+                    </Link>
                 ),
                 headerName: col.headerName || 'Invoice #',
                 width: col.width || 100,
