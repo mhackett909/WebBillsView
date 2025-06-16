@@ -32,7 +32,6 @@ const DataTable = ({
     onSortModelChange,
     showGoToPage,
     smaller = false,
-    
 }) => {
     // Enhance the first column (assumed to be ID) to use a Chip for better visuals
     const enhancedColumns = columns.map((col, idx) => {
