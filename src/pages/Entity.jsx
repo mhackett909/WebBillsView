@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Alert, Button } from '@mui/material';
 import { AuthContext } from '../App';
 import { getBillById, getStats, fetchEntries } from '../utils/BillsApiUtil';
@@ -29,6 +29,7 @@ const hiddenColumns = {
 
 const Entity = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
   const [bill, setBill] = useState(null);
   const [stats, setStats] = useState(null);
@@ -86,7 +87,9 @@ const Entity = () => {
               color="secondary"
               disabled={!billEnabled}
               onClick={() => {
-                if (bill?.id) window.location.href = `/bills/${bill.id}`;
+                if (bill?.id) {
+                  navigate(`/bills/${bill.id}`, { state: { entityId: bill.id } });
+                }
               }}
             >
               Edit Entity
@@ -100,6 +103,9 @@ const Entity = () => {
           )}
           <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
             <Typography variant="h6" mb={2} align="center">Invoices</Typography>
+            <Alert severity="info" sx={{ mb: 2, textAlign: 'center' }}>
+              To add a new invoice, please use the main page.
+            </Alert>
             <DataTable
               rows={entries}
               columns={columns}
@@ -118,7 +124,7 @@ const Entity = () => {
               sortingOrder={['asc', 'desc']}
               onSortModelChange={() => {}}
               showGoToPage={false}
-              smaller
+              fixedHeight={false}
             />
           </Paper>
           <Paper sx={{ p: 3, mt: 4 }} elevation={3}>

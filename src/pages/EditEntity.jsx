@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Box, Typography, TextField, Checkbox, FormControlLabel, Button, Paper, CircularProgress, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Typography, TextField, Button, Paper, CircularProgress, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { getBillById, editBill } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
 
@@ -11,6 +11,7 @@ const EditEntity = () => {
   const { id } = useParams();
   const location = useLocation();
   const invoiceId = location.state?.invoiceId;
+  const entityId = location.state?.entityId;
   const navigate = useNavigate();
   const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,6 @@ const EditEntity = () => {
   const [editName, setEditName] = useState('');
   const [archived, setArchived] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [archiveWarningOpen, setArchiveWarningOpen] = useState(false);
 
   const handleTokenRefresh = useCallback((newJwt, newRefresh) => {
@@ -48,10 +48,6 @@ const EditEntity = () => {
   const handleSave = async () => {
     if (!editName.trim()) {
       setSnackbar({ open: true, message: 'Entity name cannot be empty.', severity: 'error' });
-      return;
-    }
-    if (archived && bill && bill.status !== STATUS_INACTIVE) {
-      setArchiveWarningOpen(true);
       return;
     }
     await doSave();
@@ -84,32 +80,10 @@ const EditEntity = () => {
     }
   };
 
-  const handleDelete = () => {
-    setDeleteDialogOpen(true);
-  };
-  const handleDeleteConfirm = async () => {
-    setDeleteDialogOpen(false);
-    setLoading(true);
-    try {
-      const result = await editBill({ ...bill, recycle: true }, jwt, refresh, handleTokenRefresh);
-      if (result && result.id) {
-        setSnackbar({ open: true, message: 'Entity deleted (recycled) successfully.', severity: 'success' });
-        setTimeout(() => navigate('/home'), 1200);
-      } else {
-        setSnackbar({ open: true, message: 'Failed to delete entity.', severity: 'error' });
-      }
-    } catch (err) {
-      setSnackbar({ open: true, message: 'Error deleting entity.', severity: 'error' });
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handleDeleteCancel = () => {
-    setDeleteDialogOpen(false);
-  };
-
   const handleBack = () => {
-    if (invoiceId) {
+    if (entityId) {
+      navigate(`/entities/${entityId}`);
+    } else if (invoiceId) {
       navigate(`/invoice/${invoiceId}`);
     } else {
       navigate('/invoice');
@@ -152,29 +126,20 @@ const EditEntity = () => {
           sx={{ mb: 2 }}
           disabled={!billEnabled}
         />
-        <FormControlLabel
-          control={<Checkbox checked={archived} onChange={e => setArchived(e.target.checked)} disabled={!billEnabled} />}
-          label="Archived"
-          sx={{ mb: 2 }}
-        />
         <Box display="flex" gap={2} mt={2}>
           <Button variant="contained" color="primary" onClick={handleSave} fullWidth disabled={!billEnabled}>Save</Button>
-          <Button variant="outlined" color="error" onClick={handleDelete} fullWidth disabled={!billEnabled}>Delete</Button>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => { setArchived(true); setArchiveWarningOpen(true); }}
+            fullWidth
+            disabled={!billEnabled || archived}
+          >
+            Archive
+          </Button>
         </Box>
       </Paper>
-      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Entity and Invoices?</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Deleting this entity will also <strong>delete all</strong> its invoices. You will have <strong>14 days</strong> to restore them from the <strong>Recycle Bin</strong> in the <strong>History</strong> menu.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteCancel}>Cancel</Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained">Delete</Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={archiveWarningOpen} onClose={() => setArchiveWarningOpen(false)}>
+      <Dialog open={archiveWarningOpen} onClose={() => { setArchiveWarningOpen(false); setArchived(false); }}>
         <DialogTitle>Archive Entity?</DialogTitle>
         <DialogContent>
           <Typography>
@@ -182,7 +147,7 @@ const EditEntity = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setArchiveWarningOpen(false)}>Cancel</Button>
+          <Button onClick={() => { setArchiveWarningOpen(false); setArchived(false); }}>Cancel</Button>
           <Button onClick={() => { setArchiveWarningOpen(false); doSave(); }} color="warning" variant="contained">Archive</Button>
         </DialogActions>
       </Dialog>
