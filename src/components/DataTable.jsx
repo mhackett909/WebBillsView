@@ -1,5 +1,6 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Chip } from '@mui/material';
+import { Link } from 'react-router-dom';
 import '../styles/tabs.css';
 import dayjs from 'dayjs';
 
@@ -75,13 +76,13 @@ const DataTable = ({
                 ...col,
                 renderCell: (params) => (
                     <span>
-                        <a
-                            href={`/entities/${params.row.billId}`}
+                        <Link
+                            to={`/entities/${params.row.billId}`}
                             style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
                             onClick={e => { e.stopPropagation(); }}
                         >
                             {params.value}
-                        </a>
+                        </Link>
                     </span>
                 ),
             };
@@ -256,7 +257,7 @@ const DataTable = ({
                 columnVisibilityModel={columnVisibilityModel}
                 onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
                 components={{
-                    // Only show the toolbar if handleAdd is provided (legacy) or a new prop showToolbar is true
+                    // Only show the toolbar if handleAdd is provided
                     Toolbar: handleAdd ? CustomToolbar : undefined,
                 }}
                 componentsProps={handleAdd ? {
