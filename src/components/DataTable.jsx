@@ -29,11 +29,14 @@ const DataTable = ({
     sortModel,
     sortingOrder,
     onSortModelChange,
-    showGoToPage // new prop
+    showGoToPage,
+    smaller = false,
+    
 }) => {
     // Enhance the first column (assumed to be ID) to use a Chip for better visuals
     const enhancedColumns = columns.map((col, idx) => {
-        if (idx === 0) {
+        // Invoice # column (first column, assumed to be invoiceId)
+        if (col.field === 'invoiceId' || idx === 0) {
             return {
                 ...col,
                 renderCell: (params) => (
@@ -51,6 +54,8 @@ const DataTable = ({
                             variant="filled"
                             size="small"
                             sx={{
+                                backgroundColor: (theme) => theme.palette.secondary.main,
+                                color: 'white',
                                 transition: 'background 0.2s',
                                 '&:hover': {
                                     backgroundColor: (theme) => theme.palette.secondary.dark,
@@ -60,15 +65,24 @@ const DataTable = ({
                         />
                     </span>
                 ),
-                headerName: col.headerName || 'ID',
-                width: col.width || 90,
+                headerName: col.headerName || 'Invoice #',
+                width: col.width || 100,
             };
         }
+        // Entity (name) column
         if (col.field === 'name') {
             return {
                 ...col,
                 renderCell: (params) => (
-                    <span>{params.value}</span>
+                    <span>
+                        <a
+                            href={`/entities/${params.row.billId}`}
+                            style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
+                            onClick={e => { e.stopPropagation(); }}
+                        >
+                            {params.value}
+                        </a>
+                    </span>
                 ),
             };
         }
@@ -234,7 +248,7 @@ const DataTable = ({
     });
 
     return (
-        <Box className="tabs-container">
+        <Box className="tabs-container" sx={{ height: smaller ? 420 : 600 }}>
             <DataGrid
                 rows={rows}
                 columns={enhancedColumns}
@@ -242,14 +256,15 @@ const DataTable = ({
                 columnVisibilityModel={columnVisibilityModel}
                 onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
                 components={{
-                    Toolbar: CustomToolbar,
+                    // Only show the toolbar if handleAdd is provided (legacy) or a new prop showToolbar is true
+                    Toolbar: handleAdd ? CustomToolbar : undefined,
                 }}
-                componentsProps={{
+                componentsProps={handleAdd ? {
                     toolbar: {
                         handleAdd: handleAdd,
                         selectedRow: null,
                     },
-                }}
+                } : {}}
                 pagination={pagination}
                 paginationMode={paginationMode}
                 page={page}

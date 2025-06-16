@@ -2,7 +2,7 @@ import { Box, Grid, Card, CardContent, Typography, CircularProgress } from '@mui
 import { mapPaymentTypeMedium } from '../utils/Mappers';
 import '../styles/tabs.css';
 
-const Statistics = ({ stats }) => {
+const Statistics = ({ stats, renderInsights= true }) => {
     const s = stats || {};
     const loading = stats === null;
 
@@ -156,73 +156,75 @@ const Statistics = ({ stats }) => {
                 </Grid>
             </Grid>
             {/* Top Payment Insights */}
-            <Box sx={{ bgcolor: '#f7f3fa', borderRadius: 2, p: 2, boxShadow: 2, mt: 2 }}>
-                <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, textAlign: 'center', fontWeight: 700, letterSpacing: 1, bgcolor: '#ede7f6', borderRadius: 1, py: 0.5, boxShadow: 1 }}>
-                    Top Payment Insights
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
-                        <Card variant="outlined">
-                            <CardContent sx={{ textAlign: 'center' }}>
-                                <Typography variant="subtitle2" color="success.main" sx={{ fontWeight: 700 }}>Top 5 Income Sources</Typography>
-                                {top5(s.topIncomeSources).length > 0 ? (
-                                    top5(s.topIncomeSources).map(([party, amt]) => (
-                                        <Typography key={party}>
-                                            <span style={{ color: '#111' }}>{party}</span>: <span style={{ color: '#0288d1', fontWeight: 500 }}>{currency(amt)}</span>
-                                        </Typography>
-                                    ))
-                                ) : (
-                                    <Typography color="text.secondary">No data available</Typography>
-                                )}
-                            </CardContent>
-                        </Card>
-                        <Card variant="outlined" sx={{ mt: 2 }}>
-                            <CardContent sx={{ textAlign: 'center' }}>
-                                <Typography variant="subtitle2" color="success.main" sx={{ fontWeight: 700 }}>Top 5 Income by Type</Typography>
-                                {top5(s.topIncomeTypes).length > 0 ? (
-                                    top5(s.topIncomeTypes).map(([type, amt]) => (
-                                        <Typography key={type}>
-                                            <span style={{ color: '#111' }}>{mapPaymentTypeMedium(type)}</span>: <span style={{ color: '#0288d1', fontWeight: 500 }}>{currency(amt)}</span>
-                                        </Typography>
-                                    ))
-                                ) : (
-                                    <Typography color="text.secondary">No data available</Typography>
-                                )}
-                            </CardContent>
-                        </Card>
+            {renderInsights && (
+                <Box sx={{ bgcolor: '#f7f3fa', borderRadius: 2, p: 2, boxShadow: 2, mt: 2 }}>
+                    <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, textAlign: 'center', fontWeight: 700, letterSpacing: 1, bgcolor: '#ede7f6', borderRadius: 1, py: 0.5, boxShadow: 1 }}>
+                        Top Payment Insights
+                    </Typography>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <Card variant="outlined">
+                                <CardContent sx={{ textAlign: 'center' }}>
+                                    <Typography variant="subtitle2" color="success.main" sx={{ fontWeight: 700 }}>Top 5 Income Sources</Typography>
+                                    {top5(s.topIncomeSources).length > 0 ? (
+                                        top5(s.topIncomeSources).map(([party, amt]) => (
+                                            <Typography key={party}>
+                                                <span style={{ color: '#111' }}>{party}</span>: <span style={{ color: '#0288d1', fontWeight: 500 }}>{currency(amt)}</span>
+                                            </Typography>
+                                        ))
+                                    ) : (
+                                        <Typography color="text.secondary">No data available</Typography>
+                                    )}
+                                </CardContent>
+                            </Card>
+                            <Card variant="outlined" sx={{ mt: 2 }}>
+                                <CardContent sx={{ textAlign: 'center' }}>
+                                    <Typography variant="subtitle2" color="success.main" sx={{ fontWeight: 700 }}>Top 5 Income by Type</Typography>
+                                    {top5(s.topIncomeTypes).length > 0 ? (
+                                        top5(s.topIncomeTypes).map(([type, amt]) => (
+                                            <Typography key={type}>
+                                                <span style={{ color: '#111' }}>{mapPaymentTypeMedium(type)}</span>: <span style={{ color: '#0288d1', fontWeight: 500 }}>{currency(amt)}</span>
+                                            </Typography>
+                                        ))
+                                    ) : (
+                                        <Typography color="text.secondary">No data available</Typography>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Card variant="outlined">
+                                <CardContent sx={{ textAlign: 'center' }}>
+                                    <Typography variant="subtitle2" color="primary.main" sx={{ fontWeight: 700 }}>Top 5 Expense Recipients</Typography>
+                                    {top5(s.topExpenseRecipients).length > 0 ? (
+                                        top5(s.topExpenseRecipients).map(([party, amt]) => (
+                                            <Typography key={party}>
+                                                <span style={{ color: '#111' }}>{party}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
+                                            </Typography>
+                                        ))
+                                    ) : (
+                                        <Typography color="text.secondary">No data available</Typography>
+                                    )}
+                                </CardContent>
+                            </Card>
+                            <Card variant="outlined" sx={{ mt: 2 }}>
+                                <CardContent sx={{ textAlign: 'center' }}>
+                                    <Typography variant="subtitle2" color="primary.main" sx={{ fontWeight: 700 }}>Top 5 Expenses by Type</Typography>
+                                    {top5(s.topExpenseTypes).length > 0 ? (
+                                        top5(s.topExpenseTypes).map(([type, amt]) => (
+                                            <Typography key={type}>
+                                                <span style={{ color: '#111' }}>{mapPaymentTypeMedium(type)}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
+                                            </Typography>
+                                        ))
+                                    ) : (
+                                        <Typography color="text.secondary">No data available</Typography>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Card variant="outlined">
-                            <CardContent sx={{ textAlign: 'center' }}>
-                                <Typography variant="subtitle2" color="primary.main" sx={{ fontWeight: 700 }}>Top 5 Expense Recipients</Typography>
-                                {top5(s.topExpenseRecipients).length > 0 ? (
-                                    top5(s.topExpenseRecipients).map(([party, amt]) => (
-                                        <Typography key={party}>
-                                            <span style={{ color: '#111' }}>{party}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
-                                        </Typography>
-                                    ))
-                                ) : (
-                                    <Typography color="text.secondary">No data available</Typography>
-                                )}
-                            </CardContent>
-                        </Card>
-                        <Card variant="outlined" sx={{ mt: 2 }}>
-                            <CardContent sx={{ textAlign: 'center' }}>
-                                <Typography variant="subtitle2" color="primary.main" sx={{ fontWeight: 700 }}>Top 5 Expenses by Type</Typography>
-                                {top5(s.topExpenseTypes).length > 0 ? (
-                                    top5(s.topExpenseTypes).map(([type, amt]) => (
-                                        <Typography key={type}>
-                                            <span style={{ color: '#111' }}>{mapPaymentTypeMedium(type)}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
-                                        </Typography>
-                                    ))
-                                ) : (
-                                    <Typography color="text.secondary">No data available</Typography>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                </Grid>
-            </Box>
+                </Box>
+            )}
         </Box>
     );
 };

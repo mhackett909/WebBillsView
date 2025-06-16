@@ -252,7 +252,15 @@ const Entries = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6} md={4}><strong>ID:</strong> {entry.invoiceId}</Grid>
                     <Grid item xs={12} sm={6} md={4}>
-                        <strong>Entity:</strong> {billName}
+                        <strong>Entity:</strong>{' '}
+                        {entry && entry.billId ? (
+                          <a
+                            href={`/entities/${entry.billId}`}
+                            style={{ color: '#1976d2', textDecoration: 'underline', fontWeight: 500 }}
+                          >
+                            {billName}
+                          </a>
+                        ) : billName}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}><strong>Date:</strong> {entry.date}</Grid>
                     <Grid item xs={12} sm={6} md={4}><strong>Amount:</strong> {Number(entry.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Grid>
