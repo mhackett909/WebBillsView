@@ -349,7 +349,7 @@ const Invoice = () => {
                   onClick={() => setDeleteDialogOpen(true)}
                   disabled={readOnly}
                 >
-                  Delete
+                  Delete Invoice
                 </Button>
                 <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
                   <DialogTitle>Delete Invoice and Payments?</DialogTitle>

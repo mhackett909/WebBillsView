@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Home from './pages/Home';
 import Entity from './pages/Entity';
+import EditEntity from './pages/EditEntity';
 import Entries from './pages/Entries';
 import NewUser from './pages/NewUser';
 import NewInvoice from './pages/Invoice';
@@ -50,7 +51,8 @@ const App = () => {
             <Route path="/logout" element={<ProtectedRoute><Logout /></ProtectedRoute>} />
             <Route path="/archives" element={<ProtectedRoute><Archives /></ProtectedRoute>} />
             <Route path="/recycle" element={<ProtectedRoute><RecycleBin /></ProtectedRoute>} />
-            <Route path="/bills/:id" element={<ProtectedRoute><Entity /></ProtectedRoute>} />
+            <Route path="/bills/:id" element={<ProtectedRoute><EditEntity /></ProtectedRoute>} />
+            <Route path="/entities/:id" element={<ProtectedRoute><Entity /></ProtectedRoute>} />
             {contactEnabled && (
               <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
             )}
