@@ -101,11 +101,26 @@ const Entity = () => {
               To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar.
             </Alert>
           )}
-          <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
+          <Paper sx={{ p: 3, mb: 4, position: 'relative' }} elevation={3}>
             <Typography variant="h6" mb={2} align="center">Invoices</Typography>
-            <Alert severity="info" sx={{ mb: 2, textAlign: 'center' }}>
-              To add a new invoice, please use the main page.
-            </Alert>
+            <Box display="flex" justifyContent="flex-start" mb={2}>
+              <Button
+                variant="text"
+                size="small"
+                sx={{ minWidth: 'unset', p: 0, fontWeight: 'bold', color: 'primary.main', textTransform: 'none' }}
+                onClick={() => {
+                  if (bill?.name) {
+                    const encodedName = encodeURIComponent(bill.name);
+                    navigate(`/invoice?entityName=${encodedName}`);
+                  } else {
+                    navigate('/invoice');
+                  }
+                }}
+                disabled={!billEnabled}
+              >
+                + Add Invoice
+              </Button>
+            </Box>
             <DataTable
               rows={entries}
               columns={columns}
