@@ -25,6 +25,7 @@ const hiddenColumns = {
   entryId: false,
   billId: false,
   name: false,
+  archived: false,
 };
 
 const Entity = () => {
