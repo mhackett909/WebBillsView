@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import { Box, TextField, Button, MenuItem, Typography, FormControl, InputLabel, Select, Snackbar, Alert } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { createEntry, getBills, createBill, fetchEntryById, editEntry, getBillById } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
@@ -34,6 +34,8 @@ const Invoice = () => {
   const { jwt, refresh, setJwt, setRefresh } = useContext(AuthContext);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const entityNameParam = searchParams.get('entityName');
 
   const handleTokenRefresh = useCallback((newJwt, newRefresh) => {
     if (typeof setJwt === 'function') setJwt(newJwt);
@@ -45,12 +47,19 @@ const Invoice = () => {
       try {
         const bills = await getBills(jwt, refresh, handleTokenRefresh, 'active');
         setParties(bills);
+        // If entityName param exists, select the matching entity
+        if (entityNameParam && !id) {
+          const match = bills.find(bill => bill.name === entityNameParam);
+          if (match) {
+            setForm(prev => ({ ...prev, billId: match.id }));
+          }
+        }
       } catch (err) {
         setParties([]);
       }
     };
     fetchParties();
-  }, [jwt, refresh, handleTokenRefresh]);
+  }, [jwt, refresh, handleTokenRefresh, entityNameParam, id]);
 
   useEffect(() => {
     if (id) {
