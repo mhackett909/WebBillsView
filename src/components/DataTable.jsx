@@ -32,6 +32,7 @@ const DataTable = ({
     onSortModelChange,
     showGoToPage,
     smaller = false,
+    rowsPerPageOptions = [5, 10, 25, 50, 100], // default options
 }) => {
     // Enhance the first column (assumed to be ID) to use a Chip for better visuals
     const enhancedColumns = columns.map((col, idx) => {
@@ -273,6 +274,7 @@ const DataTable = ({
                 sortModel={sortModel}
                 sortingOrder={sortingOrder}
                 onSortModelChange={onSortModelChange}
+                rowsPerPageOptions={rowsPerPageOptions}
             />
             {showGoToPage && (
                 <GoToPage

@@ -25,6 +25,7 @@ const hiddenColumns = {
   entryId: false,
   billId: false,
   name: false,
+  archived: false,
 };
 
 const Entity = () => {
@@ -36,6 +37,10 @@ const Entity = () => {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [sortModel, setSortModel] = useState([]);
+  const [rowCount, setRowCount] = useState(0);
 
   const handleTokenRefresh = useCallback((newJwt, newRefresh) => {
     if (typeof setJwt === 'function') setJwt(newJwt);
@@ -52,11 +57,22 @@ const Entity = () => {
         setBill(billData);
         // Use bill name for partyList filter
         const partyList = billData.name ? [billData.name] : [];
-        // Fetch stats and entries
+        // Fetch stats
         const statsData = await getStats(jwt, refresh, handleTokenRefresh, { partyList });
         setStats(statsData);
-        const entriesData = await fetchEntries(jwt, refresh, handleTokenRefresh, { partyList });
+        // Prepare params for fetchEntries
+        const params = {
+          partyList,
+          pageNum: page,
+          pageSize,
+        };
+        if (Array.isArray(sortModel) && sortModel.length > 0 && sortModel[0].field && sortModel[0].sort) {
+          params.sortField = sortModel[0].field;
+          params.sortOrder = sortModel[0].sort;
+        }
+        const entriesData = await fetchEntries(jwt, refresh, handleTokenRefresh, params);
         setEntries(entriesData.entries || []);
+        setRowCount(typeof entriesData.total === 'number' ? entriesData.total : (entriesData.entries ? entriesData.entries.length : 0));
       } catch (err) {
         setError(err.message || 'Failed to load entity data');
       } finally {
@@ -64,7 +80,7 @@ const Entity = () => {
       }
     };
     fetchData();
-  }, [id, jwt, refresh, handleTokenRefresh]);
+  }, [id, jwt, refresh, handleTokenRefresh, page, pageSize, sortModel]);
 
   // Bill enabled status (active = true, archived = false)
   const billEnabled = !!bill?.status;
@@ -100,30 +116,50 @@ const Entity = () => {
               To restore editing, use the <strong>Archives</strong> feature from the <strong>History</strong> dropdown in the toolbar.
             </Alert>
           )}
-          <Paper sx={{ p: 3, mb: 4 }} elevation={3}>
+          <Paper sx={{ p: 3, mb: 4, position: 'relative' }} elevation={3}>
             <Typography variant="h6" mb={2} align="center">Invoices</Typography>
-            <Alert severity="info" sx={{ mb: 2, textAlign: 'center' }}>
-              To add a new invoice, please use the main page.
-            </Alert>
+            <Box display="flex" justifyContent="flex-start" mb={2}>
+              <Button
+                variant="text"
+                size="small"
+                sx={{ minWidth: 'unset', p: 0, fontWeight: 'bold', color: 'primary.main', textTransform: 'none' }}
+                onClick={() => {
+                  if (bill?.name) {
+                    const encodedName = encodeURIComponent(bill.name);
+                    navigate(`/invoice?entityName=${encodedName}`);
+                  } else {
+                    navigate('/invoice');
+                  }
+                }}
+                disabled={!billEnabled}
+                aria-label="Add Invoice"
+              >
+                <span aria-hidden="true" style={{ marginRight: 4 }}>+</span>Add Invoice
+              </Button>
+            </Box>
             <DataTable
               rows={entries}
               columns={columns}
               columnVisibilityModel={hiddenColumns}
               setColumnVisibilityModel={() => {}}
               handleAdd={null}
-              pagination={false}
-              paginationMode="client"
-              page={0}
-              onPageChange={() => {}}
-              pageSize={entries.length}
-              onPageSizeChange={() => {}}
-              rowCount={entries.length}
-              sortingMode="client"
-              sortModel={[]}
+              pagination={true}
+              paginationMode="server"
+              page={page}
+              onPageChange={setPage}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => {
+                setPageSize(newPageSize);
+                setPage(0); // Reset to first page when page size changes
+              }}
+              rowCount={rowCount}
+              sortingMode="server"
+              sortModel={sortModel}
               sortingOrder={['asc', 'desc']}
-              onSortModelChange={() => {}}
+              onSortModelChange={setSortModel}
               showGoToPage={false}
               fixedHeight={false}
+              rowsPerPageOptions={[2, 5, 10, 25, 50, 100]}
             />
           </Paper>
           <Paper sx={{ p: 3, mt: 4 }} elevation={3}>
