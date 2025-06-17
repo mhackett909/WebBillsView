@@ -35,6 +35,7 @@ const Invoice = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams] = useSearchParams();
+  const entityNameParam = searchParams.get('entityName');
 
   const handleTokenRefresh = useCallback((newJwt, newRefresh) => {
     if (typeof setJwt === 'function') setJwt(newJwt);
@@ -47,9 +48,8 @@ const Invoice = () => {
         const bills = await getBills(jwt, refresh, handleTokenRefresh, 'active');
         setParties(bills);
         // If entityName param exists, select the matching entity
-        const entityName = searchParams.get('entityName');
-        if (entityName && !id) {
-          const match = bills.find(bill => bill.name === entityName);
+        if (entityNameParam && !id) {
+          const match = bills.find(bill => bill.name === entityNameParam);
           if (match) {
             setForm(prev => ({ ...prev, billId: match.id }));
           }
@@ -59,7 +59,7 @@ const Invoice = () => {
       }
     };
     fetchParties();
-  }, [jwt, refresh, handleTokenRefresh, searchParams, id]);
+  }, [jwt, refresh, handleTokenRefresh, entityNameParam, id]);
 
   useEffect(() => {
     if (id) {
