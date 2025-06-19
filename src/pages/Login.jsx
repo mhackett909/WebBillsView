@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { Snackbar } from '@mui/material';
 import { AuthContext } from '../App';
 import { login } from '../utils/BillsApiUtil';
+import { mapErrorMessageToResponse } from '../utils/Mappers';
 import '../styles/login.css'; // Import the CSS file
 import '../styles/global.css'; // Import the global CSS file
 import InputAdornment from '@mui/material/InputAdornment';
@@ -54,23 +55,6 @@ const Login = () => {
     }
   }, [navigate]);
 
-  // Helper to get a user-friendly error message from the login response
-  function getErrorMessageFromResponse(response) {
-    let errorMsg = response && (response.message || response.detail || response.error);
-    if (errorMsg && typeof errorMsg === 'string') {
-      if (errorMsg.includes('ECONNREFUSED')) {
-        return 'Service Currently Unavailable. Please try again later.';
-      } else if (
-        errorMsg.toLowerCase().includes('unauthorized') ||
-        errorMsg.toLowerCase().includes('401')
-      ) {
-        return 'Unauthorized: Invalid username or password.';
-      }
-      return errorMsg;
-    }
-    return 'Login failed for an unknown reason.';
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputtedUserName || !password) return;
@@ -81,7 +65,7 @@ const Login = () => {
       setUsername(response.username || inputtedUserName);
       navigate('/home');
     } else {
-      const errorMsg = getErrorMessageFromResponse(response);
+      const errorMsg = mapErrorMessageToResponse(response);
       setLoginError(errorMsg);
     }
   };

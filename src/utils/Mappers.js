@@ -84,3 +84,20 @@ export function mapPaymentTypeMedium(type) {
   const mediumLabel = mapPaymentMedium(m);
   return `${typeLabel} - ${mediumLabel}`;
 }
+
+// Returns a user-friendly error message from an API response
+export function mapErrorMessageToResponse(response) {
+    let errorMsg = response && (response.message || response.detail || response.error);
+    if (errorMsg && typeof errorMsg === 'string') {
+        if (errorMsg.includes('ECONNREFUSED')) {
+            return 'Service Currently Unavailable. Please try again later.';
+        } else if (
+            errorMsg.toLowerCase().includes('unauthorized') ||
+            errorMsg.toLowerCase().includes('401')
+        ) {
+            return 'Unauthorized: Invalid username or password.';
+        }
+        return errorMsg;
+    }
+    return 'Login failed for an unknown reason.';
+}
