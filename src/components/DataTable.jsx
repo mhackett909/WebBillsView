@@ -45,6 +45,7 @@ const DataTable = ({
                     <Link
                         to={`/entries/${params.row.entryId}`}
                         className="data-table-invoice-link"
+                        aria-label={`View details for invoice #${params.value}`}
                         onClick={e => { e.stopPropagation(); }}
                     >
                         <Box className="data-table-invoice-chip-container">
@@ -78,7 +79,8 @@ const DataTable = ({
                     <span>
                         <Link
                             to={`/entities/${params.row.billId}`}
-                            style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
+                            className="data-table-entity-link"
+                            aria-label={`View details for entity ${params.value}`}
                             onClick={e => { e.stopPropagation(); }}
                         >
                             {params.value}
