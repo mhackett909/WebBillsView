@@ -39,7 +39,7 @@ const Login = () => {
   }, [location.state]);
 
   useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
+    const jwt = sessionStorage.getItem('jwt');
     if (jwt) {
       // Optionally check for expiry
       try {

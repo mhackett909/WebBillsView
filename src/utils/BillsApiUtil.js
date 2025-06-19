@@ -31,8 +31,8 @@ async function fetchWithAutoRefresh({
                 if (refreshData.accessToken) {
                     accessToken = refreshData.accessToken;
                     refreshToken = refreshData.refreshToken;
-                    localStorage.setItem('jwt', accessToken);
-                    localStorage.setItem('refreshToken', refreshToken);
+                    sessionStorage.setItem('jwt', accessToken);
+                    sessionStorage.setItem('refreshToken', refreshToken);
                     onTokenRefresh(accessToken, refreshToken);
                     continue;
                 }

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState, createContext, useContext, useEffect } from 'react';
+import { useState, createContext, useContext } from 'react';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Home from './pages/Home';
@@ -30,63 +30,14 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const App = () => {
-  const [jwt, setJwt] = useState(localStorage.getItem('jwt') || null);
-  const [username, setUsername] = useState(localStorage.getItem('username') || '');
-  const [refresh, setRefresh] = useState(localStorage.getItem('refreshToken') || null);
-
-  // Sync state changes to localStorage
-  const setJwtAndStore = (token) => {
-    setJwt(token);
-    if (token) {
-      localStorage.setItem('jwt', token);
-    } else {
-      localStorage.removeItem('jwt');
-    }
-  };
-  const setUsernameAndStore = (name) => {
-    setUsername(name);
-    if (name) {
-      localStorage.setItem('username', name);
-    } else {
-      localStorage.removeItem('username');
-    }
-  };
-  const setRefreshAndStore = (token) => {
-    setRefresh(token);
-    if (token) {
-      localStorage.setItem('refreshToken', token);
-    } else {
-      localStorage.removeItem('refreshToken');
-    }
-  };
-
-  // Cross-tab logout: listen for jwt removal in other tabs
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    const onStorage = (event) => {
-      if (event.key === 'jwt' && event.oldValue && !event.newValue) {
-        setJwtAndStore(null);
-        setUsernameAndStore('');
-        setRefreshAndStore(null);
-        // Optionally, you can also force a reload or redirect here
-        window.location.href = '/';
-      }
-    };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
+  const [jwt, setJwt] = useState(sessionStorage.getItem('jwt') || null);
+  const [username, setUsername] = useState(sessionStorage.getItem('username') || '');
+  const [refresh, setRefresh] = useState(sessionStorage.getItem('refreshToken') || null);
 
   const contactEnabled = process.env.REACT_APP_CONTACT_ME_ENABLED === 'true';
 
   return (
-    <AuthContext.Provider value={{
-      jwt,
-      setJwt: setJwtAndStore,
-      username,
-      setUsername: setUsernameAndStore,
-      refresh,
-      setRefresh: setRefreshAndStore
-    }}>
+    <AuthContext.Provider value={{ jwt, setJwt, username, setUsername, refresh, setRefresh }}>
       <BrowserRouter>
         <div className="App">
           <AppToolbar />

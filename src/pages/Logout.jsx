@@ -9,9 +9,9 @@ const Logout = () => {
   useEffect(() => {
     setJwt(null);
     setUsername(null);
-    localStorage.removeItem('username');
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('jwt');
+    sessionStorage.removeItem('refreshToken');
     sessionStorage.removeItem('filters');
     sessionStorage.removeItem('includeArchived');
     sessionStorage.removeItem('dateRange');
