@@ -251,7 +251,7 @@ const DataTable = ({
     });
 
     return (
-        <Box className="tabs-container" sx={{ height: smaller ? 420 : 600 }}>
+        <Box className="tabs-container data-table-root" sx={{ height: smaller ? 420 : 600 }}>
             <DataGrid
                 rows={rows}
                 columns={enhancedColumns}

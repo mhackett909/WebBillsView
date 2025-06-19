@@ -1,47 +1,48 @@
-.data-table-invoice-link {
+.data-table-root .data-table-invoice-link {
     text-decoration: none;
     cursor: pointer;
     width: 100%;
     height: 100%;
     display: block;
 }
-.data-table-invoice-link .MuiChip-root {
+.data-table-root .data-table-invoice-link .MuiChip-root {
     cursor: pointer;
 }
 
 /* Bold 'Rows per page' label */
-.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows {
+.data-table-root .MuiTablePagination-selectLabel, 
+.data-table-root .MuiTablePagination-displayedRows {
     font-weight: 500 !important;
     color: #333 !important;
     letter-spacing: 0.02em;
 }
 
 /* Colorize dropdown arrow for rows per page */
-.MuiTablePagination-root .MuiSelect-icon {
+.data-table-root .MuiTablePagination-root .MuiSelect-icon {
     color: #1976d2;
 }
 
 /* Colorize left/right page navigation arrows */
-.MuiTablePagination-actions .MuiIconButton-root {
+.data-table-root .MuiTablePagination-actions .MuiIconButton-root {
     color: #1976d2;
     transition: color 0.15s;
 }
-.MuiTablePagination-actions .MuiIconButton-root:hover:not(:disabled) {
+.data-table-root .MuiTablePagination-actions .MuiIconButton-root:hover:not(:disabled) {
     color: #115293;
 }
 
-.MuiDataGrid-footerContainer {
+.data-table-root .MuiDataGrid-footerContainer {
   justify-content: center !important;
 }
 
-.data-table-invoice-chip-container {
+.data-table-root .data-table-invoice-chip-container {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
 }
 
-.data-table-entity-link {
+.data-table-root .data-table-entity-link {
     color: #1976d2;
     text-decoration: underline;
     cursor: pointer;
