@@ -1,3 +1,5 @@
+import { mapErrorMessageToResponse } from './Mappers';
+
 // Helper for authenticated fetch with refresh logic
 async function fetchWithAutoRefresh({
     url,
@@ -170,11 +172,28 @@ export const login = async (userData) => {
             },
             body: JSON.stringify(userData),
         });
-        const responseData = await response.json();
-        return responseData;
+
+        const contentType = response.headers.get('content-type') || '';
+
+        if (!response.ok) {
+            if (contentType.includes('application/json')) {
+                const errorData = await response.json();
+                return { error: mapErrorMessageToResponse(errorData) };
+            } else {
+                // Try to get text error message, else fallback
+                const text = await response.text();
+                return { error: mapErrorMessageToResponse(text) };
+            }
+        }
+
+        if (contentType && contentType.includes('application/json')) {
+            return await response.json();
+        }
+
+        return { error: 'Login failed due to an unexpected server response. Please try again later.' };
     } catch (error) {
         console.error('Error logging in:', error);
-        return null;
+        return { error: 'Login failed due to an unexpected error. Please try again later.' };
     }
 };
 

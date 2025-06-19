@@ -2,6 +2,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Box, Chip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import '../styles/tabs.css';
+import '../styles/datatable.css';
 import dayjs from 'dayjs';
 
 import CustomToolbar from './toolbars/TableToolbar';
@@ -43,24 +44,27 @@ const DataTable = ({
                 renderCell: (params) => (
                     <Link
                         to={`/entries/${params.row.entryId}`}
-                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                        className="data-table-invoice-link"
+                        aria-label={`View details for invoice #${params.value}`}
                         onClick={e => { e.stopPropagation(); }}
                     >
-                        <Chip
-                            label={params.value}
-                            color="info"
-                            variant="filled"
-                            size="small"
-                            sx={{
-                                backgroundColor: (theme) => theme.palette.secondary.main,
-                                color: 'white',
-                                transition: 'background 0.2s',
-                                '&:hover': {
-                                    backgroundColor: (theme) => theme.palette.secondary.dark,
+                        <Box className="data-table-invoice-chip-container">
+                            <Chip
+                                label={params.value}
+                                color="info"
+                                variant="filled"
+                                size="small"
+                                sx={{
+                                    backgroundColor: (theme) => theme.palette.secondary.main,
                                     color: 'white',
-                                },
-                            }}
-                        />
+                                    transition: 'background 0.2s',
+                                    '&:hover': {
+                                        backgroundColor: (theme) => theme.palette.secondary.dark,
+                                        color: 'white',
+                                    },
+                                }}
+                            />
+                        </Box>
                     </Link>
                 ),
                 headerName: col.headerName || 'Invoice #',
@@ -75,7 +79,8 @@ const DataTable = ({
                     <span>
                         <Link
                             to={`/entities/${params.row.billId}`}
-                            style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
+                            className="data-table-entity-link"
+                            aria-label={`View details for entity ${params.value}`}
                             onClick={e => { e.stopPropagation(); }}
                         >
                             {params.value}
@@ -246,7 +251,7 @@ const DataTable = ({
     });
 
     return (
-        <Box className="tabs-container" sx={{ height: smaller ? 420 : 600 }}>
+        <Box className="tabs-container data-table-root" sx={{ height: smaller ? 420 : 600 }}>
             <DataGrid
                 rows={rows}
                 columns={enhancedColumns}

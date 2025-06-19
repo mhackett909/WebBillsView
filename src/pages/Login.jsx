@@ -59,19 +59,20 @@ const Login = () => {
     if (!inputtedUserName || !password) return;
     try {
       const response = await login({ username: inputtedUserName, password });
-      if (response && response.accessToken) {
+      if (response.accessToken) {
         sessionStorage.setItem('jwt', response.accessToken);
         sessionStorage.setItem('refreshToken', response.refreshToken);
         sessionStorage.setItem('username', response.username || inputtedUserName);
         setJwt(response.accessToken);
-        setRefresh(response.refreshToken)
+        setRefresh(response.refreshToken);
         setUsername(response.username || inputtedUserName);
         navigate('/home');
       } else {
-        setLoginError('Login failed. Please check your username and password.');
+        setLoginError(response.error || 'Login failed. Please check your credentials and try again.');
       }
-    } catch (err) {
-      setLoginError('Login failed. Please try again.');
+    } catch (error) {
+      console.error('Unexpected error during login:', error);
+      setLoginError('Login failed due to an unexpected error. Please try again later.');
     }
   };
 
