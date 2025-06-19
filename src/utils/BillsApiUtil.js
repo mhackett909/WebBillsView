@@ -175,13 +175,11 @@ export const login = async (userData) => {
             const responseData = await response.json();
             return responseData;
         } else {
-            // If not JSON, try to get text and return as error
-            const text = await response.text();
-            return { error: text || 'Unknown error (non-JSON response)' };
+            return { error: 'Login failed due to an unexpected server response. Please try again later.' };
         }
     } catch (error) {
         console.error('Error logging in:', error);
-        return { error: error.message || 'Unknown error' };
+        return { error: 'Login failed due to an unexpected error. Please try again later.' };
     }
 };
 
