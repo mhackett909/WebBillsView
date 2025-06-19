@@ -53,6 +53,7 @@ const Login = () => {
       }
     }
   }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputtedUserName || !password) return;
@@ -67,7 +68,6 @@ const Login = () => {
         setUsername(response.username || inputtedUserName);
         navigate('/home');
       } else {
-        // Ensure we have an error message to display
         setLoginError(response.error || 'Login failed. Please check your credentials and try again.');
       }
     } catch (error) {
