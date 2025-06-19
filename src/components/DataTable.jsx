@@ -43,24 +43,33 @@ const DataTable = ({
                 renderCell: (params) => (
                     <Link
                         to={`/entries/${params.row.entryId}`}
-                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                        style={{
+                            textDecoration: 'none',
+                            cursor: 'pointer',
+                            width: '100%',
+                            height: '100%',
+                            display: 'block',
+                        }}
                         onClick={e => { e.stopPropagation(); }}
                     >
-                        <Chip
-                            label={params.value}
-                            color="info"
-                            variant="filled"
-                            size="small"
-                            sx={{
-                                backgroundColor: (theme) => theme.palette.secondary.main,
-                                color: 'white',
-                                transition: 'background 0.2s',
-                                '&:hover': {
-                                    backgroundColor: (theme) => theme.palette.secondary.dark,
+                        <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center' }}>
+                            <Chip
+                                label={params.value}
+                                color="info"
+                                variant="filled"
+                                size="small"
+                                sx={{
+                                    cursor: 'pointer',
+                                    backgroundColor: (theme) => theme.palette.secondary.main,
                                     color: 'white',
-                                },
-                            }}
-                        />
+                                    transition: 'background 0.2s',
+                                    '&:hover': {
+                                        backgroundColor: (theme) => theme.palette.secondary.dark,
+                                        color: 'white',
+                                    },
+                                }}
+                            />
+                        </Box>
                     </Link>
                 ),
                 headerName: col.headerName || 'Invoice #',

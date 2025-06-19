@@ -31,8 +31,8 @@ async function fetchWithAutoRefresh({
                 if (refreshData.accessToken) {
                     accessToken = refreshData.accessToken;
                     refreshToken = refreshData.refreshToken;
-                    sessionStorage.setItem('jwt', accessToken);
-                    sessionStorage.setItem('refreshToken', refreshToken);
+                    localStorage.setItem('jwt', accessToken);
+                    localStorage.setItem('refreshToken', refreshToken);
                     onTokenRefresh(accessToken, refreshToken);
                     continue;
                 }
@@ -170,11 +170,18 @@ export const login = async (userData) => {
             },
             body: JSON.stringify(userData),
         });
-        const responseData = await response.json();
-        return responseData;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            const responseData = await response.json();
+            return responseData;
+        } else {
+            // If not JSON, try to get text and return as error
+            const text = await response.text();
+            return { error: text || 'Unknown error (non-JSON response)' };
+        }
     } catch (error) {
         console.error('Error logging in:', error);
-        return null;
+        return { error: error.message || 'Unknown error' };
     }
 };
 

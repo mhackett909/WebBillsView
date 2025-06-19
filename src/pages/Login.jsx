@@ -39,7 +39,7 @@ const Login = () => {
   }, [location.state]);
 
   useEffect(() => {
-    const jwt = sessionStorage.getItem('jwt');
+    const jwt = localStorage.getItem('jwt');
     if (jwt) {
       // Optionally check for expiry
       try {
@@ -54,24 +54,35 @@ const Login = () => {
     }
   }, [navigate]);
 
+  // Helper to get a user-friendly error message from the login response
+  function getErrorMessageFromResponse(response) {
+    let errorMsg = response && (response.message || response.detail || response.error);
+    if (errorMsg && typeof errorMsg === 'string') {
+      if (errorMsg.includes('ECONNREFUSED')) {
+        return 'Service Currently Unavailable. Please try again later.';
+      } else if (
+        errorMsg.toLowerCase().includes('unauthorized') ||
+        errorMsg.toLowerCase().includes('401')
+      ) {
+        return 'Unauthorized: Invalid username or password.';
+      }
+      return errorMsg;
+    }
+    return 'Login failed for an unknown reason.';
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputtedUserName || !password) return;
-    try {
-      const response = await login({ username: inputtedUserName, password });
-      if (response && response.accessToken) {
-        sessionStorage.setItem('jwt', response.accessToken);
-        sessionStorage.setItem('refreshToken', response.refreshToken);
-        sessionStorage.setItem('username', response.username || inputtedUserName);
-        setJwt(response.accessToken);
-        setRefresh(response.refreshToken)
-        setUsername(response.username || inputtedUserName);
-        navigate('/home');
-      } else {
-        setLoginError('Login failed. Please check your username and password.');
-      }
-    } catch (err) {
-      setLoginError('Login failed. Please try again.');
+    const response = await login({ username: inputtedUserName, password });
+    if (response && response.accessToken) {
+      setJwt(response.accessToken);
+      setRefresh(response.refreshToken);
+      setUsername(response.username || inputtedUserName);
+      navigate('/home');
+    } else {
+      const errorMsg = getErrorMessageFromResponse(response);
+      setLoginError(errorMsg);
     }
   };
 
