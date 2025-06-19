@@ -59,7 +59,7 @@ const Login = () => {
     e.preventDefault();
     if (!inputtedUserName || !password) return;
     const response = await login({ username: inputtedUserName, password });
-    if (response && response.accessToken) {
+    if (response.accessToken) {
       sessionStorage.setItem('jwt', response.accessToken);
       sessionStorage.setItem('refreshToken', response.refreshToken);
       sessionStorage.setItem('username', response.username || inputtedUserName);
@@ -68,8 +68,7 @@ const Login = () => {
       setUsername(response.username || inputtedUserName);
       navigate('/home');
     } else {
-      const errorMsg = mapErrorMessageToResponse(response);
-      setLoginError(errorMsg);
+      setLoginError(response.error);
     }
   };
 

@@ -167,7 +167,9 @@ export const login = async (userData) => {
     try {
         const response = await fetch('/api/v1/auth/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json' 
+            },
             body: JSON.stringify(userData),
         });
 
@@ -181,11 +183,14 @@ export const login = async (userData) => {
             if (contentType.includes('application/json')) {
                 const errorData = await response.json();
                 return { error: mapErrorMessageToResponse(errorData) };
+            } else {
+                // Try to get text error message, else fallback
+                const text = await response.text();
+                return { error: mapErrorMessageToResponse(text) };
             }
-            return { error: 'Login failed due to an unexpected server response. Please try again later.' };
         }
 
-        if (contentType.includes('application/json')) {
+        if (contentType && contentType.includes('application/json')) {
             return await response.json();
         }
 

@@ -85,19 +85,25 @@ export function mapPaymentTypeMedium(type) {
   return `${typeLabel} - ${mediumLabel}`;
 }
 
-// Returns a user-friendly error message from an API response
+// Returns a user-friendly error message from an API response or error string
 export function mapErrorMessageToResponse(response) {
+    // If response is a string (e.g., from response.text()), use it directly
+    if (typeof response === 'string') {
+        if (response.includes('ECONNREFUSED')) {
+            return 'Service Currently Unavailable. Please try again later.';
+        } else if (response.includes('ECONNRESET')) {
+            return 'Connection Reset. Please try again later.';
+        }
+    }
+    // Otherwise, handle as object
     let errorMsg = response && (response.message || response.detail || response.error);
     if (errorMsg && typeof errorMsg === 'string') {
-        if (errorMsg.includes('ECONNREFUSED')) {
-            return 'Service Currently Unavailable. Please try again later.';
-        } else if (
+        if (
             errorMsg.toLowerCase().includes('unauthorized') ||
             errorMsg.toLowerCase().includes('401')
         ) {
             return 'Unauthorized: Invalid username or password.';
         }
-        return errorMsg;
     }
     return 'Login failed for an unknown reason.';
 }
