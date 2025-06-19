@@ -56,16 +56,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputtedUserName || !password) return;
-    
     try {
       const response = await login({ username: inputtedUserName, password });
-      
-      // Validate that response is defined and is an object
-      if (!response || typeof response !== 'object') {
-        setLoginError('Login failed due to an unexpected server response. Please try again later.');
-        return;
-      }
-      
       if (response.accessToken) {
         sessionStorage.setItem('jwt', response.accessToken);
         sessionStorage.setItem('refreshToken', response.refreshToken);
