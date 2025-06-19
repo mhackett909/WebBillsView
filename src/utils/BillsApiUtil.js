@@ -173,10 +173,6 @@ export const login = async (userData) => {
             body: JSON.stringify(userData),
         });
 
-        if (!response) {
-            return { error: 'No response from server. Please check your connection and try again.' };
-        }
-
         const contentType = response.headers.get('content-type') || '';
 
         if (!response.ok) {
