@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import { Snackbar } from '@mui/material';
 import { AuthContext } from '../App';
 import { login } from '../utils/BillsApiUtil';
-import { mapErrorMessageToResponse } from '../utils/Mappers';
 import '../styles/login.css'; // Import the CSS file
 import '../styles/global.css'; // Import the global CSS file
 import InputAdornment from '@mui/material/InputAdornment';
