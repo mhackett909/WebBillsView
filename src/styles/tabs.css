@@ -14,28 +14,3 @@
 .main-tabs .Mui-selected {
     background-color: #ccc; /* Set background color to #ccc for selected tab */
 }
-
-.MuiDataGrid-footerContainer {
-  justify-content: center !important;
-}
-
-/* Bold 'Rows per page' label */
-.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows {
-    font-weight: 500 !important;
-    color: #333 !important;
-    letter-spacing: 0.02em;
-}
-
-/* Colorize dropdown arrow for rows per page */
-.MuiTablePagination-root .MuiSelect-icon {
-    color: #1976d2;
-}
-
-/* Colorize left/right page navigation arrows */
-.MuiTablePagination-actions .MuiIconButton-root {
-    color: #1976d2;
-    transition: color 0.15s;
-}
-.MuiTablePagination-actions .MuiIconButton-root:hover:not(:disabled) {
-    color: #115293;
-}
