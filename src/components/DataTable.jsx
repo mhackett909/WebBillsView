@@ -2,6 +2,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Box, Chip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import '../styles/tabs.css';
+import '../styles/datatable.css';
 import dayjs from 'dayjs';
 
 import CustomToolbar from './toolbars/TableToolbar';
@@ -43,13 +44,7 @@ const DataTable = ({
                 renderCell: (params) => (
                     <Link
                         to={`/entries/${params.row.entryId}`}
-                        style={{
-                            textDecoration: 'none',
-                            cursor: 'pointer',
-                            width: '100%',
-                            height: '100%',
-                            display: 'block',
-                        }}
+                        className="data-table-invoice-link"
                         onClick={e => { e.stopPropagation(); }}
                     >
                         <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center' }}>
@@ -59,7 +54,6 @@ const DataTable = ({
                                 variant="filled"
                                 size="small"
                                 sx={{
-                                    cursor: 'pointer',
                                     backgroundColor: (theme) => theme.palette.secondary.main,
                                     color: 'white',
                                     transition: 'background 0.2s',
