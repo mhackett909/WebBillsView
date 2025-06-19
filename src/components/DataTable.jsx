@@ -47,7 +47,7 @@ const DataTable = ({
                         className="data-table-invoice-link"
                         onClick={e => { e.stopPropagation(); }}
                     >
-                        <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Box className="data-table-invoice-chip-container">
                             <Chip
                                 label={params.value}
                                 color="info"
