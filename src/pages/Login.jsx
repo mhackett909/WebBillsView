@@ -60,6 +60,9 @@ const Login = () => {
     if (!inputtedUserName || !password) return;
     const response = await login({ username: inputtedUserName, password });
     if (response && response.accessToken) {
+      sessionStorage.setItem('jwt', response.accessToken);
+      sessionStorage.setItem('refreshToken', response.refreshToken);
+      sessionStorage.setItem('username', response.username || inputtedUserName);
       setJwt(response.accessToken);
       setRefresh(response.refreshToken);
       setUsername(response.username || inputtedUserName);
