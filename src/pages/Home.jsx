@@ -407,9 +407,10 @@ const Home = () => {
                     showMoreOptions={showMoreOptions}
                     setShowMoreOptions={setShowMoreOptions}
                 />
-            </Box>            <Box width="100%">
+            </Box>            
+            <Box width="100%">
                 {/* Content area with tabs on the left and content on the right */}
-                <Box display="flex" gap="20px">
+                <Box display="flex">
                     {/* Tabs positioned on the left */}
                     <Tabs
                         value={activeTab}
@@ -422,7 +423,7 @@ const Home = () => {
                         <Tab label="Stats" />
                     </Tabs>
                     {/* Content area */}
-                    <Box flexGrow={1}>
+                    <Box flexGrow={1} className="tabs-content-area">
                         {activeTab === 0 && (
                             <DataTable
                                 rows={entries}

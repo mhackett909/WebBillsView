@@ -18,10 +18,8 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
         } else {
             setDateRange([dateRange[0], null]);
         }
-    };
-
-    return (
-        <Box className="date-pickers">
+    };    return (
+        <Box className="date-pickers" sx={{ minWidth: '320px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 {/* Dropdown to select Single Date or Date Range */}
                 <FormControl fullWidth sx={{ mb: 1.5 }} size="small">
@@ -53,14 +51,13 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
                                     setDateRange([null, dateRange[1]]);
                                 }
                             }
-                        }}
-                        renderInput={(params) => (
+                        }}                        renderInput={(params) => (
                             <TextField
                                 {...params}
-                                fullWidth={dateMode === 'Single Date'}
-                                size="small"                                sx={{ 
-                                    width: dateMode === 'Date Range' ? '160px' : 'auto',
-                                    minWidth: dateMode === 'Date Range' ? '160px' : 'auto'
+                                size="small" 
+                                sx={{ 
+                                    width: dateMode === 'Date Range' ? '160px' : '320px',
+                                    minWidth: dateMode === 'Date Range' ? '160px' : '320px'
                                 }}
                                 error={
                                     dateMode === 'Date Range' &&

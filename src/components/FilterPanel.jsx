@@ -47,10 +47,9 @@ const FilterPanel = ({
     }, [dateMode, dateRange]);
 
     const disableSearch = amountRangeError || dateRangeError;    return (
-        <Box className="filters-panel" width={width} minWidth="800px">            
-        <Box display="flex" alignItems="flex-start" justifyContent="space-between" width="100%">                
-            <Box display="flex" gap="15px" alignItems="flex-start" flex="1">                
-                <Box display="flex" flexDirection="column" gap="8px">
+        <Box className="filters-panel" width={width} minWidth="800px">              
+        <Box display="flex" alignItems="flex-start" width="100%">             <Box display="flex" gap="15px" alignItems="flex-start" sx={{ minWidth: 'fit-content' }}>                
+                <Box display="flex" flexDirection="column" gap="8px" sx={{ minWidth: '200px' }}>
                         <InvoiceSearch
                             invoice={filters.invoice}
                             handleFilterChange={handleFilterChange}
@@ -80,15 +79,12 @@ const FilterPanel = ({
                         setDateRange={setDateRange}
                         dateMode={dateMode}
                         setDateMode={setDateMode}
-                    />
-                </Box>                  
-                <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end" justifyContent="center" sx={{ width: '23.5%', flexShrink: 0 }}>
+                    />                </Box>                  
                     <FilterButtons
                         filterBills={filterBills}
                         clearFilters={clearFilters}
                         disableSearch={disableSearch}
                     />
-                </Box>
             </Box>
             <Collapse in={shouldShowOptions}>
                 <Box sx={{ pt: 0.5, maxWidth: '100%', overflow: 'hidden' }}>

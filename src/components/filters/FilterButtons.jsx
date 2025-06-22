@@ -6,7 +6,7 @@ const FilterButtons = ({ filterBills, clearFilters, disableSearch }) => (
             variant="outlined" 
             color="primary" 
             onClick={filterBills}
-            sx={{ borderWidth: 2, display: 'block', width: '100%', mb: 1 }}
+            sx={{ borderWidth: 2, display: 'block', width: '93%', mb: 1 , ml: 2 }}
             disabled={disableSearch}
         >
             Search
@@ -15,7 +15,7 @@ const FilterButtons = ({ filterBills, clearFilters, disableSearch }) => (
             variant="outlined" 
             color="secondary" 
             onClick={clearFilters}
-            sx={{ borderWidth: 2, display: 'block', width: '100%' }}
+            sx={{ borderWidth: 2, display: 'block', width: '93%', ml: 2 }}
         >
             Clear Filters
         </Button>

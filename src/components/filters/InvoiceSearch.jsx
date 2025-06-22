@@ -1,9 +1,8 @@
 import { TextField } from '@mui/material';
 import '../../styles/global.css'; // Import the global CSS file
 
-const InvoiceSearch = ({ invoice, handleFilterChange }) => {
-    return (
-        <div className="input-border">
+const InvoiceSearch = ({ invoice, handleFilterChange }) => {    return (
+        <div className="input-border" style={{ minWidth: '200px' }}>
             <TextField
                 label="Invoice #"
                 type="number"
