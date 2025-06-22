@@ -19,9 +19,8 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
             setDateRange([dateRange[0], null]);
         }
     };
-
     return (
-        <Box className="date-pickers">
+        <Box className="date-pickers" sx={{ minWidth: '320px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 {/* Dropdown to select Single Date or Date Range */}
                 <FormControl fullWidth sx={{ mb: 1.5 }} size="small">
@@ -34,8 +33,7 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
                         <MenuItem value="Date Range">Date Range</MenuItem>
                     </Select>
                 </FormControl>
-
-                <Box display="flex" flexDirection="column" gap={1.5}>
+                <Box display="flex" flexDirection={dateMode === 'Date Range' ? 'row' : 'column'} gap={1.5}>
                     {/* Start Date Picker */}
                     <DatePicker
                         label={dateMode === 'Single Date' ? 'Date' : 'Start Date'}
@@ -60,8 +58,11 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                fullWidth
-                                size="small"
+                                size="small" 
+                                sx={{ 
+                                    width: dateMode === 'Date Range' ? '160px' : '320px',
+                                    minWidth: dateMode === 'Date Range' ? '160px' : '320px'
+                                }}
                                 error={
                                     dateMode === 'Date Range' &&
                                     dateRange[0] &&
@@ -79,7 +80,6 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
                             />
                         )}
                     />
-
                     {/* End Date Picker (only visible in Date Range mode) */}
                     {dateMode === 'Date Range' && (
                         <DatePicker
@@ -96,8 +96,11 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    fullWidth
                                     size="small"
+                                    sx={{ 
+                                        width: '160px',
+                                        minWidth: '160px'
+                                    }}
                                 />
                             )}
                         />

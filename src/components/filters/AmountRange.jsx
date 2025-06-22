@@ -5,7 +5,7 @@ const AmountRange = ({ filters, handleFilterChange }) => {
     return (
         <Box className="range-picker">
             <TextField
-                label="Min"
+                label="Min Amount"
                 type="number"
                 variant="outlined"
                 size="small"
@@ -35,7 +35,7 @@ const AmountRange = ({ filters, handleFilterChange }) => {
                 }}
             />
             <TextField
-                label="Max"
+                label="Max Amount"
                 type="number"
                 variant="outlined"
                 size="small"

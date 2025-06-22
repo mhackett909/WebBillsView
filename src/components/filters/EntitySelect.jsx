@@ -1,10 +1,10 @@
-import { Box, Select, MenuItem, Checkbox, Chip } from '@mui/material';
-import '../../styles/global.css'; // Import the global CSS file
-import '../../styles/filters.css'; // Import the CSS file
+import { Box, Select, MenuItem, Checkbox, Chip, Tooltip } from '@mui/material';
+import '../../styles/global.css';
+import '../../styles/filters.css';
 
 const EntitySelect = ({ billers, selectedBillers, handleFilterChange }) => {
     return (
-        <Box className="input-border">
+        <Box className="input-border" sx={{ minWidth: '200px', maxWidth: '200px' }}>
             <Select
                 labelId="biller-label"
                 multiple
@@ -17,13 +17,37 @@ const EntitySelect = ({ billers, selectedBillers, handleFilterChange }) => {
                     selected.length === 0 ? (
                         <span style={{ color: 'rgba(0, 0, 0, 0.54)' }}>Select Entities</span>
                     ) : (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => (
+                    <Box sx={{ 
+                            display: 'flex', 
+                            flexWrap: 'wrap', 
+                            gap: 0.5,
+                            maxWidth: '100%',
+                            overflow: 'hidden'
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        >{selected.map((value) => (
+                            <Tooltip key={value} title={value} arrow placement="top">
                                 <Chip
-                                    key={value}
                                     label={value}
                                     className="chip-style"
+                                    size="small"
+                                    onClick={(e) => e.stopPropagation()}
+                                    onDelete={(e) => {
+                                        e.stopPropagation();
+                                        const newSelected = selected.filter(item => item !== value);
+                                        handleFilterChange('biller', newSelected);
+                                    }}
+                                    sx={{
+                                        maxWidth: '150px',
+                                        '& .MuiChip-label': {
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
+                                        }
+                                    }}
                                 />
+                            </Tooltip>
                             ))}
                         </Box>
                     )
