@@ -114,11 +114,14 @@ const Archives = () => {
                   </TableRow>
                 ) : (archivedBills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((bill) => (
                     <TableRow key={bill.id}>
-                      <TableCell style={{ display: 'none' }}>{bill.id}</TableCell>
-                      <TableCell sx={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <TableCell style={{ display: 'none' }}>{bill.id}</TableCell>                      <TableCell sx={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         <Link
                           to={`/entities/${bill.id}`}
-                          style={{ color: '#1976d2', textDecoration: 'underline', fontWeight: 500 }}
+                          sx={{ 
+                            color: 'primary.main', 
+                            textDecoration: 'underline', 
+                            fontWeight: 500 
+                          }}
                         >
                           {bill.name}
                         </Link>
