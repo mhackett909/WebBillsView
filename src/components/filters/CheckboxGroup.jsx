@@ -20,7 +20,6 @@ const CheckboxGroup = ({ legend, options, selectedValue, onChange, row = false }
                 display: 'flex',
                 padding: '6px',
                 minHeight: '60px',
-                height: 'auto',
                 maxHeight: '60px'
             }}
         >
