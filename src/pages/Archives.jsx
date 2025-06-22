@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert, Link } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
 import { getBills, editBill } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
@@ -111,11 +112,23 @@ const Archives = () => {
                   <TableRow>
                     <TableCell colSpan={3} align="center">No archived entities found.</TableCell>
                   </TableRow>
-                ) : (
-                  archivedBills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((bill) => (
+                ) : (archivedBills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((bill) => (
                     <TableRow key={bill.id}>
                       <TableCell style={{ display: 'none' }}>{bill.id}</TableCell>
-                      <TableCell sx={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{bill.name}</TableCell>
+                      <TableCell sx={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <Link
+                          component={RouterLink}
+                          to={`/entities/${bill.id}`}
+                          aria-label={`View details for ${bill.name}`}
+                          sx={{ 
+                            color: 'primary.main', 
+                            textDecoration: 'underline', 
+                            fontWeight: 500 
+                          }}
+                        >
+                          {bill.name}
+                        </Link>
+                      </TableCell>
                       <TableCell align="right">
                         <Button variant="contained" color="primary" size="small" sx={{ mr: 1 }} onClick={() => handleRestore(bill)}>Restore</Button>
                         <Button variant="outlined" color="error" size="small" onClick={() => handleDelete(bill)}>Delete</Button>
