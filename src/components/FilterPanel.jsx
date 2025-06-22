@@ -20,8 +20,9 @@ const FilterPanel = ({
     filterBills,
     clearFilters,
     availableBillers,
-}) => {
-    // Check if any advanced options are active
+    showMoreOptions,
+    setShowMoreOptions,
+}) => {    // Check if any advanced options are active
     const hasActiveAdvancedOptions = useMemo(() => {
         return (
             filters.flow !== '' ||
@@ -29,18 +30,6 @@ const FilterPanel = ({
             includeArchived !== false
         );
     }, [filters.flow, filters.status, includeArchived]);
-
-    const [showMoreOptions, setShowMoreOptions] = useState(() => {
-        const stored = sessionStorage.getItem('showMoreOptions');
-        if (stored) {
-            try {
-                return JSON.parse(stored);
-            } catch (e) {
-                // Ignore parse errors
-            }
-        }
-        return false;
-    });
 
     // Auto-expand if any advanced options are active
     const shouldShowOptions = showMoreOptions || hasActiveAdvancedOptions;
@@ -87,8 +76,7 @@ const FilterPanel = ({
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={shouldShowOptions}
-                        onChange={(e) => {
+                        checked={shouldShowOptions}                        onChange={(e) => {
                             const isChecked = e.target.checked;
                             setShowMoreOptions(isChecked);
                             sessionStorage.setItem('showMoreOptions', JSON.stringify(isChecked));
