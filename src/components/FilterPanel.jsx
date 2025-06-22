@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel, Collapse } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import DatePickers from './filters/DatePickers';
 import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
@@ -22,7 +22,8 @@ const FilterPanel = ({
     availableBillers,
     showMoreOptions,
     setShowMoreOptions,
-}) => {    // Check if any advanced options are active
+}) => {    
+    // Check if any advanced options are active
     const hasActiveAdvancedOptions = useMemo(() => {
         return (
             filters.flow !== '' ||
@@ -76,7 +77,8 @@ const FilterPanel = ({
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={shouldShowOptions}                        onChange={(e) => {
+                        checked={shouldShowOptions}                        
+                        onChange={(e) => {
                             const isChecked = e.target.checked;
                             setShowMoreOptions(isChecked);
                             sessionStorage.setItem('showMoreOptions', JSON.stringify(isChecked));

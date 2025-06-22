@@ -316,21 +316,20 @@ const Home = () => {
 
     useEffect(() => {
         sessionStorage.setItem('sortModel', JSON.stringify(sortModel));
-    }, [sortModel]);    
-    
+    }, [sortModel]);
+
     const clearFilters = () => {
         setFilters(defaultFilters);
         filterParamRef.current = defaultFilters;
         handleDateRangeChange([null, null]);
         setDateMode('Date Range');
         handleIncludeArchivedChange(false); // Reset to show only non-archived
-        setPage(0); // Reset pagination
-        setPageSize(DEFAULT_PAGE_SIZE); // Reset page size
+        setPage(0);
+        setPageSize(DEFAULT_PAGE_SIZE);
         setColumnVisibilityModel(getInitialColumnVisibilityModel());
         setSortModel([]);
-        setShowMoreOptions(false); // Reset show more options
+        setShowMoreOptions(false);
         setResetFlag(flag => !flag); // Toggle flag to trigger effect
-        // Save cleared filters, includeArchived, dateRange, dateMode, page, pageSize, and showMoreOptions to session storage
         sessionStorage.setItem('filters', JSON.stringify(defaultFilters));
         sessionStorage.setItem('includeArchived', JSON.stringify(false));
         sessionStorage.setItem('dateRange', JSON.stringify([null, null]));
@@ -393,7 +392,8 @@ const Home = () => {
 
     return (
         <Box display="flex" gap="20px" padding="15px">
-            {/* Filter Panel */}            <FilterPanel
+            {/* Filter Panel */}            
+            <FilterPanel
                 filters={filters}
                 dateRange={dateRange}
                 dateMode={dateMode}
