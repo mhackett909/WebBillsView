@@ -150,6 +150,17 @@ const Home = () => {
     const [availableBillers, setAvailableBillers] = useState([]);
     const [stats, setStats] = useState(null);
     const [resetFlag, setResetFlag] = useState(false);
+    const [showMoreOptions, setShowMoreOptions] = useState(() => {
+        const stored = sessionStorage.getItem('showMoreOptions');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+        return false;
+    });
     const filterParamRef = useRef(getInitialFilters());
     const dateRangeRef = useRef(getInitialDateRange());
     const includeArchivedRef = useRef(getInitialIncludeArchived());
@@ -302,6 +313,7 @@ const Home = () => {
     useEffect(() => {
         sessionStorage.setItem('columnVisibilityModel', JSON.stringify(columnVisibilityModel));
     }, [columnVisibilityModel]);
+
     useEffect(() => {
         sessionStorage.setItem('sortModel', JSON.stringify(sortModel));
     }, [sortModel]);
@@ -312,12 +324,12 @@ const Home = () => {
         handleDateRangeChange([null, null]);
         setDateMode('Date Range');
         handleIncludeArchivedChange(false); // Reset to show only non-archived
-        setPage(0); // Reset pagination
-        setPageSize(DEFAULT_PAGE_SIZE); // Reset page size
+        setPage(0);
+        setPageSize(DEFAULT_PAGE_SIZE);
         setColumnVisibilityModel(getInitialColumnVisibilityModel());
         setSortModel([]);
+        setShowMoreOptions(false);
         setResetFlag(flag => !flag); // Toggle flag to trigger effect
-        // Save cleared filters, includeArchived, dateRange, dateMode, page, and pageSize to session storage
         sessionStorage.setItem('filters', JSON.stringify(defaultFilters));
         sessionStorage.setItem('includeArchived', JSON.stringify(false));
         sessionStorage.setItem('dateRange', JSON.stringify([null, null]));
@@ -326,10 +338,10 @@ const Home = () => {
         sessionStorage.setItem('pageSize', JSON.stringify(DEFAULT_PAGE_SIZE));
         sessionStorage.setItem('columnVisibilityModel', JSON.stringify(getInitialColumnVisibilityModel()));
         sessionStorage.setItem('sortModel', JSON.stringify([]));
+        sessionStorage.setItem('showMoreOptions', JSON.stringify(false));
         loadEntries();
         loadStats();
     };
-
 
     // Only run loadEntries on mount
     useEffect(() => {
@@ -355,7 +367,6 @@ const Home = () => {
         // eslint-disable-next-line
     }, []);
 
-
     // Fetch entries whenever page, pageSize, or sortModel changes
     useEffect(() => {
         loadEntries();
@@ -379,7 +390,6 @@ const Home = () => {
         { field: 'archived', headerName: 'Archived', width: 100 },
     ];
 
-
     return (
         <Box display="flex" gap="20px" padding="15px">
             {/* Filter Panel */}
@@ -395,6 +405,8 @@ const Home = () => {
                 filterBills={filterBills}
                 clearFilters={clearFilters}
                 availableBillers={availableBillers}
+                showMoreOptions={showMoreOptions}
+                setShowMoreOptions={setShowMoreOptions}
             />
             <Box flexGrow={1}>
                 {/* Tabs for switching between Data Table and Statistics */}
