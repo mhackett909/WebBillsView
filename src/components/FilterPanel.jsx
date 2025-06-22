@@ -48,8 +48,8 @@ const FilterPanel = ({
 
     const disableSearch = amountRangeError || dateRangeError;    return (
         <Box className="filters-panel" width={width} minWidth="800px">            
-        <Box display="flex" alignItems="flex-start">                
-            <Box display="flex" gap="15px" alignItems="flex-start">                
+        <Box display="flex" alignItems="flex-start" justifyContent="space-between" width="100%">                
+            <Box display="flex" gap="15px" alignItems="flex-start" flex="1">                
                 <Box display="flex" flexDirection="column" gap="8px">
                         <InvoiceSearch
                             invoice={filters.invoice}
@@ -81,7 +81,8 @@ const FilterPanel = ({
                         dateMode={dateMode}
                         setDateMode={setDateMode}
                     />
-                </Box>                  <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end" justifyContent="center" sx={{ minWidth: '160px' }}>
+                </Box>                  
+                <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end" justifyContent="center" sx={{ width: '23.5%', flexShrink: 0 }}>
                     <FilterButtons
                         filterBills={filterBills}
                         clearFilters={clearFilters}
