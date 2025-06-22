@@ -114,11 +114,12 @@ const Archives = () => {
                   </TableRow>
                 ) : (archivedBills.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((bill) => (
                     <TableRow key={bill.id}>
-                      <TableCell style={{ display: 'none' }}>{bill.id}</TableCell>                      
+                      <TableCell style={{ display: 'none' }}>{bill.id}</TableCell>
                       <TableCell sx={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         <Link
                           component={RouterLink}
                           to={`/entities/${bill.id}`}
+                          aria-label={`View details for ${bill.name}`}
                           sx={{ 
                             color: 'primary.main', 
                             textDecoration: 'underline', 
