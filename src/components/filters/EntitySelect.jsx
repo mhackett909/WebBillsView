@@ -16,7 +16,8 @@ const EntitySelect = ({ billers, selectedBillers, handleFilterChange }) => {
                 renderValue={(selected) =>
                     selected.length === 0 ? (
                         <span style={{ color: 'rgba(0, 0, 0, 0.54)' }}>Select Entities</span>
-                    ) : (                        <Box sx={{ 
+                    ) : (
+                    <Box sx={{ 
                             display: 'flex', 
                             flexWrap: 'wrap', 
                             gap: 0.5,

@@ -50,7 +50,6 @@ const CheckboxGroup = ({ legend, options, selectedValue, onChange, row = false }
                     {legend}
                 </FormLabel>
                 <FormGroup 
-                    row={true}
                     sx={{ 
                         width: '100%',
                         display: 'flex',
