@@ -6,11 +6,42 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Vertical tabs styling */
+.main-tabs {
+    border: 1px solid #90caf9;
+    border-radius: 8px 0px 0px 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .main-tabs .MuiTab-root {
-    border-radius: 4px 4px 0px 0px;
-    transition: all 0.3s; /* Smooth transition for hover and selection */
+    border-radius: 0px;
+    transition: all 0.3s;
+    min-height: 60px;
 }
 
 .main-tabs .Mui-selected {
-    background-color: #ccc; /* Set background color to #ccc for selected tab */
+    background-color: #ccc;
+}
+
+/* Remove the Material-UI indicator (blue line) for vertical tabs */
+.main-tabs .MuiTabs-indicator {
+    display: none;
+}
+
+/* Content area styling to connect with tabs */
+.tabs-content-area {
+    border: 1px solid #90caf9;
+    border-left: none;
+    border-radius: 0px 8px 8px 0px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Override the tabs-container styling when inside tabs-content-area */
+.tabs-content-area .tabs-container {
+    border: none;
+    border-radius: 0px;
+    box-shadow: none;
+    background-color: transparent;
 }

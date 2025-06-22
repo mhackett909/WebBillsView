@@ -1,10 +1,9 @@
 import { Box, Checkbox, FormControlLabel, Collapse } from '@mui/material';
 import { useMemo } from 'react';
 import DatePickers from './filters/DatePickers';
-import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
 import EntitySelect from './filters/EntitySelect';
-import CheckBoxControls from './filters/CheckBoxControls';
+import ShowMoreControls from './filters/ShowMoreControls';
 import FilterButtons from './filters/FilterButtons';
 import '../styles/filters.css';
 
@@ -22,18 +21,8 @@ const FilterPanel = ({
     availableBillers,
     showMoreOptions,
     setShowMoreOptions,
-}) => {    
-    // Check if any advanced options are active
-    const hasActiveAdvancedOptions = useMemo(() => {
-        return (
-            filters.flow !== '' ||
-            filters.status !== '' ||
-            includeArchived !== false
-        );
-    }, [filters.flow, filters.status, includeArchived]);
-
-    // Auto-expand if any advanced options are active
-    const shouldShowOptions = showMoreOptions || hasActiveAdvancedOptions;
+}) => {
+    const shouldShowOptions = showMoreOptions;
 
     // Validation for AmountRange
     const amountRangeError = useMemo(() => {
@@ -55,52 +44,55 @@ const FilterPanel = ({
     }, [dateMode, dateRange]);
 
     const disableSearch = amountRangeError || dateRangeError;
-
     return (
-        <Box className="filters-panel">
-            <InvoiceSearch
-                invoice={filters.invoice}
-                handleFilterChange={handleFilterChange}
-            />
-            <EntitySelect
-                billers={availableBillers}
-                selectedBillers={filters.biller}
-                handleFilterChange={handleFilterChange}
-            />
-            <DatePickers 
-                dateRange={dateRange} 
-                setDateRange={setDateRange}
-                dateMode={dateMode}
-                setDateMode={setDateMode}
-            />
-            <AmountRange filters={filters} handleFilterChange={handleFilterChange} />            
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={shouldShowOptions}
-                        onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            setShowMoreOptions(isChecked);
-                            sessionStorage.setItem('showMoreOptions', JSON.stringify(isChecked));
-                        }}
-                        size="small"
+        <Box className="filters-panel" minWidth="800px">
+            <Box display="flex" alignItems="flex-start" width="100%">
+                <Box display="flex" gap="15px" alignItems="flex-start" sx={{ minWidth: 'fit-content' }}>     
+                    <Box display="flex" flexDirection="column" gap="8px" sx={{ minWidth: '200px', maxWidth: '200px' }}>
+                        <InvoiceSearch
+                            invoice={filters.invoice}
+                            handleFilterChange={handleFilterChange}
+                        />
+                        <EntitySelect
+                            billers={availableBillers}
+                            selectedBillers={filters.biller}
+                            handleFilterChange={handleFilterChange}
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={shouldShowOptions}
+                                    onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        setShowMoreOptions(isChecked);
+                                        sessionStorage.setItem('showMoreOptions', JSON.stringify(isChecked));
+                                    }}
+                                    size="small"
+                                />
+                            }
+                            label="Show more options"
+                        />
+                    </Box>
+                    <DatePickers 
+                        dateRange={dateRange} 
+                        setDateRange={setDateRange}
+                        dateMode={dateMode}
+                        setDateMode={setDateMode}
+                    />                </Box>                  
+                    <FilterButtons
+                        filterBills={filterBills}
+                        clearFilters={clearFilters}
+                        disableSearch={disableSearch}
                     />
-                }
-                label="Show more options"
-            />
+            </Box>
             <Collapse in={shouldShowOptions}>
-                <CheckBoxControls
+                <ShowMoreControls
                     filters={filters}
                     handleFilterChange={handleFilterChange}
                     includeArchived={includeArchived}
                     setIncludeArchived={setIncludeArchived}
                 />
             </Collapse>
-            <FilterButtons
-                filterBills={filterBills}
-                clearFilters={clearFilters}
-                disableSearch={disableSearch}
-            />
         </Box>
     );
 };
