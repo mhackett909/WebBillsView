@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert, Link } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
 import { getBills, editBill } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
@@ -116,6 +116,7 @@ const Archives = () => {
                     <TableRow key={bill.id}>
                       <TableCell style={{ display: 'none' }}>{bill.id}</TableCell>                      <TableCell sx={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         <Link
+                          component={RouterLink}
                           to={`/entities/${bill.id}`}
                           sx={{ 
                             color: 'primary.main', 
