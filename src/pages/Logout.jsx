@@ -20,6 +20,7 @@ const Logout = () => {
     sessionStorage.removeItem('pageSize');
     sessionStorage.removeItem('columnVisibilityModel');
     sessionStorage.removeItem('sortModel');
+    sessionStorage.removeItem('showMoreOptions');
     navigate('/', { state: { showLogoutSnackbar: true }, replace: true });
   }, [navigate, setJwt, setUsername]);
 
