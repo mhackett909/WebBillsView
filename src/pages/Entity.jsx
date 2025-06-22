@@ -92,10 +92,12 @@ const Entity = () => {
       ) : error ? (
         <Alert severity="error">{error}</Alert>
       ) : (
-        <>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-            <Typography variant="h4">
-              Entity: {bill?.name}
+        <><Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+            <Typography variant="h4" align="center" sx={{ flexGrow: 1 }}>
+              <span style={{ 
+                fontWeight: 'bold',
+                letterSpacing: '0.5px'
+              }}>{bill?.name}</span>
             </Typography>
             <Button
               variant="outlined"
@@ -117,7 +119,6 @@ const Entity = () => {
             </Alert>
           )}
           <Paper sx={{ p: 3, mb: 4, position: 'relative' }} elevation={3}>
-            <Typography variant="h6" mb={2} align="center">Invoices</Typography>
             <Box display="flex" justifyContent="flex-start" mb={2}>
               <Button
                 variant="text"

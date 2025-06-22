@@ -1,5 +1,5 @@
-import { Box } from '@mui/material';
-import { useMemo } from 'react';
+import { Box, Checkbox, FormControlLabel, Collapse } from '@mui/material';
+import { useMemo, useState } from 'react';
 import DatePickers from './filters/DatePickers';
 import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
@@ -21,6 +21,30 @@ const FilterPanel = ({
     clearFilters,
     availableBillers,
 }) => {
+    // Check if any advanced options are active
+    const hasActiveAdvancedOptions = useMemo(() => {
+        return (
+            filters.flow !== '' ||
+            filters.status !== '' ||
+            includeArchived !== false
+        );
+    }, [filters.flow, filters.status, includeArchived]);
+
+    const [showMoreOptions, setShowMoreOptions] = useState(() => {
+        const stored = sessionStorage.getItem('showMoreOptions');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                // Ignore parse errors
+            }
+        }
+        return false;
+    });
+
+    // Auto-expand if any advanced options are active
+    const shouldShowOptions = showMoreOptions || hasActiveAdvancedOptions;
+
     // Validation for AmountRange
     const amountRangeError = useMemo(() => {
         return (
@@ -59,13 +83,28 @@ const FilterPanel = ({
                 dateMode={dateMode}
                 setDateMode={setDateMode}
             />
-            <AmountRange filters={filters} handleFilterChange={handleFilterChange} />
-            <CheckBoxControls
-                filters={filters}
-                handleFilterChange={handleFilterChange}
-                includeArchived={includeArchived}
-                setIncludeArchived={setIncludeArchived}
+            <AmountRange filters={filters} handleFilterChange={handleFilterChange} />            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={shouldShowOptions}
+                        onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setShowMoreOptions(isChecked);
+                            sessionStorage.setItem('showMoreOptions', JSON.stringify(isChecked));
+                        }}
+                        size="small"
+                    />
+                }
+                label="Show more options"
             />
+            <Collapse in={shouldShowOptions}>
+                <CheckBoxControls
+                    filters={filters}
+                    handleFilterChange={handleFilterChange}
+                    includeArchived={includeArchived}
+                    setIncludeArchived={setIncludeArchived}
+                />
+            </Collapse>
             <FilterButtons
                 filterBills={filterBills}
                 clearFilters={clearFilters}
