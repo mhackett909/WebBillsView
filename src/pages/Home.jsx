@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 import { fetchEntries, getBills, getStats } from '../utils/BillsApiUtil';
+import DEFAULT_PAGE_SIZE from '../utils/Constants';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -101,7 +102,7 @@ const Home = () => {
             const parsed = parseInt(stored, 10);
             if (!isNaN(parsed)) return parsed;
         }
-        return 100;
+        return DEFAULT_PAGE_SIZE;
     };
 
     const getInitialColumnVisibilityModel = () => {
@@ -312,7 +313,7 @@ const Home = () => {
         setDateMode('Date Range');
         handleIncludeArchivedChange(false); // Reset to show only non-archived
         setPage(0); // Reset pagination
-        setPageSize(100); // Reset page size
+        setPageSize(DEFAULT_PAGE_SIZE); // Reset page size
         setColumnVisibilityModel(getInitialColumnVisibilityModel());
         setSortModel([]);
         setResetFlag(flag => !flag); // Toggle flag to trigger effect
@@ -322,7 +323,7 @@ const Home = () => {
         sessionStorage.setItem('dateRange', JSON.stringify([null, null]));
         sessionStorage.setItem('dateMode', JSON.stringify('Date Range'));
         sessionStorage.setItem('page', JSON.stringify(0));
-        sessionStorage.setItem('pageSize', JSON.stringify(100));
+        sessionStorage.setItem('pageSize', JSON.stringify(DEFAULT_PAGE_SIZE));
         sessionStorage.setItem('columnVisibilityModel', JSON.stringify(getInitialColumnVisibilityModel()));
         sessionStorage.setItem('sortModel', JSON.stringify([]));
         loadEntries();

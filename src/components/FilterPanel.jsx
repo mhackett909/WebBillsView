@@ -83,7 +83,8 @@ const FilterPanel = ({
                 dateMode={dateMode}
                 setDateMode={setDateMode}
             />
-            <AmountRange filters={filters} handleFilterChange={handleFilterChange} />            <FormControlLabel
+            <AmountRange filters={filters} handleFilterChange={handleFilterChange} />            
+            <FormControlLabel
                 control={
                     <Checkbox
                         checked={shouldShowOptions}
