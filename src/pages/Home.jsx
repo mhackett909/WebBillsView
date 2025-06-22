@@ -392,7 +392,7 @@ const Home = () => {
 
     return (
         <Box display="flex" gap="20px" padding="15px">
-            {/* Filter Panel */}            
+            {/* Filter Panel */}
             <FilterPanel
                 filters={filters}
                 dateRange={dateRange}

@@ -77,7 +77,7 @@ const FilterPanel = ({
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={shouldShowOptions}                        
+                        checked={shouldShowOptions}
                         onChange={(e) => {
                             const isChecked = e.target.checked;
                             setShowMoreOptions(isChecked);
