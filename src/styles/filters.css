@@ -33,6 +33,13 @@
     background-color: rgb(25, 118, 210);
     color: white;
     transition: background-color 0.3s, color 0.3s;
+    max-width: 90px;
+}
+
+.chip-style.MuiChip-root .MuiChip-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .chip-style.MuiChip-root:hover {

@@ -21,7 +21,6 @@ const FilterPanel = ({
     availableBillers,
     showMoreOptions,
     setShowMoreOptions,
-    width,
 }) => {
     const shouldShowOptions = showMoreOptions;
 
@@ -46,10 +45,10 @@ const FilterPanel = ({
 
     const disableSearch = amountRangeError || dateRangeError;
     return (
-        <Box className="filters-panel" width={width} minWidth="800px">
+        <Box className="filters-panel" minWidth="800px">
             <Box display="flex" alignItems="flex-start" width="100%">
                 <Box display="flex" gap="15px" alignItems="flex-start" sx={{ minWidth: 'fit-content' }}>     
-                    <Box display="flex" flexDirection="column" gap="8px" sx={{ minWidth: '200px' }}>
+                    <Box display="flex" flexDirection="column" gap="8px" sx={{ minWidth: '200px', maxWidth: '200px' }}>
                         <InvoiceSearch
                             invoice={filters.invoice}
                             handleFilterChange={handleFilterChange}
