@@ -8,8 +8,6 @@ import DataTable from '../components/DataTable';
 
 const columns = [
   { field: 'invoiceId', headerName: 'Invoice #', width: 100 },
-  { field: 'entryId', headerName: 'Entry ID', width: 100 },
-  { field: 'billId', headerName: 'Bill ID', width: 100 },
   { field: 'name', headerName: 'Entity', width: 250 },
   { field: 'date', headerName: 'Date', width: 150 },
   { field: 'flow', headerName: 'Flow', width: 150 },
@@ -94,8 +92,16 @@ const Entity = () => {
       ) : (
         <>
           <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-            <Typography variant="h4">
-              Entity: {bill?.name}
+            <Typography 
+              variant="h4" 
+              align="center" 
+              sx={{ 
+                flexGrow: 1,
+                fontWeight: 'bold',
+                letterSpacing: '0.5px'
+              }}
+            >
+              {bill?.name}
             </Typography>
             <Button
               variant="outlined"
@@ -117,7 +123,6 @@ const Entity = () => {
             </Alert>
           )}
           <Paper sx={{ p: 3, mb: 4, position: 'relative' }} elevation={3}>
-            <Typography variant="h6" mb={2} align="center">Invoices</Typography>
             <Box display="flex" justifyContent="flex-start" mb={2}>
               <Button
                 variant="text"

@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 import { fetchEntries, getBills, getStats } from '../utils/BillsApiUtil';
+import DEFAULT_PAGE_SIZE from '../utils/Constants';
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -101,7 +102,7 @@ const Home = () => {
             const parsed = parseInt(stored, 10);
             if (!isNaN(parsed)) return parsed;
         }
-        return 25;
+        return DEFAULT_PAGE_SIZE;
     };
 
     const getInitialColumnVisibilityModel = () => {
@@ -114,8 +115,6 @@ const Home = () => {
             }
         }
         return {
-            billId: false,
-            entryId: false,
             invoiceId: true,
             name: true,
             date: true,
@@ -314,7 +313,7 @@ const Home = () => {
         setDateMode('Date Range');
         handleIncludeArchivedChange(false); // Reset to show only non-archived
         setPage(0); // Reset pagination
-        setPageSize(25); // Reset page size
+        setPageSize(DEFAULT_PAGE_SIZE); // Reset page size
         setColumnVisibilityModel(getInitialColumnVisibilityModel());
         setSortModel([]);
         setResetFlag(flag => !flag); // Toggle flag to trigger effect
@@ -324,7 +323,7 @@ const Home = () => {
         sessionStorage.setItem('dateRange', JSON.stringify([null, null]));
         sessionStorage.setItem('dateMode', JSON.stringify('Date Range'));
         sessionStorage.setItem('page', JSON.stringify(0));
-        sessionStorage.setItem('pageSize', JSON.stringify(25));
+        sessionStorage.setItem('pageSize', JSON.stringify(DEFAULT_PAGE_SIZE));
         sessionStorage.setItem('columnVisibilityModel', JSON.stringify(getInitialColumnVisibilityModel()));
         sessionStorage.setItem('sortModel', JSON.stringify([]));
         loadEntries();
@@ -370,8 +369,6 @@ const Home = () => {
 
     const columns = [
         { field: 'invoiceId', headerName: 'Invoice #', width: 100 },
-        { field: 'entryId', headerName: 'Entry ID', width: 100, hide: true },
-        { field: 'billId', headerName: 'Bill ID', width: 100, hide: true },
         { field: 'name', headerName: 'Entity', width: 250 },
         { field: 'date', headerName: 'Date', width: 150 },
         { field: 'flow', headerName: 'Flow', width: 150 },
