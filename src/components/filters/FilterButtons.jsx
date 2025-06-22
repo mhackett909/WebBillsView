@@ -1,12 +1,13 @@
 import { Box, Button } from '@mui/material';
 
 const FilterButtons = ({ filterBills, clearFilters, disableSearch }) => (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', pl: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
         <Button 
             variant="outlined" 
             color="primary" 
             onClick={filterBills}
-            sx={{ borderWidth: 2, display: 'block', width: '93%', mb: 1 , ml: 2 }}
+            fullWidth
+            sx={{ borderWidth: 2, mb: 1 }}
             disabled={disableSearch}
         >
             Search
@@ -15,7 +16,8 @@ const FilterButtons = ({ filterBills, clearFilters, disableSearch }) => (
             variant="outlined" 
             color="secondary" 
             onClick={clearFilters}
-            sx={{ borderWidth: 2, display: 'block', width: '93%', ml: 2 }}
+            fullWidth
+            sx={{ borderWidth: 2 }}
         >
             Clear Filters
         </Button>
