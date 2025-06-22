@@ -1,11 +1,9 @@
 import { Box, Checkbox, FormControlLabel, Collapse } from '@mui/material';
 import { useMemo } from 'react';
 import DatePickers from './filters/DatePickers';
-import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
 import EntitySelect from './filters/EntitySelect';
 import CheckBoxControls from './filters/CheckBoxControls';
-import CheckboxGroup from './filters/CheckboxGroup';
 import FilterButtons from './filters/FilterButtons';
 import '../styles/filters.css';
 
@@ -46,9 +44,11 @@ const FilterPanel = ({
         );
     }, [dateMode, dateRange]);
 
-    const disableSearch = amountRangeError || dateRangeError;    return (
-        <Box className="filters-panel" width={width} minWidth="800px">              
-        <Box display="flex" alignItems="flex-start" width="100%">             <Box display="flex" gap="15px" alignItems="flex-start" sx={{ minWidth: 'fit-content' }}>                
+    const disableSearch = amountRangeError || dateRangeError;
+    return (
+        <Box className="filters-panel" width={width} minWidth="800px">
+        <Box display="flex" alignItems="flex-start" width="100%">
+            <Box display="flex" gap="15px" alignItems="flex-start" sx={{ minWidth: 'fit-content' }}>     
                 <Box display="flex" flexDirection="column" gap="8px" sx={{ minWidth: '200px' }}>
                         <InvoiceSearch
                             invoice={filters.invoice}
@@ -87,60 +87,12 @@ const FilterPanel = ({
                     />
             </Box>
             <Collapse in={shouldShowOptions}>
-                <Box sx={{ pt: 0.5, maxWidth: '100%', overflow: 'hidden' }}>
-                    {/* Top row: AmountRange and Status */}
-                    <Box sx={{ display: 'flex', gap: 1, mb: 0.5, width: '100%' }}>
-                        <Box sx={{ flex: 1 }}>
-                            <AmountRange filters={filters} handleFilterChange={handleFilterChange} />
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex' }}>
-                            <CheckboxGroup
-                                legend="Status"
-                                options={[
-                                    { value: 'paid', label: 'Paid' },
-                                    { value: 'unpaid', label: 'Unpaid' },
-                                    { value: 'overpaid', label: 'Overpaid' },
-                                    { value: 'partial', label: 'Partial' },
-                                ]}
-                                selectedValue={filters.status || ''}
-                                onChange={(value) => handleFilterChange('status', value)}
-                            />
-                        </Box>
-                    </Box>
-                    {/* Bottom row: Flow and Archives */}
-                    <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
-                        <Box sx={{ flex: 1, display: 'flex' }}>
-                            <CheckboxGroup
-                                legend="Flow"
-                                options={[
-                                    { value: 'OUTGOING', label: 'Expense' },
-                                    { value: 'INCOMING', label: 'Income' },
-                                ]}
-                                selectedValue={filters.flow || ''}
-                                onChange={(value) => handleFilterChange('flow', value)}
-                            />
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex' }}>
-                            <CheckboxGroup
-                                legend="Archives"
-                                options={[
-                                    { value: 'include', label: 'Include' },
-                                    { value: 'only', label: 'Only' },
-                                ]}
-                                selectedValue={includeArchived === true ? 'include' : includeArchived === 'only' ? 'only' : ''}
-                                onChange={(value) => {
-                                    if (value === 'include') {
-                                        setIncludeArchived(true);
-                                    } else if (value === 'only') {
-                                        setIncludeArchived('only');
-                                    } else {
-                                        setIncludeArchived(false);
-                                    }
-                                }}
-                            />
-                        </Box>
-                    </Box>
-                </Box>
+                <CheckBoxControls
+                    filters={filters}
+                    handleFilterChange={handleFilterChange}
+                    includeArchived={includeArchived}
+                    setIncludeArchived={setIncludeArchived}
+                />
             </Collapse>
         </Box>
     );

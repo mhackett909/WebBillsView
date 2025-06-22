@@ -1,8 +1,9 @@
 import { Box, Select, MenuItem, Checkbox, Chip } from '@mui/material';
-import '../../styles/global.css'; // Import the global CSS file
-import '../../styles/filters.css'; // Import the CSS file
+import '../../styles/global.css';
+import '../../styles/filters.css';
 
-const EntitySelect = ({ billers, selectedBillers, handleFilterChange }) => {    return (
+const EntitySelect = ({ billers, selectedBillers, handleFilterChange }) => {
+    return (
         <Box className="input-border" sx={{ minWidth: '200px' }}>
             <Select
                 labelId="biller-label"

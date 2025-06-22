@@ -388,7 +388,9 @@ const Home = () => {
         { field: 'balance', headerName: 'Balance', width: 130 },
         { field: 'services', headerName: 'Description', width: 470 },
         { field: 'archived', headerName: 'Archived', width: 100 },
-    ];    return (
+    ];
+
+    return (
         <Box display="flex" flexDirection="column" gap="20px" padding="15px">
             {/* Filter Panel */}
             <Box display="flex" justifyContent="center">
