@@ -33,7 +33,7 @@
     background-color: rgb(25, 118, 210);
     color: white;
     transition: background-color 0.3s, color 0.3s;
-    max-width: 90px;
+    max-width: 150px;
 }
 
 .chip-style.MuiChip-root .MuiChip-label {
@@ -42,8 +42,25 @@
     white-space: nowrap;
 }
 
+.chip-style.MuiChip-root .MuiChip-deleteIcon {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+}
+
+.chip-style.MuiChip-root .MuiChip-deleteIcon:hover {
+    color: white;
+}
+
 .chip-style.MuiChip-root:hover {
     background-color: #ccc;
+    color: black;
+}
+
+.chip-style.MuiChip-root:hover .MuiChip-deleteIcon {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.chip-style.MuiChip-root:hover .MuiChip-deleteIcon:hover {
     color: black;
 }
 

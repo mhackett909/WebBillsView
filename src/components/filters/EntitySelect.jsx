@@ -22,23 +22,31 @@ const EntitySelect = ({ billers, selectedBillers, handleFilterChange }) => {
                             gap: 0.5,
                             maxWidth: '100%',
                             overflow: 'hidden'
-                        }}>
-                            {selected.map((value) => (
-                                <Tooltip key={value} title={value} arrow placement="top">
-                                    <Chip
-                                        label={value}
-                                        className="chip-style"
-                                        size="small"
-                                        sx={{
-                                            maxWidth: '90px',
-                                            '& .MuiChip-label': {
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap'
-                                            }
-                                        }}
-                                    />
-                                </Tooltip>
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        >{selected.map((value) => (
+                            <Tooltip key={value} title={value} arrow placement="top">
+                                <Chip
+                                    label={value}
+                                    className="chip-style"
+                                    size="small"
+                                    onClick={(e) => e.stopPropagation()}
+                                    onDelete={(e) => {
+                                        e.stopPropagation();
+                                        const newSelected = selected.filter(item => item !== value);
+                                        handleFilterChange('biller', newSelected);
+                                    }}
+                                    sx={{
+                                        maxWidth: '150px',
+                                        '& .MuiChip-label': {
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
+                                        }
+                                    }}
+                                />
+                            </Tooltip>
                             ))}
                         </Box>
                     )
