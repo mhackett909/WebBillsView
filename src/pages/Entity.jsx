@@ -91,7 +91,7 @@ const Entity = () => {
         <Alert severity="error">{error}</Alert>
       ) : (
         <>         
-        <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
             <Typography 
               variant="h4" 
               align="center" 
