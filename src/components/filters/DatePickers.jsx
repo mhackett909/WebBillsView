@@ -18,7 +18,8 @@ const DatePickers = ({ dateRange, setDateRange, dateMode, setDateMode }) => {
         } else {
             setDateRange([dateRange[0], null]);
         }
-    };    return (
+    };
+    return (
         <Box className="date-pickers" sx={{ minWidth: '320px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 {/* Dropdown to select Single Date or Date Range */}

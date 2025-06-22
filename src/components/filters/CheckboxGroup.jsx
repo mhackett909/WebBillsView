@@ -8,7 +8,9 @@ const CheckboxGroup = ({ legend, options, selectedValue, onChange, row = false }
         } else {
             onChange(value);
         }
-    };    return (        <Box 
+    };
+    return (
+        <Box 
             className="checkbox-container" 
             sx={{ 
                 width: '100%',
@@ -46,7 +48,8 @@ const CheckboxGroup = ({ legend, options, selectedValue, onChange, row = false }
                     }}
                 >
                     {legend}
-                </FormLabel>                <FormGroup 
+                </FormLabel>
+                <FormGroup 
                     row={true}
                     sx={{ 
                         width: '100%',
