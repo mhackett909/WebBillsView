@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import DatePickers from './filters/DatePickers';
 import InvoiceSearch from './filters/InvoiceSearch';
 import EntitySelect from './filters/EntitySelect';
-import CheckBoxControls from './filters/CheckBoxControls';
+import ShowMoreControls from './filters/ShowMoreControls';
 import FilterButtons from './filters/FilterButtons';
 import '../styles/filters.css';
 
@@ -86,7 +86,7 @@ const FilterPanel = ({
                     />
             </Box>
             <Collapse in={shouldShowOptions}>
-                <CheckBoxControls
+                <ShowMoreControls
                     filters={filters}
                     handleFilterChange={handleFilterChange}
                     includeArchived={includeArchived}

@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import AmountRange from './AmountRange';
 import CheckboxGroup from './CheckboxGroup';
 
-const CheckBoxControls = ({
+const ShowMoreControls = ({
     filters,
     handleFilterChange,
     includeArchived,
@@ -66,4 +66,4 @@ const CheckBoxControls = ({
     );
 };
 
-export default CheckBoxControls;
+export default ShowMoreControls;
