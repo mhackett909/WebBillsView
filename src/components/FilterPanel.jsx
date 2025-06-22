@@ -5,6 +5,7 @@ import AmountRange from './filters/AmountRange';
 import InvoiceSearch from './filters/InvoiceSearch';
 import EntitySelect from './filters/EntitySelect';
 import CheckBoxControls from './filters/CheckBoxControls';
+import CheckboxGroup from './filters/CheckboxGroup';
 import FilterButtons from './filters/FilterButtons';
 import '../styles/filters.css';
 
@@ -22,18 +23,9 @@ const FilterPanel = ({
     availableBillers,
     showMoreOptions,
     setShowMoreOptions,
-}) => {    
-    // Check if any advanced options are active
-    const hasActiveAdvancedOptions = useMemo(() => {
-        return (
-            filters.flow !== '' ||
-            filters.status !== '' ||
-            includeArchived !== false
-        );
-    }, [filters.flow, filters.status, includeArchived]);
-
-    // Auto-expand if any advanced options are active
-    const shouldShowOptions = showMoreOptions || hasActiveAdvancedOptions;
+    width,
+}) => {
+    const shouldShowOptions = showMoreOptions;
 
     // Validation for AmountRange
     const amountRangeError = useMemo(() => {
@@ -54,53 +46,105 @@ const FilterPanel = ({
         );
     }, [dateMode, dateRange]);
 
-    const disableSearch = amountRangeError || dateRangeError;
-
-    return (
-        <Box className="filters-panel">
-            <InvoiceSearch
-                invoice={filters.invoice}
-                handleFilterChange={handleFilterChange}
-            />
-            <EntitySelect
-                billers={availableBillers}
-                selectedBillers={filters.biller}
-                handleFilterChange={handleFilterChange}
-            />
-            <DatePickers 
-                dateRange={dateRange} 
-                setDateRange={setDateRange}
-                dateMode={dateMode}
-                setDateMode={setDateMode}
-            />
-            <AmountRange filters={filters} handleFilterChange={handleFilterChange} />            
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={shouldShowOptions}
-                        onChange={(e) => {
-                            const isChecked = e.target.checked;
-                            setShowMoreOptions(isChecked);
-                            sessionStorage.setItem('showMoreOptions', JSON.stringify(isChecked));
-                        }}
-                        size="small"
+    const disableSearch = amountRangeError || dateRangeError;    return (
+        <Box className="filters-panel" width={width} minWidth="800px">            
+        <Box display="flex" alignItems="flex-start">                
+            <Box display="flex" gap="15px" alignItems="flex-start">                
+                <Box display="flex" flexDirection="column" gap="8px">
+                        <InvoiceSearch
+                            invoice={filters.invoice}
+                            handleFilterChange={handleFilterChange}
+                        />
+                        <EntitySelect
+                            billers={availableBillers}
+                            selectedBillers={filters.biller}
+                            handleFilterChange={handleFilterChange}
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={shouldShowOptions}
+                                    onChange={(e) => {
+                                        const isChecked = e.target.checked;
+                                        setShowMoreOptions(isChecked);
+                                        sessionStorage.setItem('showMoreOptions', JSON.stringify(isChecked));
+                                    }}
+                                    size="small"
+                                />
+                            }
+                            label="Show more options"
+                        />
+                    </Box>
+                    <DatePickers 
+                        dateRange={dateRange} 
+                        setDateRange={setDateRange}
+                        dateMode={dateMode}
+                        setDateMode={setDateMode}
                     />
-                }
-                label="Show more options"
-            />
+                </Box>                  <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end" justifyContent="center" sx={{ minWidth: '160px' }}>
+                    <FilterButtons
+                        filterBills={filterBills}
+                        clearFilters={clearFilters}
+                        disableSearch={disableSearch}
+                    />
+                </Box>
+            </Box>
             <Collapse in={shouldShowOptions}>
-                <CheckBoxControls
-                    filters={filters}
-                    handleFilterChange={handleFilterChange}
-                    includeArchived={includeArchived}
-                    setIncludeArchived={setIncludeArchived}
-                />
+                <Box sx={{ pt: 0.5, maxWidth: '100%', overflow: 'hidden' }}>
+                    {/* Top row: AmountRange and Status */}
+                    <Box sx={{ display: 'flex', gap: 1, mb: 0.5, width: '100%' }}>
+                        <Box sx={{ flex: 1 }}>
+                            <AmountRange filters={filters} handleFilterChange={handleFilterChange} />
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex' }}>
+                            <CheckboxGroup
+                                legend="Status"
+                                options={[
+                                    { value: 'paid', label: 'Paid' },
+                                    { value: 'unpaid', label: 'Unpaid' },
+                                    { value: 'overpaid', label: 'Overpaid' },
+                                    { value: 'partial', label: 'Partial' },
+                                ]}
+                                selectedValue={filters.status || ''}
+                                onChange={(value) => handleFilterChange('status', value)}
+                            />
+                        </Box>
+                    </Box>
+                    {/* Bottom row: Flow and Archives */}
+                    <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
+                        <Box sx={{ flex: 1, display: 'flex' }}>
+                            <CheckboxGroup
+                                legend="Flow"
+                                options={[
+                                    { value: 'OUTGOING', label: 'Expense' },
+                                    { value: 'INCOMING', label: 'Income' },
+                                ]}
+                                selectedValue={filters.flow || ''}
+                                onChange={(value) => handleFilterChange('flow', value)}
+                            />
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex' }}>
+                            <CheckboxGroup
+                                legend="Archives"
+                                options={[
+                                    { value: 'include', label: 'Include' },
+                                    { value: 'only', label: 'Only' },
+                                ]}
+                                selectedValue={includeArchived === true ? 'include' : includeArchived === 'only' ? 'only' : ''}
+                                onChange={(value) => {
+                                    if (value === 'include') {
+                                        setIncludeArchived(true);
+                                    } else if (value === 'only') {
+                                        setIncludeArchived('only');
+                                    } else {
+                                        setIncludeArchived(false);
+                                    }
+                                }}
+                            />
+                        </Box>
+                    </Box>
+                </Box>
             </Collapse>
-            <FilterButtons
-                filterBills={filterBills}
-                clearFilters={clearFilters}
-                disableSearch={disableSearch}
-            />
         </Box>
     );
 };

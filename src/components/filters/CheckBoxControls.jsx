@@ -8,9 +8,14 @@ const CheckBoxControls = ({
     setIncludeArchived,
     setIncludeArchivedOnly,
 }) => (
-    <Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5, mb: 1}}>
-            <Box>
+    <Box sx={{ mt: 1, width: '100%' }}>        <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'row', 
+            gap: 1, 
+            width: '100%',
+            alignItems: 'stretch'
+        }}>
+            <Box sx={{ flex: 1, display: 'flex' }}>
                 <CheckboxGroup
                     legend="Flow"
                     options={[
@@ -20,31 +25,30 @@ const CheckBoxControls = ({
                     selectedValue={filters.flow || ''}
                     onChange={(value) => handleFilterChange('flow', value)}
                 />
-                <Box sx={{ mt: 1 }}>
-                    <CheckboxGroup
-                        legend="Archives"
-                        options={[
-                            { value: 'include', label: 'Include' },
-                            { value: 'only', label: 'Only' },
-                        ]}
-                        selectedValue={includeArchived === true ? 'include' : includeArchived === 'only' ? 'only' : ''}
-                        onChange={(value) => {
-                            if (value === 'include') {
-                                setIncludeArchived(true);
-                                if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(false);
-                            } else if (value === 'only') {
-                                setIncludeArchived('only');
-                                if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(true);
-                            } else {
-                                setIncludeArchived(false);
-                                if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(false);
-                            }
-                        }}
-                        row
-                    />
-                </Box>
             </Box>
-            <Box>
+            <Box sx={{ flex: 1, display: 'flex' }}>
+                <CheckboxGroup
+                    legend="Archives"
+                    options={[
+                        { value: 'include', label: 'Include' },
+                        { value: 'only', label: 'Only' },
+                    ]}
+                    selectedValue={includeArchived === true ? 'include' : includeArchived === 'only' ? 'only' : ''}
+                    onChange={(value) => {
+                        if (value === 'include') {
+                            setIncludeArchived(true);
+                            if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(false);
+                        } else if (value === 'only') {
+                            setIncludeArchived('only');
+                            if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(true);
+                        } else {
+                            setIncludeArchived(false);
+                            if (typeof setIncludeArchivedOnly === 'function') setIncludeArchivedOnly(false);
+                        }
+                    }}
+                />
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex' }}>
                 <CheckboxGroup
                     legend="Status"
                     options={[

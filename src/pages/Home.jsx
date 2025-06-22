@@ -388,61 +388,67 @@ const Home = () => {
         { field: 'balance', headerName: 'Balance', width: 130 },
         { field: 'services', headerName: 'Description', width: 470 },
         { field: 'archived', headerName: 'Archived', width: 100 },
-    ];
-
-    return (
-        <Box display="flex" gap="20px" padding="15px">
+    ];    return (
+        <Box display="flex" flexDirection="column" gap="20px" padding="15px">
             {/* Filter Panel */}
-            <FilterPanel
-                filters={filters}
-                dateRange={dateRange}
-                dateMode={dateMode}
-                includeArchived={includeArchived}
-                handleFilterChange={handleFilterChange}
-                setDateRange={handleDateRangeChange}
-                setDateMode={setDateMode}
-                setIncludeArchived={handleIncludeArchivedChange}
-                filterBills={filterBills}
-                clearFilters={clearFilters}
-                availableBillers={availableBillers}
-                showMoreOptions={showMoreOptions}
-                setShowMoreOptions={setShowMoreOptions}
-            />
-            <Box flexGrow={1}>
-                {/* Tabs for switching between Data Table and Statistics */}
-                <Tabs
-                    value={activeTab}
-                    onChange={handleTabChange}
-                    className="main-tabs"
-                >
-                    <Tab label="Invoices" />
-                    <Tab label="Stats" />
-                </Tabs>
-                {/* Render content based on the active tab */}
-                {activeTab === 0 && (
-                    <DataTable
-                        rows={entries}
-                        columns={columns}
-                        columnVisibilityModel={columnVisibilityModel}
-                        setColumnVisibilityModel={setColumnVisibilityModel}
-                        handleAdd={handleAdd}
-                        pagination
-                        paginationMode="server"
-                        page={page}
-                        onPageChange={handlePageChange}
-                        pageSize={pageSize}
-                        onPageSizeChange={handlePageSizeChange}
-                        rowCount={rowCount}
-                        sortingMode="server"
-                        sortingOrder={['asc', 'desc']}
-                        sortModel={sortModel}
-                        onSortModelChange={setSortModel}
-                        showGoToPage
-                    />
-                )}
-                {activeTab === 1 && (
-                    <Statistics stats={stats} />
-                )}
+            <Box display="flex" justifyContent="center">
+                <FilterPanel
+                    filters={filters}
+                    dateRange={dateRange}
+                    dateMode={dateMode}
+                    includeArchived={includeArchived}
+                    handleFilterChange={handleFilterChange}
+                    setDateRange={handleDateRangeChange}
+                    setDateMode={setDateMode}
+                    setIncludeArchived={handleIncludeArchivedChange}
+                    filterBills={filterBills}
+                    clearFilters={clearFilters}
+                    availableBillers={availableBillers}
+                    showMoreOptions={showMoreOptions}
+                    setShowMoreOptions={setShowMoreOptions}
+                />
+            </Box>            <Box width="100%">
+                {/* Content area with tabs on the left and content on the right */}
+                <Box display="flex" gap="20px">
+                    {/* Tabs positioned on the left */}
+                    <Tabs
+                        value={activeTab}
+                        onChange={handleTabChange}
+                        orientation="vertical"
+                        className="main-tabs"
+                        sx={{ minWidth: '120px' }}
+                    >
+                        <Tab label="Invoices" />
+                        <Tab label="Stats" />
+                    </Tabs>
+                    {/* Content area */}
+                    <Box flexGrow={1}>
+                        {activeTab === 0 && (
+                            <DataTable
+                                rows={entries}
+                                columns={columns}
+                                columnVisibilityModel={columnVisibilityModel}
+                                setColumnVisibilityModel={setColumnVisibilityModel}
+                                handleAdd={handleAdd}
+                                pagination
+                                paginationMode="server"
+                                page={page}
+                                onPageChange={handlePageChange}
+                                pageSize={pageSize}
+                                onPageSizeChange={handlePageSizeChange}
+                                rowCount={rowCount}
+                                sortingMode="server"
+                                sortingOrder={['asc', 'desc']}
+                                sortModel={sortModel}
+                                onSortModelChange={setSortModel}
+                                showGoToPage
+                            />
+                        )}
+                        {activeTab === 1 && (
+                            <Statistics stats={stats} />
+                        )}
+                    </Box>
+                </Box>
             </Box>
         </Box>
     );
