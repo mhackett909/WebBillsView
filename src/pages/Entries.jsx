@@ -396,7 +396,8 @@ const Entries = () => {
             {/* Payment Add/Edit Modal */}
             <Dialog open={modalOpen} onClose={handleCloseModal} maxWidth="xs" fullWidth>
                 <DialogTitle>{modalMode === 'add' ? 'Add Payment' : 'Edit Payment'}</DialogTitle>
-                <DialogContent>                    <TextField
+                <DialogContent>
+                    <TextField
                         margin="dense"
                         label="Payment Date"
                         name="date"
