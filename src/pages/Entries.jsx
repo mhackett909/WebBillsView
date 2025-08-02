@@ -408,6 +408,19 @@ const Entries = () => {
                         InputLabelProps={{ shrink: true }}
                         required
                     />
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        sx={{ mt: 1, mb: 1 }}
+                        onClick={() => {
+                            if (entry && entry.date) {
+                                setPaymentForm(prev => ({ ...prev, date: entry.date }));
+                            }
+                        }}
+                        disabled={!entry || !entry.date}
+                    >
+                        Use Invoice Date
+                    </Button>
                     <TextField
                         margin="dense"
                         label="Payment Amount"
