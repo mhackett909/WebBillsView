@@ -376,11 +376,25 @@ export const editEntry = async (entryData, token, refreshToken, onTokenRefresh, 
     }
 };
 
-export const getBills = async (token, refreshToken, onTokenRefresh, filter) => {
+export const getBills = async (token, refreshToken, onTokenRefresh, status, category, internal) => {
     try {
-        const url = filter
-            ? `/api/v1/bills?filter=${encodeURIComponent(filter)}`
-            : '/api/v1/bills';
+        let url = '/api/v1/bills';
+        const params = new URLSearchParams();
+        
+        if (status) {
+            params.append('status', status);
+        }
+        if (category) {
+            params.append('category', category);
+        }
+        if (internal !== undefined && internal !== null) {
+            params.append('internal', internal.toString());
+        }
+        
+        if (params.toString()) {
+            url += `?${params.toString()}`;
+        }
+        
         const response = await fetchWithAutoRefresh({
             url,
             options: { method: 'GET' },
@@ -404,11 +418,11 @@ export const getBills = async (token, refreshToken, onTokenRefresh, filter) => {
     }
 };
 
-export const getBillById = async (id, token, refreshToken, onTokenRefresh, filter) => {
+export const getBillById = async (id, token, refreshToken, onTokenRefresh, bypass) => {
     try {
         let url = `/api/v1/bills/${encodeURIComponent(id)}`;
-        if (filter) {
-            url += `?filter=${encodeURIComponent(filter)}`;
+        if (bypass) {
+            url += `?bypass=${encodeURIComponent(bypass)}`;
         }
         const response = await fetchWithAutoRefresh({
             url,
