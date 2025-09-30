@@ -191,6 +191,20 @@ const Statistics = ({ stats, renderInsights= true }) => {
                                     )}
                                 </CardContent>
                             </Card>
+                            <Card variant="outlined" sx={{ mt: 2 }}>
+                                <CardContent sx={{ textAlign: 'center' }}>
+                                    <Typography variant="subtitle2" color="success.main" sx={{ fontWeight: 700 }}>Top 5 Income Categories</Typography>
+                                    {top5(s.top5IncomeCategories).length > 0 ? (
+                                        top5(s.top5IncomeCategories).map(([category, amt]) => (
+                                            <Typography key={category}>
+                                                <span style={{ color: '#111' }}>{category ? category.charAt(0).toUpperCase() + category.slice(1).toLowerCase() : 'Unknown'}</span>: <span style={{ color: '#0288d1', fontWeight: 500 }}>{currency(amt)}</span>
+                                            </Typography>
+                                        ))
+                                    ) : (
+                                        <Typography color="text.secondary">No data available</Typography>
+                                    )}
+                                </CardContent>
+                            </Card>
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Card variant="outlined">
@@ -214,6 +228,20 @@ const Statistics = ({ stats, renderInsights= true }) => {
                                         top5(s.topExpenseTypes).map(([type, amt]) => (
                                             <Typography key={type}>
                                                 <span style={{ color: '#111' }}>{mapPaymentTypeMedium(type)}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
+                                            </Typography>
+                                        ))
+                                    ) : (
+                                        <Typography color="text.secondary">No data available</Typography>
+                                    )}
+                                </CardContent>
+                            </Card>
+                            <Card variant="outlined" sx={{ mt: 2 }}>
+                                <CardContent sx={{ textAlign: 'center' }}>
+                                    <Typography variant="subtitle2" color="primary.main" sx={{ fontWeight: 700 }}>Top 5 Expense Categories</Typography>
+                                    {top5(s.top5ExpenseCategories).length > 0 ? (
+                                        top5(s.top5ExpenseCategories).map(([category, amt]) => (
+                                            <Typography key={category}>
+                                                <span style={{ color: '#111' }}>{category ? category.charAt(0).toUpperCase() + category.slice(1).toLowerCase() : 'Unknown'}</span>: <span style={{ color: '#ed6c02', fontWeight: 500 }}>{currency(amt)}</span>
                                             </Typography>
                                         ))
                                     ) : (
