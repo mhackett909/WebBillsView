@@ -187,6 +187,27 @@ const DataTable = ({
                     ) : '',
             };
         }
+        // Internal column
+        if (col.field === 'internal') {
+            return {
+                ...col,
+                renderCell: (params) =>
+                    params.row.internal === true ? (
+                        <CheckCircleIcon color="success" titleAccess="Internal" />
+                    ) : '',
+            };
+        }
+        // Category column
+        if (col.field === 'category') {
+            return {
+                ...col,
+                renderCell: (params) => {
+                    const category = params.value;
+                    if (!category || typeof category !== 'string') return '';
+                    return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+                },
+            };
+        }
         // Balance column
         if (col.field === 'balance') {
             return {

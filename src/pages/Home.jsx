@@ -123,6 +123,8 @@ const Home = () => {
             status: true,
             balance: true,
             services: true,
+            category: true,
+            internal: true,
             archived: true,
         };
     };
@@ -386,7 +388,9 @@ const Home = () => {
         { field: 'amount', headerName: 'Amount', width: 130 },
         { field: 'status', headerName: 'Paid', width: 100 },
         { field: 'balance', headerName: 'Balance', width: 130 },
-        { field: 'services', headerName: 'Description', width: 470 },
+        { field: 'services', headerName: 'Description', width: 350 },
+        { field: 'category', headerName: 'Category', width: 150 },
+        { field: 'internal', headerName: 'Internal', width: 100 },
         { field: 'archived', headerName: 'Archived', width: 100 },
     ];
 
