@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material';
 
 const FilterButtons = ({ filterBills, clearFilters, disableSearch }) => (
-    <Box sx={{ width: '100%', pl: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+    <Box sx={{ width: '95%', pl: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
         <Button 
             variant="outlined" 
             color="primary" 
