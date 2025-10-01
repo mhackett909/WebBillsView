@@ -92,17 +92,31 @@ const Entity = () => {
       ) : (
         <>
           <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-            <Typography 
-              variant="h4" 
-              align="center" 
-              sx={{ 
-                flexGrow: 1,
-                fontWeight: 'bold',
-                letterSpacing: '0.5px'
-              }}
-            >
-              {bill?.name}
-            </Typography>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography 
+                variant="h4" 
+                align="center" 
+                sx={{ 
+                  fontWeight: 'bold',
+                  letterSpacing: '0.5px',
+                  mb: 1
+                }}
+              >
+                {bill?.name}
+              </Typography>
+              <Box display="flex" justifyContent="center" gap={2} mb={1}>
+                {bill?.category && (
+                  <Typography variant="body1" color="text.secondary">
+                    <strong>Category:</strong> {bill.category.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                  </Typography>
+                )}
+                {bill?.internal !== undefined && (
+                  <Typography variant="body1" color="text.secondary">
+                    <strong>Internal:</strong> {bill.internal ? 'Yes' : 'No'}
+                  </Typography>
+                )}
+              </Box>
+            </Box>
             <Button
               variant="outlined"
               color="secondary"
