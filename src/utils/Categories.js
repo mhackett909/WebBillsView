@@ -9,6 +9,7 @@ export const commonCategories = [
   'Donations',
   'Entertainment',
   'Financial',
+  'Friends / Family',
   'Fuel',
   'Groceries',
   'Healthcare',
