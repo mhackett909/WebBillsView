@@ -153,7 +153,6 @@ const Invoice = () => {
         amount: parseFloat(form.amount),
         date: form.date,
         entryId: parseInt(id, 10), // ensure id is an integer
-        flow: form.flow,
       };
       const result = await editEntry(entryData, jwt, refresh, handleTokenRefresh);
       if (result && result.entryId) {
@@ -406,7 +405,6 @@ const Invoice = () => {
                           date: form.date,
                           entryId: parseInt(id, 10),
                           recycle: true, // Pass recycle: true when deleting
-                          flow: form.flow,
                         };
                         const result = await editEntry(entryData, jwt, refresh, handleTokenRefresh);
                         if (result && result.entryId) {
