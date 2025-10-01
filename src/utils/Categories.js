@@ -1,23 +1,28 @@
 // Common categories for entities
 export const commonCategories = [
   'Uncategorized',
-  'Credit Cards',
+  'Auto Insurance',
+  'Auto Loan',
+  'Auto Repairs',
+  'Debt Payments',
   'Dining',
-  'Education',
+  'Donations',
   'Entertainment',
-  'Friends/Family',
-  'Gas',
+  'Financial',
+  'Friends / Family',
+  'Fuel',
   'Groceries',
   'Healthcare',
-  'Home Improvement',
+  'HOA / Taxes',
+  'Home Services',
   'Insurance',
-  'Personal Care',
+  'Mortgage / Rent',
+  'Personal Care / Fitness',
   'Shopping',
-  'Subscription Services',
-  'Technology',
-  'Transportation',
+  'Subscriptions',
   'Utilities'
 ];
+
 
 /**
  * Finds a category by name, ignoring case differences
