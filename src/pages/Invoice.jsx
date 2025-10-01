@@ -1,9 +1,10 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
-import { Box, TextField, Button, MenuItem, Typography, FormControl, InputLabel, Select, Snackbar, Alert } from '@mui/material';
+import { Box, TextField, Button, MenuItem, Typography, FormControl, InputLabel, Select, Snackbar, Alert, Checkbox, FormControlLabel } from '@mui/material';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { createEntry, getBills, createBill, fetchEntryById, editEntry, getBillById } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
+import { commonCategories, getDefaultCategory } from '../utils/Categories';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -26,6 +27,8 @@ const Invoice = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [newPartyOpen, setNewPartyOpen] = useState(false);
   const [newPartyName, setNewPartyName] = useState('');
+  const [newPartyCategory, setNewPartyCategory] = useState(getDefaultCategory());
+  const [newPartyInternal, setNewPartyInternal] = useState(false);
   const [partySnackbar, setPartySnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [creatingParty, setCreatingParty] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -120,6 +123,8 @@ const Invoice = () => {
         ...form,
         amount: parseFloat(form.amount),
         date: form.date,
+        // If the selected entity is internal, force flow to be 'expense'
+        flow: isSelectedPartyInternal() ? 'expense' : form.flow,
       };
       const result = await createEntry(entryData, jwt, refresh, handleTokenRefresh);
       if (result && result.entryId) {
@@ -148,6 +153,7 @@ const Invoice = () => {
         amount: parseFloat(form.amount),
         date: form.date,
         entryId: parseInt(id, 10), // ensure id is an integer
+        flow: form.flow,
       };
       const result = await editEntry(entryData, jwt, refresh, handleTokenRefresh);
       if (result && result.entryId) {
@@ -168,10 +174,14 @@ const Invoice = () => {
   const handleNewPartyOpen = () => {
     setNewPartyOpen(true);
     setNewPartyName('');
+    setNewPartyCategory(getDefaultCategory());
+    setNewPartyInternal(false);
   };
   const handleNewPartyClose = () => {
     setNewPartyOpen(false);
     setNewPartyName('');
+    setNewPartyCategory(getDefaultCategory());
+    setNewPartyInternal(false);
   };
 
   const handleNewPartySubmit = async (e) => {
@@ -179,7 +189,12 @@ const Invoice = () => {
     if (!newPartyName.trim()) return;
     setCreatingParty(true);
     try {
-      const billData = { name: newPartyName.trim(), status: 1 };
+      const billData = { 
+        name: newPartyName.trim(), 
+        status: 1,
+        category: newPartyCategory,
+        internal: newPartyInternal
+      };
       const result = await createBill(billData, jwt, refresh, handleTokenRefresh);
       if (result && result.id) {
         setParties((prev) => [...prev, result]);
@@ -204,6 +219,17 @@ const Invoice = () => {
   const handlePartySnackbarClose = (event, reason) => {
     if (reason === 'clickaway') return;
     setPartySnackbar((prev) => ({ ...prev, open: false }));
+  };
+
+  // Helper function to get the selected party
+  const getSelectedParty = () => {
+    return parties.find(party => String(party.id) === String(form.billId));
+  };
+
+  // Check if selected party is internal
+  const isSelectedPartyInternal = () => {
+    const selectedParty = getSelectedParty();
+    return selectedParty ? selectedParty.internal : false;
   };
 
   return (
@@ -277,19 +303,32 @@ const Invoice = () => {
               required
               disabled={readOnly}
             />
-            <FormControl fullWidth margin="normal" required>
-              <InputLabel>Flow</InputLabel>
-              <Select
-                name="flow"
-                value={form.flow}
+            {isSelectedPartyInternal() ? (
+              <TextField
                 label="Flow"
-                onChange={handleChange}
-                disabled={readOnly}
-              >
-                <MenuItem value="income">Income</MenuItem>
-                <MenuItem value="expense">Expense</MenuItem>
-              </Select>
-            </FormControl>
+                value="Internal"
+                fullWidth
+                margin="normal"
+                disabled
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            ) : (
+              <FormControl fullWidth margin="normal" required>
+                <InputLabel>Flow</InputLabel>
+                <Select
+                  name="flow"
+                  value={form.flow}
+                  label="Flow"
+                  onChange={handleChange}
+                  disabled={readOnly}
+                >
+                  <MenuItem value="income">Income</MenuItem>
+                  <MenuItem value="expense">Expense</MenuItem>
+                </Select>
+              </FormControl>
+            )}
             <TextField
               label="Amount"
               name="amount"
@@ -367,6 +406,7 @@ const Invoice = () => {
                           date: form.date,
                           entryId: parseInt(id, 10),
                           recycle: true, // Pass recycle: true when deleting
+                          flow: form.flow,
                         };
                         const result = await editEntry(entryData, jwt, refresh, handleTokenRefresh);
                         if (result && result.entryId) {
@@ -402,6 +442,30 @@ const Invoice = () => {
                   onChange={e => setNewPartyName(e.target.value)}
                   required
                   disabled={creatingParty}
+                  sx={{ mb: 2 }}
+                />
+                <FormControl fullWidth margin="dense" sx={{ mb: 2 }}>
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    value={newPartyCategory}
+                    label="Category"
+                    onChange={e => setNewPartyCategory(e.target.value)}
+                    disabled={creatingParty}
+                  >
+                    {commonCategories.map((category) => (
+                      <MenuItem key={category} value={category}>{category}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={newPartyInternal}
+                      onChange={e => setNewPartyInternal(e.target.checked)}
+                      disabled={creatingParty}
+                    />
+                  }
+                  label="Internal Transfers Only"
                 />
               </DialogContent>
               <DialogActions>

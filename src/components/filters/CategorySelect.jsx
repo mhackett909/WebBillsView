@@ -3,6 +3,18 @@ import '../../styles/global.css';
 import '../../styles/filters.css';
 
 const CategorySelect = ({ categories, selectedCategories, handleFilterChange }) => {
+    // Function to capitalize first letter of each word
+    const capitalizeWords = (str) => {
+        return str.replace(/\b\w/g, l => l.toUpperCase());
+    };
+
+    // Sort categories alphabetically, but put "Uncategorized" first
+    const sortedCategories = [...categories].sort((a, b) => {
+        if (a.toLowerCase() === 'uncategorized') return -1;
+        if (b.toLowerCase() === 'uncategorized') return 1;
+        return a.localeCompare(b);
+    });
+    
     return (
         <Box className="input-border" sx={{ minWidth: '200px', maxWidth: '200px' }}>
             <Select
@@ -27,9 +39,9 @@ const CategorySelect = ({ categories, selectedCategories, handleFilterChange }) 
                         onClick={(e) => e.stopPropagation()}
                         onMouseDown={(e) => e.stopPropagation()}
                         >{selected.map((value) => (
-                            <Tooltip key={value} title={value} arrow placement="top">
+                            <Tooltip key={value} title={capitalizeWords(value)} arrow placement="top">
                                 <Chip
-                                    label={value}
+                                    label={capitalizeWords(value)}
                                     className="chip-style"
                                     size="small"
                                     onClick={(e) => e.stopPropagation()}
@@ -53,10 +65,10 @@ const CategorySelect = ({ categories, selectedCategories, handleFilterChange }) 
                     )
                 }
             >
-                {categories.map((category) => (
+                {sortedCategories.map((category) => (
                     <MenuItem key={category} value={category}>
                         <Checkbox checked={selectedCategories.includes(category)} />
-                        {category}
+                        {capitalizeWords(category)}
                     </MenuItem>
                 ))}
             </Select>
