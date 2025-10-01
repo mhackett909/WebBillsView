@@ -235,12 +235,19 @@ const Home = () => {
 
     // Fetch billers based on includeArchived filter
     const fetchBillers = useCallback(async () => {
-        let filterParam;
-        if (includeArchived === false) filterParam = 'active';
-        else if (includeArchived === 'only') filterParam = 'inactive';
-        else filterParam = null;
-        const bills = await getBills(jwt, refresh, handleTokenRefresh, filterParam);
-        const newAvailableBillers = bills.map(bill => bill.name);
+        let statusParam;
+        if (includeArchived === false) statusParam = 'active';
+        else if (includeArchived === 'only') statusParam = 'inactive';
+        else statusParam = null;
+        const bills = await getBills(jwt, refresh, handleTokenRefresh, statusParam);
+        
+        // Filter billers based on category selection
+        let filteredBills = bills;
+        if (filters.category && filters.category.length > 0) {
+            filteredBills = bills.filter(bill => filters.category.includes(bill.category));
+        }
+        
+        const newAvailableBillers = filteredBills.map(bill => bill.name);
         const newAvailableCategories = Array.from(new Set(bills.map(bill => bill.category)));
         setAvailableBillers(newAvailableBillers);
         setAvailableCategories(newAvailableCategories);
@@ -263,7 +270,7 @@ const Home = () => {
                 return updated;
             }
         });
-    }, [jwt, refresh, handleTokenRefresh, includeArchived]);
+    }, [jwt, refresh, handleTokenRefresh, includeArchived, filters.category]);
 
     // Central filterBills function: calls loadEntries, loadStats, and sets session storage
     const filterBills = useCallback(() => {

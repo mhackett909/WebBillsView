@@ -376,25 +376,16 @@ export const editEntry = async (entryData, token, refreshToken, onTokenRefresh, 
     }
 };
 
-export const getBills = async (token, refreshToken, onTokenRefresh, status, category, internal) => {
+export const getBills = async (token, refreshToken, onTokenRefresh, status) => {
     try {
         let url = '/api/v1/bills';
         const params = new URLSearchParams();
-        
         if (status) {
             params.append('status', status);
         }
-        if (category) {
-            params.append('category', category);
-        }
-        if (internal !== undefined && internal !== null) {
-            params.append('internal', internal.toString());
-        }
-        
         if (params.toString()) {
             url += `?${params.toString()}`;
         }
-        
         const response = await fetchWithAutoRefresh({
             url,
             options: { method: 'GET' },
