@@ -37,6 +37,7 @@ const ShowMoreControls = ({
                         options={[
                             { value: 'OUTGOING', label: 'Expense' },
                             { value: 'INCOMING', label: 'Income' },
+                            { value: 'internal', label: 'Internal' },
                         ]}
                         selectedValue={filters.flow || ''}
                         onChange={(value) => handleFilterChange('flow', value)}

@@ -23,6 +23,7 @@ const Home = () => {
     const defaultFilters = {
         invoice: '',
         biller: [],
+        category: [],
         amountMin: '',
         amountMax: '',
         flow: '',
@@ -123,6 +124,8 @@ const Home = () => {
             status: true,
             balance: true,
             services: true,
+            category: true,
+            internal: true,
             archived: true,
         };
     };
@@ -148,6 +151,7 @@ const Home = () => {
     const [dateRange, setDateRange] = useState(getInitialDateRange);
     const [dateMode, setDateMode] = useState(getInitialDateMode);
     const [availableBillers, setAvailableBillers] = useState([]);
+    const [availableCategories, setAvailableCategories] = useState([]);
     const [stats, setStats] = useState(null);
     const [resetFlag, setResetFlag] = useState(false);
     const [showMoreOptions, setShowMoreOptions] = useState(() => {
@@ -192,9 +196,10 @@ const Home = () => {
             endDate: dr[1] ? dayjs(dr[1]).format('YYYY-MM-DD') : undefined,
             invoiceNum: f.invoice ? Number(f.invoice) : undefined,
             partyList: f.biller && f.biller.length > 0 ? f.biller : undefined,
+            categoryList: f.category && f.category.length > 0 ? f.category : undefined,
             min: f.amountMin !== '' ? f.amountMin : undefined,
             max: f.amountMax !== '' ? f.amountMax : undefined,
-            flow: f.flow === 'INCOMING' ? 'income' : f.flow === 'OUTGOING' ? 'expense' : undefined,
+            flow: f.flow === 'INCOMING' ? 'income' : f.flow === 'OUTGOING' ? 'expense' : f.flow === 'internal' ? 'internal' : undefined,
             paid,
             archives,
         };
@@ -230,27 +235,42 @@ const Home = () => {
 
     // Fetch billers based on includeArchived filter
     const fetchBillers = useCallback(async () => {
-        let filterParam;
-        if (includeArchived === false) filterParam = 'active';
-        else if (includeArchived === 'only') filterParam = 'inactive';
-        else filterParam = null;
-        const bills = await getBills(jwt, refresh, handleTokenRefresh, filterParam);
-        const newAvailableBillers = bills.map(bill => bill.name);
+        let statusParam;
+        if (includeArchived === false) statusParam = 'active';
+        else if (includeArchived === 'only') statusParam = 'inactive';
+        else statusParam = null;
+        const bills = await getBills(jwt, refresh, handleTokenRefresh, statusParam);
+        
+        // Filter billers based on category selection
+        let filteredBills = bills;
+        if (filters.category && filters.category.length > 0) {
+            filteredBills = bills.filter(bill => filters.category.includes(bill.category));
+        }
+        
+        const newAvailableBillers = filteredBills.map(bill => bill.name);
+        const newAvailableCategories = Array.from(new Set(bills.map(bill => bill.category)));
         setAvailableBillers(newAvailableBillers);
+        setAvailableCategories(newAvailableCategories);
         // Only clear filters.biller if the current selection is not in the new list
         setFilters(prev => {
             const currentSelected = prev.biller || [];
+            const currentSelectedCategories = prev.category || [];
             // If every selected biller is still available, keep selection
             const allSelectedStillAvailable = currentSelected.every(biller => newAvailableBillers.includes(biller));
-            if (allSelectedStillAvailable) {
+            const allSelectedCategoriesStillAvailable = currentSelectedCategories.every(category => newAvailableCategories.includes(category));
+            if (allSelectedStillAvailable && allSelectedCategoriesStillAvailable) {
                 return prev;
             } else {
-                const updated = { ...prev, biller: [] };
+                const updated = { 
+                    ...prev, 
+                    biller: allSelectedStillAvailable ? prev.biller : [],
+                    category: allSelectedCategoriesStillAvailable ? prev.category : []
+                };
                 filterParamRef.current = updated;
                 return updated;
             }
         });
-    }, [jwt, refresh, handleTokenRefresh, includeArchived]);
+    }, [jwt, refresh, handleTokenRefresh, includeArchived, filters.category]);
 
     // Central filterBills function: calls loadEntries, loadStats, and sets session storage
     const filterBills = useCallback(() => {
@@ -386,7 +406,9 @@ const Home = () => {
         { field: 'amount', headerName: 'Amount', width: 130 },
         { field: 'status', headerName: 'Paid', width: 100 },
         { field: 'balance', headerName: 'Balance', width: 130 },
-        { field: 'services', headerName: 'Description', width: 470 },
+        { field: 'services', headerName: 'Description', width: 350 },
+        { field: 'category', headerName: 'Category', width: 150 },
+        { field: 'internal', headerName: 'Internal', width: 100 },
         { field: 'archived', headerName: 'Archived', width: 100 },
     ];
 
@@ -406,6 +428,7 @@ const Home = () => {
                     filterBills={filterBills}
                     clearFilters={clearFilters}
                     availableBillers={availableBillers}
+                    availableCategories={availableCategories}
                     showMoreOptions={showMoreOptions}
                     setShowMoreOptions={setShowMoreOptions}
                 />

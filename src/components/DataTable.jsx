@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import CustomToolbar from './toolbars/TableToolbar';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
@@ -103,12 +104,18 @@ const DataTable = ({
         if (col.field === 'flow') {
             return {
                 ...col,
-                renderCell: (params) =>
-                    params.row.flow === 'INCOMING' ? (
+                renderCell: (params) => {
+                    // If internal is true, show double arrow regardless of flow
+                    if (params.row.internal === true) {
+                        return <SyncAltIcon sx={{ color: '#9c27b0' }} titleAccess="Internal" />;
+                    }
+                    // Otherwise show normal flow icons
+                    return params.row.flow === 'INCOMING' ? (
                         <ArrowBackIcon sx={{ color: '#0288d1' }} titleAccess="Income" />
                     ) : (
                         <ArrowForwardIcon color="warning" titleAccess="Expense" />
-                    ),
+                    );
+                },
             };
         }
         // Status column
@@ -185,6 +192,27 @@ const DataTable = ({
                     params.row.archived === true ? (
                         <CheckCircleIcon color="success" titleAccess="Archived" />
                     ) : '',
+            };
+        }
+        // Internal column
+        if (col.field === 'internal') {
+            return {
+                ...col,
+                renderCell: (params) =>
+                    params.row.internal === true ? (
+                        <CheckCircleIcon color="success" titleAccess="Internal" />
+                    ) : '',
+            };
+        }
+        // Category column
+        if (col.field === 'category') {
+            return {
+                ...col,
+                renderCell: (params) => {
+                    const category = params.value;
+                    if (!category || typeof category !== 'string') return '';
+                    return category.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+                },
             };
         }
         // Balance column

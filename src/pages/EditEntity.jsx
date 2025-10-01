@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Paper, CircularProgress, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Typography, TextField, Button, Paper, CircularProgress, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 import { getBillById, editBill } from '../utils/BillsApiUtil';
 import { AuthContext } from '../App';
+import { commonCategories, findCategoryByName, getDefaultCategory } from '../utils/Categories';
 
 const STATUS_INACTIVE = 0;
 const STATUS_ACTIVE = 1;
@@ -17,6 +18,8 @@ const EditEntity = () => {
   const [loading, setLoading] = useState(true);
   const [bill, setBill] = useState(null);
   const [editName, setEditName] = useState('');
+  const [editCategory, setEditCategory] = useState(getDefaultCategory());
+  const [editInternal, setEditInternal] = useState(false);
   const [archived, setArchived] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [archiveWarningOpen, setArchiveWarningOpen] = useState(false);
@@ -34,6 +37,8 @@ const EditEntity = () => {
         if (data) {
           setBill(data);
           setEditName(data.name || '');
+          setEditCategory(findCategoryByName(data.category));
+          setEditInternal(data.internal || false);
           setArchived(!data.status);
         }
       } catch (err) {
@@ -59,6 +64,8 @@ const EditEntity = () => {
       const updatedBill = {
         ...bill,
         name: editName.trim(),
+        category: editCategory,
+        internal: editInternal,
         status: archived ? STATUS_INACTIVE : STATUS_ACTIVE,
       };
       const result = await editBill(updatedBill, jwt, refresh, handleTokenRefresh);
@@ -125,6 +132,30 @@ const EditEntity = () => {
           fullWidth
           sx={{ mb: 2 }}
           disabled={!billEnabled}
+        />
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel>Category</InputLabel>
+          <Select
+            value={editCategory}
+            label="Category"
+            onChange={e => setEditCategory(e.target.value)}
+            disabled={!billEnabled}
+          >
+            {commonCategories.map((category) => (
+              <MenuItem key={category} value={category}>{category}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={editInternal}
+              onChange={e => setEditInternal(e.target.checked)}
+              disabled={!billEnabled}
+            />
+          }
+          label="Internal Transfers Only"
+          sx={{ mb: 2 }}
         />
         <Box display="flex" gap={2} mt={2}>
           <Button variant="contained" color="primary" onClick={handleSave} fullWidth disabled={!billEnabled}>Save</Button>
