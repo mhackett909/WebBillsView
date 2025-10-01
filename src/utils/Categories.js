@@ -2,26 +2,26 @@
 export const commonCategories = [
   'Uncategorized',
   'Auto Insurance',
-  'Auto Loans / Lease',
-  'Auto Repairs / Maintenance',
-  'Debt Payments (Loans / Credit Interest)',
-  'Dining / Restaurants',
-  'Donations / Charity',
-  'Entertainment / Gaming / Travel',
-  'Financial (Taxes / Investments / Accounting)',
-  'Gas / Fuel',
+  'Auto Loan',
+  'Auto Repairs',
+  'Debt Payments',
+  'Dining',
+  'Donations',
+  'Entertainment',
+  'Financial',
+  'Fuel',
   'Groceries',
-  'Healthcare / Medical / Dental / Vision',
-  'HOA / Property Taxes',
+  'Healthcare',
+  'HOA / Taxes',
   'Home Services',
-  'Insurance (Non-Auto)',
-  'Internal Transfers (Savings / Card Payoff)',
+  'Insurance',
   'Mortgage / Rent',
   'Personal Care / Fitness',
-  'Shopping / Retail',
-  'Subscriptions / Memberships',
+  'Shopping',
+  'Subscriptions',
   'Utilities'
 ];
+
 
 /**
  * Finds a category by name, ignoring case differences
