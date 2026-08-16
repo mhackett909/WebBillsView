@@ -403,13 +403,13 @@ const Home = () => {
         { field: 'name', headerName: 'Entity', width: 250 },
         { field: 'date', headerName: 'Date', width: 150 },
         { field: 'flow', headerName: 'Flow', width: 150 },
-        { field: 'amount', headerName: 'Amount', width: 130 },
-        { field: 'status', headerName: 'Paid', width: 100 },
-        { field: 'balance', headerName: 'Balance', width: 130 },
-        { field: 'services', headerName: 'Description', width: 350 },
-        { field: 'category', headerName: 'Category', width: 150 },
-        { field: 'internal', headerName: 'Internal', width: 100 },
-        { field: 'archived', headerName: 'Archived', width: 100 },
+        { field: 'amount', headerName: 'Amount', width: 110 },
+        { field: 'status', headerName: 'Paid', width: 90 },
+        { field: 'balance', headerName: 'Balance', width: 110 },
+        { field: 'services', headerName: 'Description', width: 375 },
+        { field: 'category', headerName: 'Category', width: 200 },
+        { field: 'internal', headerName: 'Internal', width: 80 },
+        { field: 'archived', headerName: 'Archived', width: 80 },
     ];
 
     return (
