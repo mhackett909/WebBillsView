@@ -498,11 +498,14 @@ const Entries = () => {
                         <MenuItem value="debit|person">{mapPaymentTypeMedium('debit|person')}</MenuItem>
                         <MenuItem value="other|ewallet">{mapPaymentTypeMedium('other|ewallet')}</MenuItem>
                         <MenuItem value="other|service">{mapPaymentTypeMedium('other|service')}</MenuItem>
+                        <MenuItem value="other|other">{mapPaymentTypeMedium('other|app')}</MenuItem>
                         <ListSubheader className="entries-list-subheader">Paper Methods</ListSubheader>
                         <MenuItem value="cash|person">{mapPaymentTypeMedium('cash|person')}</MenuItem>
                         <MenuItem value="check|mail">{mapPaymentTypeMedium('check|mail')}</MenuItem>
                         <MenuItem value="check|person">{mapPaymentTypeMedium('check|person')}</MenuItem>
                         <ListSubheader className="entries-list-subheader">Other</ListSubheader>
+                        <MenuItem value="other|other">{mapPaymentTypeMedium('bank|atm')}</MenuItem>
+                        <MenuItem value="other|other">{mapPaymentTypeMedium('other|phone')}</MenuItem>
                         <MenuItem value="other|other">{mapPaymentTypeMedium('other|other')}</MenuItem>
                     </TextField>
                     <Box display="flex" alignItems="center" mt={1} mb={1}>
