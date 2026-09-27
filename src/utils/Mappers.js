@@ -26,6 +26,7 @@ export function mapPaymentMedium(medium) {
         case 'service': return 'Service (Zelle, Venmo, PayPal, etc.)';
         case 'web': return 'Website';
         case 'other': return 'Other';
+        cast 'atm': return "ATM";
         default: return medium;
     }
 }
@@ -45,6 +46,7 @@ const paymentMethodMap = {
   },
   bank: {
     ach: 'Bank Transfer (ACH/EFT)',
+    atm: 'ATM',
   },
   check: {
     person: 'Check (In Person)',
@@ -59,6 +61,8 @@ const paymentMethodMap = {
   other: {
     ewallet: 'eWallet (Apple Pay, Google Pay, etc.)',
     service: 'Service (Zelle, PayPal, Venmo, etc.)',
+    phone: 'Phone',
+    app: 'Mobile App',
     other: 'Unspecified Method',
   },
 };
